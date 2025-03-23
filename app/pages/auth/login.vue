@@ -47,6 +47,10 @@ import { useSupabase } from "@/utils/supabase";
 import { useVuelidate } from "@vuelidate/core";
 import { email, required } from "@vuelidate/validators";
 import { ref } from "vue";
+import auth from '~/ middleware/auth';
+definePageMeta({
+    middleware: auth,
+});
 
 const supabase = useSupabase();
 

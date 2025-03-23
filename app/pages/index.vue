@@ -1,10 +1,9 @@
-<script lang="ts" setup>
-import Login from './auth/login.vue';
-
-//
+<script setup lang="ts">
+import auth from '~/ middleware/auth';
+  definePageMeta({
+    middleware: auth,
+  });
 </script>
-
 <template>
-  <Login />
+  <HelloWorld />
 </template>
-

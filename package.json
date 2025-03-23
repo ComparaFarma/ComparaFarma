@@ -21,6 +21,7 @@
     "@vuelidate/validators": "^2.0.4",
     "eslint": "^9.0.0",
     "nuxt": "^3.16.1",
+    "pinia": "^3.0.1",
     "vue": "latest",
     "vuetify": "^3.7.3"
   },
