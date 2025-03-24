@@ -26,6 +26,9 @@
                 Login
               </v-btn>
             </v-form>
+            <v-btn block color="primary" href="/auth/requestPassword">
+              Forgot password?
+            </v-btn>
           </v-card-text>
         </v-card>
       </v-col>
@@ -81,6 +84,8 @@ const login = async () => {
   if (error) {
     text.value = "Credenciais inválidas";
     snackbar.value = true;
+  } else {
+    navigateTo("/");
   }
 };
 
