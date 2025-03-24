@@ -1,13 +1,14 @@
 
-export default defineNuxtRouteMiddleware(async(to, from) => {
+export default defineNuxtRouteMiddleware(async(to) => {
     const supabase = useSupabase();
-    const isAuthenticated = await supabase.auth.getSession();
-    // isAuthenticated() is an example method verifying if a user is authenticated
-    if (from.path !== '/auth/login' && !isAuthenticated) {
+    const isAuthenticated = (await supabase.auth.getUser()).data.user !== null;
+
+    if (to.path != '/auth/login' && !isAuthenticated) {
       return navigateTo('/auth/login')
     }
 
     if (to.path === '/auth/login' && isAuthenticated) {
       return navigateTo('/')
     }
+
 })
