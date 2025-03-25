@@ -44,9 +44,8 @@
 import { useVuelidate } from "@vuelidate/core";
 import { required, email } from "@vuelidate/validators";
 import { ref } from "vue";
-import { useSupabase } from "@/utils/supabase";
 
-const supabase = useSupabase();
+const supabase = useSupabaseClient();
 
 const form = ref({
   email: "",

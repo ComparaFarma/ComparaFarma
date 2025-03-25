@@ -3,16 +3,19 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
   runtimeConfig:{
-    app: {
-      supabaseUrl: process.env.SUPABASE_URL,
-      supabaseKey: process.env.SUPABASE_KEY
+  },
+  supabase: {
+    redirectOptions: {
+      login: '/auth/login',
+      callback: '/',
+      exclude: ['/auth/resetPassword', '/auth/requestPassword'],
     }
   },
   future: {
     compatibilityVersion: 4
   },
-  modules: ['@nuxt/eslint', '@nuxt/fonts', 'vuetify-nuxt-module'],
-  ssr: true,
+  modules: ['@nuxt/eslint', '@nuxt/fonts', 'vuetify-nuxt-module', '@nuxtjs/supabase'],
+  ssr: false,
 
   // when enabling ssr option you need to disable inlineStyles and maybe devLogs
   features: {

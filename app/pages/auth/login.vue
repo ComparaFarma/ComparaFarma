@@ -46,7 +46,6 @@
 </template>
 
 <script setup lang="ts">
-import { useSupabase } from "@/utils/supabase";
 import { useVuelidate } from "@vuelidate/core";
 import { email, required } from "@vuelidate/validators";
 import { ref } from "vue";
@@ -55,7 +54,7 @@ definePageMeta({
     middleware: auth,
 });
 
-const supabase = useSupabase();
+const supabase = useSupabaseClient();
 
 const form = reactive({
   email: "",

@@ -31,9 +31,8 @@
   </v-app>
 </template>
 <script lang="ts" setup>
-import { useSupabase } from "@/utils/supabase";
 
-const supabase = useSupabase();
+const supabase = useSupabaseClient();
 async function logout() {
   await supabase.auth.signOut();
 

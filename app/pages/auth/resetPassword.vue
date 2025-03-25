@@ -43,7 +43,6 @@
 <script setup lang="ts">
 import { useVuelidate } from "@vuelidate/core";
 import { required, sameAs } from "@vuelidate/validators";
-import { useSupabase } from "@/utils/supabase";
 
 const route = useRoute();
 onBeforeMount(() => {
@@ -53,7 +52,7 @@ onBeforeMount(() => {
   }
 });
 
-const supabase = useSupabase();
+const supabase = useSupabaseClient();
 
 const form = reactive({
   password: "",

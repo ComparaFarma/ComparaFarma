@@ -1,13 +1,12 @@
 
 export default defineNuxtRouteMiddleware(async(to) => {
-    const supabase = useSupabase();
-    const isAuthenticated = (await supabase.auth.getUser()).data.user !== null;
+    const session = useSupabaseSession()
 
-    if (to.path != '/auth/login' && !isAuthenticated) {
+    if (to.path != '/auth/login' && !session.value) {
       return navigateTo('/auth/login')
     }
 
-    if (to.path === '/auth/login' && isAuthenticated) {
+    if (to.path === '/auth/login' && session.value) {
       return navigateTo('/')
     }
 
