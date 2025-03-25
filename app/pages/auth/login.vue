@@ -5,24 +5,22 @@
         <v-card>
           <v-card-title class="text-h5">Login</v-card-title>
           <v-card-text>
-            <v-form ref="loginForm" v-model="valid">
+            <v-form @submit.prevent="submit">
               <v-text-field
-                v-model="form.email"
-                :error-messages="v$.email.$errors.map(e => e.$message as string)"
+                v-model="email"
                 label="Email"
                 type="email"
-                @blur="v$.email.$touch"
-                @input="v$.email.$touch"
+                autocomplete="email"
+                v-bind="emailProps"
               />
               <v-text-field
-                v-model="form.password"
-                :error-messages="v$.password.$errors.map(e => e.$message as string)"
+                v-model="password"
                 label="Password"
                 type="password"
-                @blur="v$.password.$touch"
-                @input="v$.password.$touch"
+                autocomplete="current-password"
+                v-bind="passwordProps"
               />
-              <v-btn :disabled="!valid" color="primary" block @click="login">
+              <v-btn color="primary" block type="submit">
                 Login
               </v-btn>
             </v-form>
@@ -46,38 +44,40 @@
 </template>
 
 <script setup lang="ts">
-import { useVuelidate } from "@vuelidate/core";
-import { email, required } from "@vuelidate/validators";
 import { ref } from "vue";
-import auth from '~/ middleware/auth';
+import auth from "~/ middleware/auth";
+import { useForm } from "vee-validate";
 definePageMeta({
-    middleware: auth,
+  middleware: auth,
 });
+
 
 const supabase = useSupabaseClient();
 
-const form = reactive({
-  email: "",
-  password: "",
+const { defineField, handleSubmit } = useForm({
+  validationSchema: {
+    email: "required|email",
+    password: "required",
+  },
 });
 
-const rules = {
-  email: { required, email },
-  password: { required },
-};
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const vuetifyConfig = (state: any) => ({
+  props: {
+    'error-messages': state.errors,
+  },
+});
 
-const v$ = useVuelidate(rules, form);
+const [email, emailProps] = defineField("email", vuetifyConfig);
+const [password, passwordProps] = defineField("password", vuetifyConfig);
 
-const valid = ref(false);
 
-const login = async () => {
-    const { value } = v$;
-    if (value.$invalid) {
-      return;
-    }
+const submit = handleSubmit(async (values) => {
+  console.log(values);
+
   const { error } = await supabase.auth.signInWithPassword({
-    email: form.email,
-    password: form.password,
+    email: email.value.value,
+    password: password.value.value,
   });
 
   if (error) {
@@ -86,7 +86,7 @@ const login = async () => {
   } else {
     navigateTo("/");
   }
-};
+});
 
 const snackbar = ref(false);
 const text = ref("");

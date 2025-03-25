@@ -9,20 +9,13 @@
           <v-card-text>
             <v-form @submit.prevent="resetPassword">
               <v-text-field
-                v-model="form.email"
+                v-model="email"
                 label="Email"
                 required
-                :error-messages="v$.email.$errors.map(e => e.$message as string)"
+                v-bind="emailProps"
                 type="email"
-                @blur="v$.email.$touch"
-                @input="v$.email.$touch"
               />
-              <v-btn
-                block
-                color="primary"
-                :disabled="v$.email.$invalid"
-                type="submit"
-              >
+              <v-btn block color="primary" type="submit">
                 Reset Password
               </v-btn>
             </v-form>
@@ -38,38 +31,40 @@
         </v-btn>
       </template>
     </v-snackbar>
-</v-container>
+  </v-container>
 </template>
 <script lang="ts" setup>
-import { useVuelidate } from "@vuelidate/core";
-import { required, email } from "@vuelidate/validators";
+import { useForm } from "vee-validate";
 import { ref } from "vue";
 
 const supabase = useSupabaseClient();
 
-const form = ref({
-  email: "",
+const { defineField, handleSubmit } = useForm({
+  validationSchema: {
+    email: "required|email",
+  },
 });
 
-const v$ = useVuelidate(
-  {
-    email: { required, email },
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const vuetifyConfig = (state: any) => ({
+  props: {
+    "error-messages": state.errors,
   },
-  form
-);
+});
 
+const [email, emailProps] = defineField("email", vuetifyConfig);
 const snackbar = ref(false);
 const text = ref("");
 
-async function resetPassword() {
-  const {error} = await supabase.auth.resetPasswordForEmail(form.value.email, {
+const resetPassword = handleSubmit(async () => {
+  const { error } = await supabase.auth.resetPasswordForEmail(email.value, {
     redirectTo: `${window.location.origin}/auth/resetPassword`,
   });
-    if (error) {
-        text.value = 'Verifique o email e tente novamente';
-        snackbar.value = true;
-        return;
-    }
-    navigateTo('/auth/login');
-}
+  if (error) {
+    text.value = "Verifique o email e tente novamente";
+    snackbar.value = true;
+    return;
+  }
+  navigateTo("/auth/login");
+});
 </script>

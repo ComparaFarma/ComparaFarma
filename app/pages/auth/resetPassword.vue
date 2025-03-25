@@ -12,25 +12,21 @@
                 <v-form @submit.prevent="resetPassword">
                   <v-text-field
                     key="password"
-                    v-model="form.password"
-                    :error-messages="v$.password.$errors.map(e => e.$message as string)"
+                    v-model="password"
                     label="Password"
                     type="password"
-                    @blur="v$.password.$touch"
-                    @input="v$.password.$touch"
+                    autocomplete="new-password"
+                    v-bind="passwordProps"
                   />
                   <v-text-field
                     key="passwordConfirmation"
-                    v-model="form.passwordConfirmation"
-                    :error-messages="v$.passwordConfirmation.$errors.map(e => e.$message as string)"
+                    v-model="passwordConfirmation"
+                    v-bind="passwordConfirmationProps"
                     label="Confirm Password"
                     type="password"
-                    @blur="v$.passwordConfirmation.$touch"
-                    @input="v$.passwordConfirmation.$touch"
+                    autocomplete="new-password"
                   />
-                  <v-btn color="primary" :disabled="v$.$invalid" type="submit">
-                    Reset Password
-                  </v-btn>
+                  <v-btn color="primary" type="submit"> Reset Password </v-btn>
                 </v-form>
               </v-card-text>
             </v-card>
@@ -41,8 +37,6 @@
   </v-app>
 </template>
 <script setup lang="ts">
-import { useVuelidate } from "@vuelidate/core";
-import { required, sameAs } from "@vuelidate/validators";
 
 const route = useRoute();
 onBeforeMount(() => {
@@ -54,33 +48,34 @@ onBeforeMount(() => {
 
 const supabase = useSupabaseClient();
 
-const form = reactive({
-  password: "",
-  passwordConfirmation: "",
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const vuetifyConfig = (state: any) => ({
+  props: {
+    'error-messages': state.errors,
+  },
 });
 
-const v$ = useVuelidate(
-  {
-    password: { required },
-    passwordConfirmation: {
-      required,
-      sameAs: sameAs(computed(() => form.password)),
-    },
+const { defineField, handleSubmit } = useForm({
+  validationSchema: {
+    password: "required|email",
+    passwordConfirmation: "required|email|confirmed:password",
   },
-  form
+});
+
+const [password, passwordProps] = defineField("password", vuetifyConfig);
+const [passwordConfirmation, passwordConfirmationProps] = defineField(
+  "passwordConfirmation",
+  vuetifyConfig
 );
 
-async function resetPassword() {
-  v$.value.$touch();
-  if (!v$.value.$invalid) {
-    const { error } = await supabase.auth.updateUser({
-      password: form.password,
-    });
-    if (error) {
-      console.error(error);
-    } else {
-      navigateTo("/auth/login");
-    }
+const resetPassword = handleSubmit(async () => {
+  const { error } = await supabase.auth.updateUser({
+    password: password.value,
+  });
+  if (error) {
+    console.error(error);
+  } else {
+    navigateTo("/auth/login");
   }
-}
+});
 </script>

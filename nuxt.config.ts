@@ -4,6 +4,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   runtimeConfig:{
   },
+  debug: true,
   supabase: {
     redirectOptions: {
       login: '/auth/login',
@@ -11,10 +12,13 @@ export default defineNuxtConfig({
       exclude: ['/auth/resetPassword', '/auth/requestPassword'],
     }
   },
+  i18n: {
+    vueI18n: './i18n.config.ts',
+  },
   future: {
     compatibilityVersion: 4
   },
-  modules: ['@nuxt/eslint', '@nuxt/fonts', 'vuetify-nuxt-module', '@nuxtjs/supabase'],
+  modules: ['@nuxt/eslint', '@nuxt/fonts', 'vuetify-nuxt-module', '@nuxtjs/supabase', '@nuxtjs/i18n', '@vee-validate/nuxt'],
   ssr: false,
 
   // when enabling ssr option you need to disable inlineStyles and maybe devLogs
