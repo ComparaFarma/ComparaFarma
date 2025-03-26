@@ -64,8 +64,8 @@ const vuetifyConfig = (state: any) => ({
 
 const { defineField, handleSubmit } = useForm({
   validationSchema: {
-    password: "required|email",
-    passwordConfirmation: "required|email|confirmed:password",
+    password: "required",
+    passwordConfirmation: "required|confirmed:@password",
   },
 });
 
