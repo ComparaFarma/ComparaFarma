@@ -32,12 +32,19 @@
             </v-card>
           </v-col>
         </v-row>
+        <v-snackbar v-model="snackbar" multi-line>
+          {{ text }}
+          <template #actions>
+            <v-btn color="red" variant="text" @click="snackbar = false">
+              Close
+            </v-btn>
+          </template>
+        </v-snackbar>
       </v-container>
     </v-main>
   </v-app>
 </template>
 <script setup lang="ts">
-
 const route = useRoute();
 onBeforeMount(() => {
   // check the query params
@@ -51,14 +58,14 @@ const supabase = useSupabaseClient();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const vuetifyConfig = (state: any) => ({
   props: {
-    'error-messages': state.errors,
+    "error-messages": state.errors,
   },
 });
 
 const { defineField, handleSubmit } = useForm({
   validationSchema: {
-    password: "required|email",
-    passwordConfirmation: "required|email|confirmed:password",
+    password: "required",
+    passwordConfirmation: "required|confirmed:@password",
   },
 });
 
@@ -68,14 +75,21 @@ const [passwordConfirmation, passwordConfirmationProps] = defineField(
   vuetifyConfig
 );
 
+const i18n = useI18n();
+const snackbar = ref(false);
+const text = ref("");
+
 const resetPassword = handleSubmit(async () => {
   const { error } = await supabase.auth.updateUser({
     password: password.value,
   });
-  if (error) {
-    console.error(error);
-  } else {
+  if (!error) {
     navigateTo("/auth/login");
+    return;
   }
+  text.value = i18n.te("supabaseCodes." + error.code)
+    ? i18n.t("supabaseCodes." + error.code)
+    : error.message;
+  snackbar.value = true;
 });
 </script>

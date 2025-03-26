@@ -20,9 +20,7 @@
                 autocomplete="current-password"
                 v-bind="passwordProps"
               />
-              <v-btn color="primary" block type="submit">
-                Login
-              </v-btn>
+              <v-btn color="primary" block type="submit"> Login </v-btn>
             </v-form>
             <v-btn block color="primary" href="/auth/requestPassword">
               Forgot password?
@@ -51,7 +49,6 @@ definePageMeta({
   middleware: auth,
 });
 
-
 const supabase = useSupabaseClient();
 
 const { defineField, handleSubmit } = useForm({
@@ -64,13 +61,14 @@ const { defineField, handleSubmit } = useForm({
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const vuetifyConfig = (state: any) => ({
   props: {
-    'error-messages': state.errors,
+    "error-messages": state.errors,
   },
 });
 
 const [email, emailProps] = defineField("email", vuetifyConfig);
 const [password, passwordProps] = defineField("password", vuetifyConfig);
 
+const i18n = useI18n();
 
 const submit = handleSubmit(async (values) => {
   console.log(values);
@@ -80,12 +78,14 @@ const submit = handleSubmit(async (values) => {
     password: password.value.value,
   });
 
-  if (error) {
-    text.value = "Credenciais inválidas";
-    snackbar.value = true;
-  } else {
+  if (!error) {
     navigateTo("/");
+    return;
   }
+  text.value = i18n.te("supabaseCodes." + error.code)
+    ? i18n.t("supabaseCodes." + error.code)
+    : error.message;
+  snackbar.value = true;
 });
 
 const snackbar = ref(false);

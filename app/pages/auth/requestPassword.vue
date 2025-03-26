@@ -56,15 +56,19 @@ const [email, emailProps] = defineField("email", vuetifyConfig);
 const snackbar = ref(false);
 const text = ref("");
 
+const i18n = useI18n();
+
 const resetPassword = handleSubmit(async () => {
   const { error } = await supabase.auth.resetPasswordForEmail(email.value, {
     redirectTo: `${window.location.origin}/auth/resetPassword`,
   });
-  if (error) {
-    text.value = "Verifique o email e tente novamente";
-    snackbar.value = true;
+  if (!error) {
+    navigateTo("/auth/login");
     return;
   }
-  navigateTo("/auth/login");
+  text.value = i18n.te("supabaseCodes." + error.code)
+    ? i18n.t("supabaseCodes." + error.code)
+    : error.message;
+  snackbar.value = true;
 });
 </script>

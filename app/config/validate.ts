@@ -14,7 +14,7 @@ export default () => {
       messages: {
         required: "O campo {field} é obrigatório",
         email: "O campo {field} precisa ser um e-mail válido",
-        confirmed: "Os campos {target} não são iguais",
+        confirmed: "Os campos não são iguais",
       },
     }),
   });
