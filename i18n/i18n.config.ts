@@ -18,6 +18,7 @@ export default defineI18nConfig(() => ({
         same_password: "A nova senha não pode ser a mesma que a antiga",
         email_provider_disabled: "Provedor de e-mail desativado",
         invalid_credentials: "Credenciais inválidas",
+        over_email_send_rate_limit: "Por razões de segurança, você só poderá solicitar um e-mail de redefinição de senha daqui 28 segundos",
       },
       text: {
         loginScreen: {
