@@ -24,6 +24,7 @@
         color="primary"
         block
         type="submit"
+        :loading="loading"
       />
     </v-form>
     <span>
@@ -33,6 +34,7 @@
         class="text-primary text-capitalize"
         variant="text"
         slim
+        :disabled="loading"
         :ripple="false"
         href="/auth/requestPassword"
       />
@@ -70,15 +72,16 @@ const [password, passwordProps] = defineField("password", vuetifyConfig);
 
 const i18n = useI18n();
 const notifyStore = useNotifyStore();
+const loading = ref(false);
 
 const submit = handleSubmit(async (values) => {
   console.log(values);
-
+  loading.value = true;
   const { error } = await supabase.auth.signInWithPassword({
     email: email.value,
     password: password.value,
   });
-
+  loading.value = false;
   if (!error) {
     navigateTo("/");
     return;

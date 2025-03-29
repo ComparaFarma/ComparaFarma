@@ -20,7 +20,13 @@
         type="password"
         autocomplete="new-password"
       />
-      <v-btn color="primary" type="submit" block size="large">
+      <v-btn
+        color="primary"
+        type="submit"
+        block
+        size="large"
+        :loading="loading"
+      >
         {{ $t("text.resetPasswordScreen.button") }}
       </v-btn>
       <v-btn
@@ -28,17 +34,10 @@
         :text="$t('actions.backToLogin')"
         block
         :ripple="false"
+        :disabled="loading"
         href="/auth/login"
       />
     </v-form>
-    <v-snackbar v-model="snackbar" multi-line>
-      {{ text }}
-      <template #actions>
-        <v-btn color="red" variant="text" @click="snackbar = false">
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar>
   </div>
 </template>
 <script setup lang="ts">
@@ -78,15 +77,14 @@ const [passwordConfirmation, passwordConfirmationProps] = defineField(
 );
 
 const i18n = useI18n();
-const snackbar = ref(false);
-const text = ref("");
-
 const notifyStore = useNotifyStore();
-
+const loading = ref(false);
 const resetPassword = handleSubmit(async () => {
+  loading.value = true;
   const { error } = await supabase.auth.updateUser({
     password: password.value,
   });
+  loading.value = false;
   if (!error) {
     notifyStore.showNotification(
       i18n.t("text.resetPasswordScreen.success"),

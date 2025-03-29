@@ -11,7 +11,13 @@
         v-bind="emailProps"
         type="email"
       />
-      <v-btn block color="primary" type="submit" size="large">
+      <v-btn
+        block
+        color="primary"
+        type="submit"
+        size="large"
+        :loading="loading"
+      >
         {{ $t("text.requestPasswordScreen.button") }}
       </v-btn>
       <v-btn
@@ -20,16 +26,9 @@
         block
         :ripple="false"
         href="/auth/login"
+        :disabled="loading"
       />
     </v-form>
-    <v-snackbar v-model="snackbar" multi-line>
-      {{ text }}
-      <template #actions>
-        <v-btn color="red" variant="text" @click="snackbar = false">
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar>
   </div>
 </template>
 <script lang="ts" setup>
@@ -56,16 +55,15 @@ const vuetifyConfig = (state: any) => ({
 });
 
 const [email, emailProps] = defineField("email", vuetifyConfig);
-const snackbar = ref(false);
-const text = ref("");
-
 const i18n = useI18n();
 const notifyStore = useNotifyStore();
-
+const loading = ref(false);
 const resetPassword = handleSubmit(async () => {
+  loading.value = true;
   const { error } = await supabase.auth.resetPasswordForEmail(email.value, {
     redirectTo: `${window.location.origin}/auth/resetPassword`,
   });
+  loading.value = false;
   if (!error) {
     notifyStore.showNotification(
       i18n.t("text.requestPasswordScreen.success"),
