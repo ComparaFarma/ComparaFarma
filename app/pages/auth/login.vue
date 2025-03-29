@@ -41,9 +41,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
 import auth from "~/ middleware/auth";
 import { useForm } from "vee-validate";
+import { useNotifyStore } from "~/store/notifyStore";
 definePageMeta({
   middleware: auth,
   layout: "login-layout",
@@ -69,27 +69,28 @@ const [email, emailProps] = defineField("email", vuetifyConfig);
 const [password, passwordProps] = defineField("password", vuetifyConfig);
 
 const i18n = useI18n();
+const notifyStore = useNotifyStore();
 
 const submit = handleSubmit(async (values) => {
   console.log(values);
 
   const { error } = await supabase.auth.signInWithPassword({
-    email: email.value.value,
-    password: password.value.value,
+    email: email.value,
+    password: password.value,
   });
 
   if (!error) {
     navigateTo("/");
     return;
   }
-  text.value = i18n.te("supabaseCodes." + error.code)
-    ? i18n.t("supabaseCodes." + error.code)
-    : error.message;
-  snackbar.value = true;
+  notifyStore.showNotification(
+    i18n.te("supabaseCodes." + error.code)
+      ? i18n.t("supabaseCodes." + error.code)
+      : error.message,
+    'error',
+  );
 });
 
-const snackbar = ref(false);
-const text = ref("");
 </script>
 
 <style scoped>

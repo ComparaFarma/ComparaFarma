@@ -18,7 +18,15 @@ export default defineNuxtConfig({
   future: {
     compatibilityVersion: 4
   },
-  modules: ['@nuxt/eslint', '@nuxt/fonts', 'vuetify-nuxt-module', '@nuxtjs/supabase', '@nuxtjs/i18n', '@vee-validate/nuxt'],
+  modules: [
+    '@nuxt/eslint',
+    '@nuxt/fonts',
+    'vuetify-nuxt-module',
+    '@nuxtjs/supabase',
+    '@nuxtjs/i18n',
+    '@vee-validate/nuxt',
+    '@pinia/nuxt',
+  ],
   ssr: true,
 
   // when enabling ssr option you need to disable inlineStyles and maybe devLogs
