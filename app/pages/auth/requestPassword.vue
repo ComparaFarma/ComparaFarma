@@ -68,7 +68,7 @@ const resetPassword = handleSubmit(async () => {
   });
   if (!error) {
     notifyStore.showNotification(
-      i18n.t("text.resetPasswordScreen.success"),
+      i18n.t("text.requestPasswordScreen.success"),
       "success"
     );
     navigateTo("/auth/login");
