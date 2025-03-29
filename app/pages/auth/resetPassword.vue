@@ -1,50 +1,50 @@
 <template>
-  <v-app>
-    <v-main>
-      <v-container>
-        <v-row>
-          <v-col cols="12" md="6" offset-md="3">
-            <v-card>
-              <v-card-title>
-                <span class="headline">Reset Password</span>
-              </v-card-title>
-              <v-card-text>
-                <v-form @submit.prevent="resetPassword">
-                  <v-text-field
-                    key="password"
-                    v-model="password"
-                    label="Password"
-                    type="password"
-                    autocomplete="new-password"
-                    v-bind="passwordProps"
-                  />
-                  <v-text-field
-                    key="passwordConfirmation"
-                    v-model="passwordConfirmation"
-                    v-bind="passwordConfirmationProps"
-                    label="Confirm Password"
-                    type="password"
-                    autocomplete="new-password"
-                  />
-                  <v-btn color="primary" type="submit"> Reset Password </v-btn>
-                </v-form>
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
-        <v-snackbar v-model="snackbar" multi-line>
-          {{ text }}
-          <template #actions>
-            <v-btn color="red" variant="text" @click="snackbar = false">
-              Close
-            </v-btn>
-          </template>
-        </v-snackbar>
-      </v-container>
-    </v-main>
-  </v-app>
+  <div class="ga-3 d-flex flex-column">
+    <h4 class="text-h4 text-primary font-weight-black text-center">
+      {{ $t("text.resetPasswordScreen.title") }}
+    </h4>
+    <v-form @submit.prevent="resetPassword">
+      <v-text-field
+        key="password"
+        v-model="password"
+        :label="$t('words.password')"
+        type="password"
+        autocomplete="new-password"
+        v-bind="passwordProps"
+      />
+      <v-text-field
+        key="passwordConfirmation"
+        v-model="passwordConfirmation"
+        v-bind="passwordConfirmationProps"
+        :label="$t('words.passwordConfirmation')"
+        type="password"
+        autocomplete="new-password"
+      />
+      <v-btn color="primary" type="submit" block size="large">
+        {{ $t("text.resetPasswordScreen.button") }}
+      </v-btn>
+      <v-btn
+        class="mt-3"
+        :text="$t('actions.backToLogin')"
+        block
+        :ripple="false"
+        href="/auth/login"
+      />
+    </v-form>
+    <v-snackbar v-model="snackbar" multi-line>
+      {{ text }}
+      <template #actions>
+        <v-btn color="red" variant="text" @click="snackbar = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+  </div>
 </template>
 <script setup lang="ts">
+definePageMeta({
+  layout: "login-layout",
+});
 const route = useRoute();
 onBeforeMount(() => {
   // check the query params

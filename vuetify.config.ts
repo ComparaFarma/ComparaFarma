@@ -22,4 +22,10 @@ export default defineVuetifyConfiguration({
       customLightTheme
     }
   },
+  defaults: {
+    VTextField: {
+      variant: 'outlined',
+      color: 'primary',
+    },
+  }
 })
