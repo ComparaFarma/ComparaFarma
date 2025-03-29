@@ -11,7 +11,7 @@
         v-bind="emailProps"
         type="email"
       />
-      <v-btn block color="primary" type="submit" size="large"> 
+      <v-btn block color="primary" type="submit" size="large">
         {{ $t("text.requestPasswordScreen.button") }}
       </v-btn>
       <v-btn
@@ -35,6 +35,8 @@
 <script lang="ts" setup>
 import { useForm } from "vee-validate";
 import { ref } from "vue";
+import { useNotifyStore } from "~/store/notifyStore";
+
 definePageMeta({
   layout: "login-layout",
 });
@@ -58,18 +60,25 @@ const snackbar = ref(false);
 const text = ref("");
 
 const i18n = useI18n();
+const notifyStore = useNotifyStore();
 
 const resetPassword = handleSubmit(async () => {
   const { error } = await supabase.auth.resetPasswordForEmail(email.value, {
     redirectTo: `${window.location.origin}/auth/resetPassword`,
   });
   if (!error) {
+    notifyStore.showNotification(
+      i18n.t("text.resetPasswordScreen.success"),
+      "success"
+    );
     navigateTo("/auth/login");
     return;
   }
-  text.value = i18n.te("supabaseCodes." + error.code)
-    ? i18n.t("supabaseCodes." + error.code)
-    : error.message;
-  snackbar.value = true;
+  notifyStore.showNotification(
+    i18n.te("supabaseCodes." + error.code)
+      ? i18n.t("supabaseCodes." + error.code)
+      : error.message,
+    "error"
+  );
 });
 </script>

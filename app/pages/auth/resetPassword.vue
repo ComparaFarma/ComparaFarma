@@ -42,6 +42,8 @@
   </div>
 </template>
 <script setup lang="ts">
+import { useNotifyStore } from "~/store/notifyStore";
+
 definePageMeta({
   layout: "login-layout",
 });
@@ -79,17 +81,25 @@ const i18n = useI18n();
 const snackbar = ref(false);
 const text = ref("");
 
+const notifyStore = useNotifyStore();
+
 const resetPassword = handleSubmit(async () => {
   const { error } = await supabase.auth.updateUser({
     password: password.value,
   });
   if (!error) {
+    notifyStore.showNotification(
+      i18n.t("text.resetPasswordScreen.success"),
+      "success"
+    );
     navigateTo("/auth/login");
     return;
   }
-  text.value = i18n.te("supabaseCodes." + error.code)
-    ? i18n.t("supabaseCodes." + error.code)
-    : error.message;
-  snackbar.value = true;
+  notifyStore.showNotification(
+    i18n.te("supabaseCodes." + error.code)
+      ? i18n.t("supabaseCodes." + error.code)
+      : error.message,
+    "error"
+  );
 });
 </script>

@@ -15,7 +15,9 @@ export default defineI18nConfig(() => ({
         user_not_found: "Usuário não encontrado",
         email_exists: "E-mail já cadastrado",
         email_not_verified: "E-mail não verificado",
+        same_password: "A nova senha não pode ser a mesma que a antiga",
         email_provider_disabled: "Provedor de e-mail desativado",
+        invalid_credentials: "Credenciais inválidas",
       },
       text: {
         loginScreen: {
@@ -27,10 +29,12 @@ export default defineI18nConfig(() => ({
         requestPasswordScreen: {
           title: "Recuperar senha",
           button: "Enviar e-mail",
+          success: "E-mail enviado com sucesso",
         },
         resetPasswordScreen: {
           title: "Redefinir senha",
           button: "Redefinir senha",
+          success: "Senha redefinida com sucesso",
         }
       },
       actions: {
