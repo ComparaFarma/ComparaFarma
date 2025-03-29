@@ -1,28 +1,27 @@
 <template>
-  <v-container class="fill-height">
-    <v-row align="center" justify="center">
-      <v-col cols="12" sm="8" md="4">
-        <v-card class="elevation-12">
-          <v-toolbar color="primary" dark flat>
-            <v-toolbar-title>Solicitar nova senha</v-toolbar-title>
-          </v-toolbar>
-          <v-card-text>
-            <v-form @submit.prevent="resetPassword">
-              <v-text-field
-                v-model="email"
-                label="Email"
-                required
-                v-bind="emailProps"
-                type="email"
-              />
-              <v-btn block color="primary" type="submit">
-                Reset Password
-              </v-btn>
-            </v-form>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
+  <div class="ga-3 d-flex flex-column">
+    <h4 class="text-h4 text-primary font-weight-black text-center">
+      {{ $t("text.requestPasswordScreen.title") }}
+    </h4>
+    <v-form @submit.prevent="resetPassword">
+      <v-text-field
+        v-model="email"
+        label="Email"
+        required
+        v-bind="emailProps"
+        type="email"
+      />
+      <v-btn block color="primary" type="submit" size="large"> 
+        {{ $t("text.requestPasswordScreen.button") }}
+      </v-btn>
+      <v-btn
+        class="mt-3"
+        :text="$t('actions.backToLogin')"
+        block
+        :ripple="false"
+        href="/auth/login"
+      />
+    </v-form>
     <v-snackbar v-model="snackbar" multi-line>
       {{ text }}
       <template #actions>
@@ -31,12 +30,14 @@
         </v-btn>
       </template>
     </v-snackbar>
-  </v-container>
+  </div>
 </template>
 <script lang="ts" setup>
 import { useForm } from "vee-validate";
 import { ref } from "vue";
-
+definePageMeta({
+  layout: "login-layout",
+});
 const supabase = useSupabaseClient();
 
 const { defineField, handleSubmit } = useForm({

@@ -19,7 +19,7 @@ export default defineNuxtConfig({
     compatibilityVersion: 4
   },
   modules: ['@nuxt/eslint', '@nuxt/fonts', 'vuetify-nuxt-module', '@nuxtjs/supabase', '@nuxtjs/i18n', '@vee-validate/nuxt'],
-  ssr: false,
+  ssr: true,
 
   // when enabling ssr option you need to disable inlineStyles and maybe devLogs
   features: {

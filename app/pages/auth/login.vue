@@ -1,44 +1,43 @@
 <template>
-  <v-container class="fill-height" fluid>
-    <v-row justify="center" align="center">
-      <v-col cols="12" md="4">
-        <v-card>
-          <v-card-title class="text-h5">Login</v-card-title>
-          <v-card-text>
-            <v-form @submit.prevent="submit">
-              <v-text-field
-                v-model="email"
-                label="Email"
-                type="email"
-                autocomplete="email"
-                v-bind="emailProps"
-              />
-              <v-text-field
-                v-model="password"
-                label="Password"
-                type="password"
-                autocomplete="current-password"
-                v-bind="passwordProps"
-              />
-              <v-btn color="primary" block type="submit"> Login </v-btn>
-            </v-form>
-            <v-btn block color="primary" href="/auth/requestPassword">
-              Forgot password?
-            </v-btn>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
-    <v-snackbar v-model="snackbar" multi-line>
-      {{ text }}
-
-      <template v-slot:actions>
-        <v-btn color="red" variant="text" @click="snackbar = false">
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar>
-  </v-container>
+  <div class="ga-3 d-flex flex-column">
+    <h4 class="text-h4 text-primary font-weight-black text-center">
+      {{ $t("text.loginScreen.title") }}
+    </h4>
+    <v-form @submit.prevent="submit">
+      <v-text-field
+        v-model="email"
+        :label="$t('words.email')"
+        type="email"
+        autocomplete="email"
+        v-bind="emailProps"
+      />
+      <v-text-field
+        v-model="password"
+        :label="$t('words.password')"
+        type="password"
+        autocomplete="current-password"
+        v-bind="passwordProps"
+      />
+      <v-btn
+        v-t="'text.loginScreen.login'"
+        size="large"
+        color="primary"
+        block
+        type="submit"
+      />
+    </v-form>
+    <span>
+      {{ $t("text.loginScreen.forgotPassword") }}
+      <v-btn
+        :text="$t('text.loginScreen.forgotPasswordLink')"
+        class="text-primary text-capitalize"
+        variant="text"
+        slim
+        :ripple="false"
+        href="/auth/requestPassword"
+      />
+    </span>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -47,6 +46,7 @@ import auth from "~/ middleware/auth";
 import { useForm } from "vee-validate";
 definePageMeta({
   middleware: auth,
+  layout: "login-layout",
 });
 
 const supabase = useSupabaseClient();
