@@ -1,5 +1,4 @@
 <template>
-  <v-container class="fill-height">
     <v-responsive class="align-centerfill-height mx-auto" max-width="900">
       <v-img class="mb-4" height="150" src="~/assets/logo.png" />
 
@@ -144,7 +143,6 @@
         </v-col>
       </v-row>
     </v-responsive>
-  </v-container>
 </template>
 <script lang="ts" setup>
 import auth from '../ middleware/auth';
