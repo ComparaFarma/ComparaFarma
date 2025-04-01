@@ -23,17 +23,17 @@ export default defineI18nConfig(() => ({
       text: {
         loginScreen: {
           login: "Entrar",
-          title: "Entrar no Compara Farma",
+          title: "Realizar Login",
           forgotPasswordLink: "Clique aqui",
           forgotPassword: "Esqueceu sua senha?",
         },
         requestPasswordScreen: {
-          title: "Recuperar senha",
+          title: "Recuperar Senha",
           button: "Enviar e-mail",
           success: "E-mail enviado com sucesso",
         },
         resetPasswordScreen: {
-          title: "Redefinir senha",
+          title: "Redefinir Senha",
           button: "Redefinir senha",
           success: "Senha redefinida com sucesso",
         }

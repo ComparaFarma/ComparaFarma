@@ -8,6 +8,7 @@ const customLightTheme: ThemeDefinition = {
     surface: '#FFFFFF',
     primary: '#0055A5',
     secondary: '#D32F2F',
+    accent: '#FF4081',
     error: '#FF5252',
     info: '#0277BD',
     success: '#388E3C',
@@ -27,5 +28,8 @@ export default defineVuetifyConfiguration({
       variant: 'outlined',
       color: 'primary',
     },
+    VBtn: {
+      flat: true,
+    }
   }
 })
