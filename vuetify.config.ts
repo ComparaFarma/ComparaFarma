@@ -18,7 +18,7 @@ const customLightTheme: ThemeDefinition = {
 export default defineVuetifyConfiguration({
   // your Vuetify options here
   theme: {
-    defaultTheme: 'light',
+    defaultTheme: 'customLightTheme',
     themes: {
       customLightTheme
     }

@@ -3,6 +3,7 @@ export default defineI18nConfig(() => ({
   locale: "pt-br",
   messages: {
     "pt-br": {
+      APPLICATION_NAME: "Compara Farma",
       welcome: "Bem-vindo",
       home: "Início",
       logout: "Sair",
@@ -36,6 +37,14 @@ export default defineI18nConfig(() => ({
           title: "Redefinir Senha",
           button: "Redefinir senha",
           success: "Senha redefinida com sucesso",
+        },
+        bottomNavigation: {
+          mySearches: "Minhas Buscas",
+          createSearch: "Novas Consultas",
+        },
+        appBar: {
+          notification: "Notificações",
+          logout: "Sair",
         }
       },
       actions: {

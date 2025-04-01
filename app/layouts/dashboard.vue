@@ -1,32 +1,84 @@
 <template>
   <v-app class="rounded rounded-md border">
-    <v-app-bar elevation="4" color="surface" title="Application bar">
-      <v-btn text @click="logout">Logout</v-btn>
+    <v-app-bar elevation="4" color="surface">
+      <v-app-bar-title to="/index" class="cursor-pointer">
+        <div class="d-flex align-center">
+          <v-btn
+            icon
+            class="d-flex align-center justify-center"
+            :ripple="false"
+          >
+            <v-img
+              src="~/assets/logo.png"
+              width="40"
+              height="40"
+              contain
+              class="rounded-lg"
+            />
+          </v-btn>
+
+          <span class="text-subtitle-1 font-weight-bold text-primary">
+            {{ $t("APPLICATION_NAME") }}
+          </span>
+        </div>
+      </v-app-bar-title>
+      <v-spacer />
+      <div class="d-flex align-center">
+        <!-- Notification icon -->
+        <v-btn
+          icon
+          size="small"
+          color="primary" 
+          class="d-flex align-center justify-center"
+          :ripple="false"
+          :alt="$t('text.appBar.notification')"
+          :title="$t('text.appBar.notification')"
+          @click="notifyStore.showNotification('Hello World!')"
+        >
+          <v-icon icon="mdi-bell" />
+        </v-btn>
+        <!-- Logout icon   -->
+        <v-btn
+          icon
+          size="small"
+          color="primary"
+          class="d-flex align-center justify-center"
+          :ripple="false"
+          :loading="logoutLoading"
+          :alt="$t('text.appBar.logout')"
+          :title="$t('text.appBar.logout')"
+          @click="logout"
+        >
+          <v-icon icon="mdi-logout" />
+        </v-btn>
+      </div>
     </v-app-bar>
 
-    <v-navigation-drawer>
-      <v-list nav>
-        <v-list-item title="Drawer left" link />
-      </v-list>
-    </v-navigation-drawer>
-
-    <v-navigation-drawer location="right">
-      <v-list nav>
-        <v-list-item title="Drawer right" link />
-      </v-list>
-    </v-navigation-drawer>
-
-    <v-main class="d-flex align-center justify-center" height="300">
-      <v-container>
-        <v-sheet
-          border="dashed md"
-          color="surface-light"
-          height="200"
-          rounded="lg"
-          width="100%"
-        />
-      </v-container>
+    <v-main>
+      <slot />
     </v-main>
+    <v-footer>
+      <v-bottom-navigation
+        v-model="currentBottomSheet"
+        active
+        grow
+        color="secondary"
+        height="56"
+      >
+        <v-btn icon :value="BottomNavigationType.MY_SEARCHES" size="medium">
+          <v-icon icon="mdi-heart" />
+          <span class="text-uppercase">
+            {{ $t("text.bottomNavigation.mySearches") }}
+          </span>
+        </v-btn>
+        <v-btn icon :value="BottomNavigationType.CREATE_SEARCH" size="medium">
+          <v-icon icon="mdi-plus" />
+          <span class="text-uppercase">
+            {{ $t("text.bottomNavigation.createSearch") }}
+          </span>
+        </v-btn>
+      </v-bottom-navigation>
+    </v-footer>
     <v-snackbar v-model="show" multi-line>
       {{ message }}
       <template #actions>
@@ -38,15 +90,26 @@
   </v-app>
 </template>
 <script lang="ts" setup>
+import {
+  BottomNavigationType,
+  useDashboardStore,
+} from "~/store/dashboardStore";
 import { useNotifyStore } from "~/store/notifyStore";
 
 const notifyStore = useNotifyStore();
 
 const { message, show } = storeToRefs(notifyStore);
 
+const dashboardStore = useDashboardStore();
+
+const { currentBottomSheet } = storeToRefs(dashboardStore);
+const logoutLoading = ref(false);
+
 const supabase = useSupabaseClient();
 async function logout() {
+  logoutLoading.value = true;
   await supabase.auth.signOut();
+  logoutLoading.value = false;
 
   navigateTo("/auth/login");
 }
