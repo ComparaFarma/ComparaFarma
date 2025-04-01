@@ -22,7 +22,6 @@
           </span>
         </div>
       </v-app-bar-title>
-      <v-spacer />
       <div class="d-flex align-center">
         <!-- Notification icon -->
         <v-btn
