@@ -145,11 +145,21 @@
     </v-responsive>
 </template>
 <script lang="ts" setup>
+import { useDashboardStore } from '~/store/dashboardStore';
 import auth from '../ middleware/auth';
-
-
 definePageMeta({
   layout: 'dashboard',
   middleware: auth,
+})
+
+const dashboardStore = useDashboardStore();
+onMounted(() => {
+   dashboardStore.setReloadCallback(() => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, 1000);
+    });
+  });
 })
 </script>

@@ -3,11 +3,7 @@
     <v-app-bar elevation="4" color="surface">
       <v-app-bar-title to="/index" class="cursor-pointer">
         <div class="d-flex align-center">
-          <v-btn
-            icon
-            class="d-flex align-center justify-center"
-            :ripple="false"
-          >
+          <v-icon size="40" class="mr-2">
             <v-img
               src="~/assets/logo.png"
               width="40"
@@ -15,7 +11,7 @@
               contain
               class="rounded-lg"
             />
-          </v-btn>
+          </v-icon>
 
           <span class="text-subtitle-1 font-weight-bold text-primary">
             {{ $t("APPLICATION_NAME") }}
@@ -27,7 +23,7 @@
         <v-btn
           icon
           size="small"
-          color="primary" 
+          color="primary"
           class="d-flex align-center justify-center"
           :ripple="false"
           :alt="$t('text.appBar.notification')"
@@ -53,8 +49,10 @@
       </div>
     </v-app-bar>
 
-    <v-main>
-      <slot />
+    <v-main class="px-4">
+      <v-pull-to-refresh :pull-down-threshold="pullDownThreshold" @load="load">
+        <slot />
+      </v-pull-to-refresh>
     </v-main>
     <v-footer>
       <v-bottom-navigation
@@ -94,9 +92,10 @@ import {
   useDashboardStore,
 } from "~/store/dashboardStore";
 import { useNotifyStore } from "~/store/notifyStore";
+import { VPullToRefresh } from "vuetify/labs/VPullToRefresh";
 
 const notifyStore = useNotifyStore();
-
+const pullDownThreshold = 56;
 const { message, show } = storeToRefs(notifyStore);
 
 const dashboardStore = useDashboardStore();
@@ -113,10 +112,14 @@ async function logout() {
   navigateTo("/auth/login");
 }
 
-onMounted(() => {
-  const { value } = useSupabaseUser();
-  console.log(value?.user_metadata);
+const load = async ({ done }: { done: CallableFunction }) => {
+  // Reload the current page
+  await dashboardStore.reload();
+  done("ok");
+};
 
+onMounted(() => {
+  // Check if the user is authenticated
   const session = useSupabaseSession();
   if (!session.value) {
     navigateTo("/auth/login");

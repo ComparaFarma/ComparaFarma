@@ -8,6 +8,7 @@ export enum BottomNavigationType {
 export const useDashboardStore = defineStore('dashboard', {
   state: () => ({
       currentBottomSheet: ref<BottomNavigationType | null>(BottomNavigationType.MY_SEARCHES),
+      reloadFunction: ref<(()=> Promise<void>) | null>(null),
   }),
   actions: {
         openBottomSheet(type: BottomNavigationType) {
@@ -16,5 +17,16 @@ export const useDashboardStore = defineStore('dashboard', {
         closeBottomSheet() {
             this.currentBottomSheet = null
         },
+        setReloadCallback(callback: ()=> Promise<void>) {
+            this.reloadFunction = callback;
+        },
+        resetReloadCallback() {
+            this.reloadFunction = null;
+        },
+        async reload() {
+            if (this.reloadFunction) {
+                await this.reloadFunction();
+            }
+        }
   }
 })
