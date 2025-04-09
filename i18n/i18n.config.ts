@@ -22,6 +22,8 @@ export default defineI18nConfig(() => ({
         over_email_send_rate_limit: "Por razões de segurança, você só poderá solicitar um e-mail de redefinição de senha daqui 28 segundos",
       },
       text: {
+        base: {
+        },
         loginScreen: {
           login: "Entrar",
           title: "Realizar Login",
@@ -37,6 +39,15 @@ export default defineI18nConfig(() => ({
           title: "Redefinir Senha",
           button: "Redefinir senha",
           success: "Senha redefinida com sucesso",
+        },
+        mySearch: {
+          title: "Minhas Buscas",
+          createdSearches: "Consultas Criadas",
+          noSearches: "Nenhuma busca encontrada",
+          noSearchesDescription: "Você ainda não fez nenhuma busca",
+          createSearchButton: "Criar nova busca",
+          searchTextField: "Pesquisar EAN ou Lista",
+          lastSearches: "Últimas Consultas",
         },
         bottomNavigation: {
           mySearches: "Minhas Buscas",
@@ -54,6 +65,8 @@ export default defineI18nConfig(() => ({
         email: "E-mail",
         password: "Senha",
         passwordConfirmation: "Confirmar senha",
+        city: "Cidade | Cidades",
+        undefined: "Indefinido",
       }
     },
   },

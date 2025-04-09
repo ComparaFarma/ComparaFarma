@@ -49,7 +49,7 @@
       </div>
     </v-app-bar>
 
-    <v-main class="px-4">
+    <v-main class="px-4 my-5">
       <v-pull-to-refresh :pull-down-threshold="pullDownThreshold" @load="load">
         <slot />
       </v-pull-to-refresh>
@@ -62,13 +62,13 @@
         color="secondary"
         height="56"
       >
-        <v-btn icon :value="BottomNavigationType.MY_SEARCHES" size="medium">
+        <v-btn icon :value="BottomNavigationType.MY_SEARCHES" size="medium" to="/">
           <v-icon icon="mdi-heart" />
           <span class="text-uppercase">
             {{ $t("text.bottomNavigation.mySearches") }}
           </span>
         </v-btn>
-        <v-btn icon :value="BottomNavigationType.CREATE_SEARCH" size="medium">
+        <v-btn icon :value="BottomNavigationType.CREATE_SEARCH" size="medium" to="/teste">
           <v-icon icon="mdi-plus" />
           <span class="text-uppercase">
             {{ $t("text.bottomNavigation.createSearch") }}

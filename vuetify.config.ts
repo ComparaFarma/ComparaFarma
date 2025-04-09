@@ -28,6 +28,10 @@ export default defineVuetifyConfiguration({
       variant: 'outlined',
       color: 'primary',
     },
+    VSelect: {
+      variant: 'outlined',
+      color: 'primary',
+    },
     VBtn: {
       flat: true,
     }
