@@ -55,7 +55,7 @@
             :key="index"
             class="my-2"
           >
-            <PartialListSearchItem/>
+            <LazyPartialListSearchItem :update-at="new Date('2025-04-10T17:00:00Z')" :description="'Search ' + index" />
           </v-list-item-group>
         </v-list>
           
@@ -82,7 +82,7 @@
 <script setup lang="ts">
 import { useDashboardStore } from "~/store/dashboardStore";
 import auth from "../ middleware/auth";
-import { PartialListSearchItem } from "#components";
+import { LazyPartialListSearchItem } from "#components";
 definePageMeta({
   layout: "dashboard",
   middleware: auth,

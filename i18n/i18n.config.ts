@@ -1,8 +1,8 @@
 export default defineI18nConfig(() => ({
   legacy: false,
-  locale: "pt-br",
+  locale: "pt_br",
   messages: {
-    "pt-br": {
+    "pt_br": {
       APPLICATION_NAME: "Compara Farma",
       welcome: "Bem-vindo",
       home: "Início",
@@ -56,6 +56,11 @@ export default defineI18nConfig(() => ({
         appBar: {
           notification: "Notificações",
           logout: "Sair",
+        },
+        components: {
+          partialListSearchItem: {
+            updateAt: "Última atualização {time}",
+          }
         }
       },
       actions: {

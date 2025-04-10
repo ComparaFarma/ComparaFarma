@@ -23,8 +23,8 @@
       <v-col cols="6" class="ga-2">
         <div class="d-flex flex-row align-center ga-2">
           <div class="d-flex flex-column ga-4">
-            <div>
-              {{ description ?? $t('words.undefined') }}
+            <div class="text-body-1 font-weight-bold">
+              {{ $t('text.components.partialListSearchItem.updateAt', {time: updatedAtString}) }}
             </div>
             <div>
               <span v-t="'words.date'"/>
@@ -37,10 +37,19 @@
 </template>
 <script setup lang="ts">
 
-defineProps({
+
+const props = defineProps({
   description: {
     type: String,
     default: null
   },
+  updateAt: {
+    type: Date,
+    required: true,
+  }
 });
+ const { getDateFromNow } = useDateUtils();
+ const updatedAtString = computed(() => {
+  return getDateFromNow(props.updateAt);
+ })
 </script>
