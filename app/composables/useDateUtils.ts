@@ -10,7 +10,6 @@ export const useDateUtils = () => {
     }
 
     const getDateFromNow = (date: Date) => {
-        moment.locale('pt_br')
         return moment(date).fromNow()
     }
     
