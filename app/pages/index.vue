@@ -1,8 +1,7 @@
 <template>
   <div>
-    <h1 v-t="'text.mySearch.title'" class="text-subtitle-1 font-weight-bold" />
     <v-row class="my-4">
-      <v-col cols="12" md="6">
+      <v-col cols="12" lg="6">
         <div
           class="ga-2 d-flex"
           :class="{ 'flex-row': !mobile, 'flex-column': mobile }"
@@ -33,11 +32,24 @@
             chips
             hide-details="auto"
           />
-          <v-btn size="small" color="primary" icon="mdi-magnify" />
+          <v-btn
+            size="small"
+            color="primary"
+            :icon="!mobile"
+            :block="mobile"
+          >
+            <v-icon
+              icon="mdi-magnify"
+              color="white"
+              :alt="$t('text.mySearch.search')"
+              :title="$t('text.mySearch.search')"
+            />
+            <span v-t="'words.search'" v-if="mobile" />
+          </v-btn>
         </div>
         <v-infinite-scroll
           class="my-2 ml-4"
-          height="70vh"
+          height="74vh"
           :items="items"
           @load="load"
         >
@@ -57,12 +69,12 @@
           </template>
         </v-infinite-scroll>
       </v-col>
-      <v-col cols="12" md="6" v-if="!mobile">
+      <v-col cols="12" md="6" v-if="!mobile" class="align-end">
         <div class="py-2 mb-6">
           <div class="px-4 ga-4">
             <v-icon
               icon="mdi-history"
-              size="32"
+              size="34"
               color="secondary"
               class="mr-2"
               :alt="$t('text.mySearch.lastSearches')"
@@ -75,7 +87,7 @@
           </div>
           <v-infinite-scroll
             class="ml-4"
-            height="30vh"
+            height="32vh"
             :items="items"
             @load="load"
           >
@@ -112,7 +124,7 @@
           </div>
           <v-infinite-scroll
             class="ml-4"
-            height="30vh"
+            height="34vh"
             :items="items"
             @load="load"
           >
