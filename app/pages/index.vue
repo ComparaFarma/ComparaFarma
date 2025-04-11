@@ -57,7 +57,7 @@
           </template>
         </v-infinite-scroll>
       </v-col>
-      <v-col cols="12" sm="6" v-if="!mobile">
+      <v-col cols="12" md="6" v-if="!mobile">
         <div class="py-2 mb-6">
           <div class="px-4 ga-4">
             <v-icon

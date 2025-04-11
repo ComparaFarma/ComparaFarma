@@ -58,7 +58,7 @@ export default {
     },
     components: {
       partialListSearchItem: {
-        updateAt: "Última atualização {time}",
+        updatedAt: "Última atualização {time}",
         city: "Cidade: ",
         createdAt: "Criado: {time}",
       },
