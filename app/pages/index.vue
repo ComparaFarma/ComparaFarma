@@ -22,31 +22,21 @@
             />
           </span>
           <v-text-field
-            v-model="searchName"
             :label="$t('text.mySearch.searchTextField')"
-            :loading="loading"
-            :disabled="loading"
-            @change="onSearchNameChange"
             density="compact"
             hide-details="auto"
           />
           <v-select
-            v-model="selectedSearch"
-            :items="searches"
             :label="$t('words.city', { count: 2 })"
-            :loading="loading"
             density="compact"
             multiple
             chips
             hide-details="auto"
-            @change="onSearchChange"
           />
           <v-btn
             size="small"
             color="primary"
             icon="mdi-magnify"
-            :loading="loading"
-            @click="onSearchClick"
           />
         </div>
         <v-infinite-scroll
@@ -59,7 +49,7 @@
             <div>
               <LazyPartialListSearchItem
                 :update-at="new Date('2025-04-10T17:00:00Z')"
-                :description="'Search ' + index"
+                :title="'Search ' + index"
               />
               <v-divider
                 v-if="index < items.length - 1"
@@ -96,7 +86,7 @@
               <div>
                 <LazyPartialListSearchItem
                   :update-at="new Date('2025-04-10T17:00:00Z')"
-                  :description="'Search ' + index"
+                  :title="'Search ' + index"
                 />
                 <v-divider
                   v-if="index < items.length - 1"
@@ -123,7 +113,7 @@
             />
           </div>
           <v-infinite-scroll
-            class=" ml-4"
+            class="ml-4"
             height="30vh"
             :items="items"
             @load="load"
@@ -132,7 +122,8 @@
               <div>
                 <LazyPartialListSearchItem
                   :update-at="new Date('2025-04-10T17:00:00Z')"
-                  :description="'Search ' + index"
+                  :title="'Search ' + index"
+
                 />
                 <v-divider
                   v-if="index < items.length - 1"
@@ -155,19 +146,23 @@ definePageMeta({
   middleware: auth,
 });
 
-import { useDisplay } from "vuetify";
-
 const { mobile } = useDisplay();
 const items = ref(Array.from({ length: 30 }, (k, v) => v + 1));
 
 async function api() {
-  return new Promise((resolve) => {
+  return new Promise<number[]>((resolve) => {
     setTimeout(() => {
-      resolve(Array.from({ length: 10 }, (k, v) => v + items.value.at(-1) + 1));
+      resolve(
+        Array.from({ length: 10 }, (k, v) => v + items.value.at(-1)! + 1)
+      );
     }, 1000);
   });
 }
-async function load({ done }: { done: (status: string) => void }) {
+async function load({
+  done,
+}: {
+  done: (status: "error" | "loading" | "empty" | "ok") => void;
+}) {
   // Perform API call
   const res = await api();
 

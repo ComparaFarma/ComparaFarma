@@ -48,7 +48,7 @@
     </v-row>
     <v-row no-gutters justify="space-between">
       <v-col cols="12" lg="4" >
-        <v-btn color="primary" block>
+        <v-btn color="primary" block @click="emit('visualize')">
           <v-icon
             icon="mdi-signal-cellular-outline"
             color="white"
@@ -60,7 +60,7 @@
         </v-btn>
       </v-col>
       <v-col cols="1">
-        <v-btn color="error" icon size="small">
+        <v-btn color="error" icon size="small" @click="emit('delete')">
           <v-icon
             icon="mdi-delete"
             size="24"
@@ -85,6 +85,12 @@ const props = defineProps({
     default: null,
   },
 });
+
+const emit = defineEmits([
+  "visualize",
+  "delete",
+]);
+
 const { getDateFromNowFormated, getDateCalendarFormated } = useDateUtils();
 const updatedAtString = computed(() => {
   return getDateFromNowFormated(props.updateAt);
