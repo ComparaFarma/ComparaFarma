@@ -46,12 +46,13 @@
 import auth from "~/ middleware/auth";
 import { useForm } from "vee-validate";
 import { useNotifyStore } from "~/store/notifyStore";
+import { useApiSupabase } from "~/composables/useApiSupabase";
 definePageMeta({
   middleware: auth,
   layout: "login-layout",
 });
 
-const supabase = useSupabaseClient();
+const apiSupabase = useApiSupabase();
 
 const { defineField, handleSubmit } = useForm({
   validationSchema: {
@@ -77,10 +78,10 @@ const loading = ref(false);
 const submit = handleSubmit(async (values) => {
   console.log(values);
   loading.value = true;
-  const { error } = await supabase.auth.signInWithPassword({
-    email: email.value,
-    password: password.value,
-  });
+  const { error } = await apiSupabase.signIn(
+    email.value,
+    password.value,
+  );
   loading.value = false;
   if (!error) {
     navigateTo("/");

@@ -104,6 +104,7 @@ import {
 } from "~/store/dashboardStore";
 import { useNotifyStore } from "~/store/notifyStore";
 import { VPullToRefresh } from "vuetify/labs/VPullToRefresh";
+import { useApiSupabase } from "~/composables/useApiSupabase";
 
 const notifyStore = useNotifyStore();
 const pullDownThreshold = 56;
@@ -114,10 +115,10 @@ const dashboardStore = useDashboardStore();
 const { currentBottomSheet } = storeToRefs(dashboardStore);
 const logoutLoading = ref(false);
 
-const supabase = useSupabaseClient();
+const apiSupabase = useApiSupabase();
 async function logout() {
   logoutLoading.value = true;
-  await supabase.auth.signOut();
+  await apiSupabase.signOut();
   logoutLoading.value = false;
 
   navigateTo("/auth/login");
@@ -131,8 +132,7 @@ const load = async ({ done }: { done: CallableFunction }) => {
 
 onMounted(() => {
   // Check if the user is authenticated
-  const session = useSupabaseSession();
-  if (!session.value) {
+  if (!apiSupabase.isAuthenticated()) {
     navigateTo("/auth/login");
   }
 });

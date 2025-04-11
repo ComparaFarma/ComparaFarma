@@ -34,12 +34,13 @@
 <script lang="ts" setup>
 import { useForm } from "vee-validate";
 import { ref } from "vue";
+import { useApiSupabase } from "~/composables/useApiSupabase";
 import { useNotifyStore } from "~/store/notifyStore";
 
 definePageMeta({
   layout: "login-layout",
 });
-const supabase = useSupabaseClient();
+const apiSupabase = useApiSupabase();
 
 const { defineField, handleSubmit } = useForm({
   validationSchema: {
@@ -60,7 +61,7 @@ const notifyStore = useNotifyStore();
 const loading = ref(false);
 const resetPassword = handleSubmit(async () => {
   loading.value = true;
-  const { error } = await supabase.auth.resetPasswordForEmail(email.value, {
+  const { error } = await apiSupabase.resetPasswordForEmail(email.value, {
     redirectTo: `${window.location.origin}/auth/resetPassword`,
   });
   loading.value = false;

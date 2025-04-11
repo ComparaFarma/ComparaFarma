@@ -41,6 +41,7 @@
   </div>
 </template>
 <script setup lang="ts">
+import { useApiSupabase } from "~/composables/useApiSupabase";
 import { useNotifyStore } from "~/store/notifyStore";
 
 definePageMeta({
@@ -54,7 +55,7 @@ onBeforeMount(() => {
   }
 });
 
-const supabase = useSupabaseClient();
+const apiSupabase = useApiSupabase();
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const vuetifyConfig = (state: any) => ({
@@ -80,10 +81,10 @@ const i18n = useI18n();
 const notifyStore = useNotifyStore();
 const loading = ref(false);
 const resetPassword = handleSubmit(async () => {
+  
   loading.value = true;
-  const { error } = await supabase.auth.updateUser({
-    password: password.value,
-  });
+  const { error } = await apiSupabase.updatePassword(password.value);
+
   loading.value = false;
   if (!error) {
     notifyStore.showNotification(
