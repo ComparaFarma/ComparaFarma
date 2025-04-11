@@ -4,6 +4,15 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   runtimeConfig:{
   },
+  app: {
+    head: {
+      title: 'Compara Farma',
+      meta: [
+        { name: 'description', content: 'Compara Farma' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      ],
+    }
+  },
   debug: true,
   supabase: {
     redirectOptions: {

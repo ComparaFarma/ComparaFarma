@@ -10,7 +10,7 @@ export default () => {
 
   configure({
     // Generates an English message locale generator
-    generateMessage: localize("pt-by", {
+    generateMessage: localize("pt_br", {
       messages: {
         required: "O campo {field} é obrigatório",
         email: "O campo {field} precisa ser um e-mail válido",
