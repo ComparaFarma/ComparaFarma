@@ -33,11 +33,7 @@
             chips
             hide-details="auto"
           />
-          <v-btn
-            size="small"
-            color="primary"
-            icon="mdi-magnify"
-          />
+          <v-btn size="small" color="primary" icon="mdi-magnify" />
         </div>
         <v-infinite-scroll
           class="my-2 ml-4"
@@ -49,6 +45,7 @@
             <div>
               <LazyPartialListSearchItem
                 :update-at="new Date('2025-04-10T17:00:00Z')"
+                :created-at="new Date('2025-04-10T17:00:00Z')"
                 :title="'Search ' + index"
               />
               <v-divider
@@ -60,7 +57,7 @@
           </template>
         </v-infinite-scroll>
       </v-col>
-      <v-col cols="12" md="6">
+      <v-col cols="12" sm="6" v-if="!mobile">
         <div class="py-2 mb-6">
           <div class="px-4 ga-4">
             <v-icon
@@ -85,6 +82,7 @@
             <template v-for="(item, index) in items" :key="item">
               <div>
                 <LazyPartialListSearchItem
+                  :created-at="new Date('2025-04-10T17:00:00Z')"
                   :update-at="new Date('2025-04-10T17:00:00Z')"
                   :title="'Search ' + index"
                 />
@@ -121,9 +119,9 @@
             <template v-for="(item, index) in items" :key="item">
               <div>
                 <LazyPartialListSearchItem
+                  :created-at="new Date('2025-04-10T17:00:00Z')"
                   :update-at="new Date('2025-04-10T17:00:00Z')"
                   :title="'Search ' + index"
-
                 />
                 <v-divider
                   v-if="index < items.length - 1"
@@ -141,9 +139,17 @@
 <script setup lang="ts">
 import auth from "../ middleware/auth";
 import { LazyPartialListSearchItem } from "#components";
+
+const { t } = useI18n();
+
 definePageMeta({
   layout: "dashboard",
   middleware: auth,
+  name: "my-search",
+});
+
+useHead({
+  title: t("text.mySearch.title"),
 });
 
 const { mobile } = useDisplay();

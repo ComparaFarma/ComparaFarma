@@ -74,5 +74,6 @@ export default {
     city: "Cidade | Cidades",
     undefined: "Indefinido",
     visualize: "Visualizar",
+    delete: "Deletar",
   },
 };

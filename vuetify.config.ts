@@ -1,5 +1,7 @@
 import type { ThemeDefinition } from 'vuetify'
 import { defineVuetifyConfiguration } from 'vuetify-nuxt-module/custom-configuration'
+import { pt } from 'vuetify/locale'
+import pt_br from './i18n/messages/pt_br'
 
 const customLightTheme: ThemeDefinition = {
   dark: false,
@@ -21,6 +23,13 @@ export default defineVuetifyConfiguration({
     defaultTheme: 'customLightTheme',
     themes: {
       customLightTheme
+    }
+  },
+  locale: {
+    locale: 'pt-BR',
+    fallback: 'pt',
+    messages: {
+      pt, pt_br
     }
   },
   defaults: {
