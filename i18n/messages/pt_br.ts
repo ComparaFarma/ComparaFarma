@@ -75,5 +75,6 @@ export default {
     undefined: "Indefinido",
     visualize: "Visualizar",
     delete: "Deletar",
+    search: "Pesquisar",
   },
 };

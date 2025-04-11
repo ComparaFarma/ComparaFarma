@@ -1,6 +1,6 @@
 <template>
-  <v-app class="rounded rounded-md border">
-    <v-app-bar elevation="4" color="surface">
+  <v-layout ref="app" class="rounded rounded-md border">
+    <v-app-bar elevation="4" color="surface" name="app-bar">
       <v-app-bar-title to="/index" class="cursor-pointer">
         <div class="d-flex align-center">
           <v-icon size="40" class="mr-2">
@@ -48,34 +48,15 @@
         </v-btn>
       </div>
     </v-app-bar>
-
-    <v-main class="px-4 my-5">
-      <v-pull-to-refresh :pull-down-threshold="pullDownThreshold" @load="load">
+    <v-main>
+      <v-pull-to-refresh
+        class="px-4"
+        :pull-down-threshold="pullDownThreshold"
+        @load="load"
+      >
         <slot />
       </v-pull-to-refresh>
     </v-main>
-    <v-footer>
-      <v-bottom-navigation
-        v-model="currentBottomSheet"
-        active
-        grow
-        color="secondary"
-        height="56"
-      >
-        <v-btn icon :value="BottomNavigationType.MY_SEARCHES" size="medium" to="/">
-          <v-icon icon="mdi-heart" />
-          <span class="text-uppercase">
-            {{ $t("text.bottomNavigation.mySearches") }}
-          </span>
-        </v-btn>
-        <v-btn icon :value="BottomNavigationType.CREATE_SEARCH" size="medium" to="/teste">
-          <v-icon icon="mdi-plus" />
-          <span class="text-uppercase">
-            {{ $t("text.bottomNavigation.createSearch") }}
-          </span>
-        </v-btn>
-      </v-bottom-navigation>
-    </v-footer>
     <v-snackbar v-model="show" multi-line>
       {{ message }}
       <template #actions>
@@ -84,7 +65,37 @@
         </v-btn>
       </template>
     </v-snackbar>
-  </v-app>
+    <v-bottom-navigation
+      v-model="currentBottomSheet"
+      active
+      grow
+      class="bottom-0"
+      color="secondary"
+    >
+      <v-btn
+        icon
+        :value="BottomNavigationType.MY_SEARCHES"
+        size="medium"
+        to="/"
+      >
+        <v-icon icon="mdi-heart" />
+        <span class="text-uppercase">
+          {{ $t("text.bottomNavigation.mySearches") }}
+        </span>
+      </v-btn>
+      <v-btn
+        icon
+        :value="BottomNavigationType.CREATE_SEARCH"
+        size="medium"
+        to="/teste"
+      >
+        <v-icon icon="mdi-plus" />
+        <span class="text-uppercase">
+          {{ $t("text.bottomNavigation.createSearch") }}
+        </span>
+      </v-btn>
+    </v-bottom-navigation>
+  </v-layout>
 </template>
 <script lang="ts" setup>
 import {
