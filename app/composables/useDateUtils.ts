@@ -9,13 +9,18 @@ export const useDateUtils = () => {
         return moment(date).format(format)
     }
 
-    const getDateFromNow = (date: Date) => {
+    const getDateFromNowFormated = (date: Date) => {
         return moment(date).fromNow()
+    }
+
+    const getDateCalendarFormated = (date: Date) => {
+        return moment(date).calendar()
     }
     
     return {
         formatDate,
-        getDateFromNow,
+        getDateFromNowFormated,
+        getDateCalendarFormated,
     }
    
 }

@@ -44,10 +44,10 @@ export default defineI18nConfig(() => ({
           title: "Minhas Buscas",
           createdSearches: "Consultas Criadas",
           noSearches: "Nenhuma busca encontrada",
-          noSearchesDescription: "Você ainda não fez nenhuma busca",
           createSearchButton: "Criar nova busca",
           searchTextField: "Pesquisar EAN ou Lista",
           lastSearches: "Últimas Consultas",
+          lastUpdates: "Últimas Atualizações",
         },
         bottomNavigation: {
           mySearches: "Minhas Buscas",
@@ -60,6 +60,8 @@ export default defineI18nConfig(() => ({
         components: {
           partialListSearchItem: {
             updateAt: "Última atualização {time}",
+            city: "Cidade: ",
+            createdAt: "Criado: {time}",
           }
         }
       },
@@ -72,6 +74,8 @@ export default defineI18nConfig(() => ({
         passwordConfirmation: "Confirmar senha",
         city: "Cidade | Cidades",
         undefined: "Indefinido",
+        visualize: "Visualizar",
+
       }
     },
   },
