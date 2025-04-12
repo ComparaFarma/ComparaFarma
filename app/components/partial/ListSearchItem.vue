@@ -7,8 +7,6 @@
             icon="mdi-barcode"
             size="40"
             color="grey"
-            :alt="$t('text.mySearch.search')"
-            :title="$t('text.mySearch.search')"
           />
           <div class="d-flex flex-column ga-4">
             <div>
@@ -53,8 +51,8 @@
           <v-icon
             icon="mdi-signal-cellular-outline"
             color="white"
-            :alt="$t('text.mySearch.edit')"
-            :title="$t('text.mySearch.edit')"
+            :alt="$t('words.visualize')"
+            :title="$t('words.visualize')"
             class="mr-4"
           />
           <span v-t="'words.visualize'" />

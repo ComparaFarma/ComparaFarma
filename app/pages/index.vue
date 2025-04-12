@@ -12,8 +12,6 @@
               size="32"
               color="primary"
               class="mr-2"
-              :alt="$t('text.mySearch.search')"
-              :title="$t('text.mySearch.search')"
             />
             <span
               v-t="'text.mySearch.createdSearches'"
@@ -41,8 +39,6 @@
             <v-icon
               icon="mdi-magnify"
               color="white"
-              :alt="$t('text.mySearch.search')"
-              :title="$t('text.mySearch.search')"
             />
             <span v-t="'words.search'" v-if="mobile" />
           </v-btn>
@@ -188,4 +184,13 @@ async function load({
 
   done("ok");
 }
+
+onMounted(() => {
+  $fetch('/api/priceCollection/').then((res) => {
+    console.log(res);
+  }).catch((err) => {
+    console.error(err);
+  });
+})
+
 </script>
