@@ -48,6 +48,21 @@ export default {
       lastSearches: "Últimas Consultas",
       lastUpdates: "Últimas Atualizações",
     },
+    newSearch:{
+      title: "Nova Busca",
+      ean: "EAN",
+      list: "Lista",
+      createNewSearches: "Criar nova busca:",
+      titleNewSearchTextField: "Titulo da nova busca",
+      searchButton: "Buscar",
+      crateSearchButton: "Criar Consulta",
+      titleSearchProduct: "Produtos selecionados",
+      importEanButton: "Importar EANS",
+      searchTextField: "Pesquisar EAN",
+
+      noResults: "Nenhum resultado encontrado",
+      noResultsDescription: "Nenhum resultado encontrado para o EAN ou lista informada",
+    },
     bottomNavigation: {
       mySearches: "Minhas Buscas",
       createSearch: "Novas Consultas",

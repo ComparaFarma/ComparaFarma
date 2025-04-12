@@ -87,7 +87,7 @@
         icon
         :value="BottomNavigationType.CREATE_SEARCH"
         size="medium"
-        to="/teste"
+        to="/search"
       >
         <v-icon icon="mdi-plus" />
         <span class="text-uppercase">
