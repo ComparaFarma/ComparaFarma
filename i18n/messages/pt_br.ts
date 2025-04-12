@@ -6,7 +6,10 @@ export default {
   signup: "Cadastrar",
   profile: "Perfil",
   $vuetify: {
-    noDataText: "Nenhum dado encontrado",    
+    noDataText: "Nenhum dado encontrado",
+    infiniteScroll: {
+      empty: "Não há mais dados",
+    }    
   },
   supabaseCodes: {
     validation_failed: "Credenciais inválidas",

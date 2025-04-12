@@ -31,9 +31,11 @@
           </v-btn>
         </div>
         <v-infinite-scroll
+          :key="keyForInfiniteScroll"
           class="my-2 ml-4"
           height="74vh"
           :items="mySearches"
+          empty-text=""
           @load="load"
         >
           <template v-for="(item, index) in mySearches" :key="index">
@@ -73,7 +75,7 @@
             class="ml-4"
             height="32vh"
             :items="mySearches"
-            @load="({done}) => done('error')"
+            @load="({ done }) => done('error')"
           >
             <template v-for="(item, index) in mySearches" :key="index">
               <div>
@@ -111,7 +113,7 @@
             class="ml-4"
             height="34vh"
             :items="mySearches"
-            @load="({done}) => done('error')"
+            @load="({ done }) => done('error')"
           >
             <template v-for="(item, index) in mySearches" :key="index">
               <div>
@@ -138,6 +140,8 @@
 import auth from "../ middleware/auth";
 import { LazyPartialListSearchItem } from "#components";
 import type { PriceCollectionItem } from "~~/server/api/priceCollection";
+import { useDashboardStore } from "~/store/dashboardStore";
+import type { VInfiniteScroll } from "vuetify/components/VInfiniteScroll";
 
 const { t } = useI18n();
 
@@ -155,7 +159,13 @@ const { mobile } = useDisplay();
 const items = ref(Array.from({ length: 30 }, (k, v) => v + 1));
 
 const mySearches = ref<PriceCollectionItem[]>([]);
-
+const keyForInfiniteScroll = ref(0);
+const dashboard = useDashboardStore();
+dashboard.setReloadCallback(async () => {
+  // Reload the page
+  mySearches.value = [];
+  keyForInfiniteScroll.value++;
+});
 async function load({
   done,
 }: {
@@ -173,7 +183,7 @@ async function load({
       console.log(res);
       mySearches.value.push(...res);
       if (res.length === 0) {
-        done("error");
+        done("empty");
       } else {
         done("ok");
       }
