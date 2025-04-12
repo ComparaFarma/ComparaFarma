@@ -34,6 +34,7 @@
             <v-infinite-scroll class="my-2 ml-4" height="23vh" :items="myProducts" @load="load">
               <template v-for="(item, index) in myProducts" :key="index">
                 <div>
+                  <LazyPartialListEanItem ean="00000000000000"  />
                   <v-divider v-if="index < items.length - 1" :key="'divider' + index" class="my-2" />
                 </div>
               </template>
@@ -53,7 +54,7 @@
 </template>
 <script setup lang="ts">
 import auth from "../../ middleware/auth";
-import { LazyPartialListSearchItem } from "#components";
+import { LazyPartialListEanItem } from "#components";
 import type { PriceCollectionItem } from "~~/server/api/priceCollection";
 
 const { t } = useI18n();
