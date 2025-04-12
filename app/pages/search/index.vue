@@ -20,25 +20,33 @@
           </template>
           <template v-slot:append>
             <div class="px-4 ga-4">
-              <v-btn prepend-icon="mdi-import" variant="outlined" color="primary">
+              <v-btn prepend-icon="mdi-import" variant="outlined" color="primary" @click="triggerFileInput">
                 <span v-t="'text.newSearch.importEanButton'" class="text-primary" />
               </v-btn>
+              <input type="file" ref="fileInput" style="display: none" @change="handleFileImport"
+                accept=".csv,.xlsx,.txt">
             </div>
           </template>
           <v-card-text>
-            <v-text-field :loading="loading" append-inner-icon="mdi-magnify"
+            <v-text-field :loading="loadingImport" append-inner-icon="mdi-magnify"
               :label="$t('text.newSearch.searchTextField')" variant="underlined" hide-details single-line
               @click:append-inner="onClickSearch"></v-text-field>
           </v-card-text>
           <v-card-item>
-            <v-infinite-scroll class="my-2 ml-4" height="23vh" :items="myProducts" @load="load">
-              <template v-for="(item, index) in myProducts" :key="index">
-                <div>
-                  <LazyPartialListEanItem ean="00000000000000"  />
-                  <v-divider v-if="index < items.length - 1" :key="'divider' + index" class="my-2" />
-                </div>
-              </template>
-            </v-infinite-scroll>
+            <template v-if="myProducts.length > 0">
+              <v-virtual-scroll height="23vh" :items="myProducts" @load="load">
+                <template #default="{ item }">
+                  <LazyPartialListEanItem :ean="item" />
+                  <v-divider :key="'divider' + item" class="my-2" />
+                </template>
+              </v-virtual-scroll>
+            </template>
+            <template v-else>
+              <div class="d-flex flex-column align-center justify-center h-100">
+                <v-icon size="48" color="grey-lighten-1">mdi-package-variant-remove</v-icon>
+                <p class="mt-2 text-grey">{{$t('$vuetify.noDataText')}}</p>
+              </div>
+            </template>
           </v-card-item>
         </v-card>
       </v-col>
@@ -56,7 +64,6 @@
 import auth from "../../ middleware/auth";
 import { LazyPartialListEanItem } from "#components";
 import type { PriceCollectionItem } from "~~/server/api/priceCollection";
-
 const { t } = useI18n();
 
 definePageMeta({
@@ -70,36 +77,49 @@ useHead({
 });
 
 const { mobile } = useDisplay();
-const items = ref(Array.from({ length: 30 }, (k, v) => v + 1));
-const loading = ref(false);
-const myProducts = ref<PriceCollectionItem[]>([]);
+const loadingImport = ref(false);
+const myProducts = ref<Array<string>>([]);
 
 async function load({
   done,
 }: {
   done: (status: "error" | "loading" | "empty" | "ok") => void;
 }) {
-  // Perform API call
-  await $fetch("/api/priceCollection", {
-    method: "GET",
-    params: {
-      offset: myProducts.value.length,
-      limit: 10,
-    },
-  })
-    .then((res) => {
-      console.log(res);
-      myProducts.value.push(...res);
-      if (res.length === 0) {
-        done("error");
-      } else {
-        done("ok");
-      }
-    })
-    .catch((err) => {
-      console.error(err);
-      done("error");
-    });
+
+}
+
+function triggerFileInput() {
+  const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+  if (fileInput) {
+    fileInput.click();
+  }
+}
+
+async function handleFileImport(event: Event) {
+  loadingImport.value = true;
+  const fileInput = event.target as HTMLInputElement;
+
+  if (!fileInput.files || fileInput.files.length === 0) {
+    console.error('No file selected');
+    return;
+  }
+
+  const file = fileInput.files[0] as File;
+
+  const { importXlsx } = useImportXlsx()
+
+  importXlsx(file).then((rows) => {
+    console.log('Excel data:', rows);
+    // Process your rows here
+    const eans = rows.slice(1) // Skip header row
+      .map(row => row[0]?.toString().trim());
+
+    myProducts.value = eans as Array<string>;
+  }).catch((error) => {
+    console.error('Error reading file:', error);
+  }).finally(() => {
+    loadingImport.value = false;
+  });
 }
 
 function onClickSearch() {
