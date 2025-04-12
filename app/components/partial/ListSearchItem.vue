@@ -15,7 +15,7 @@
             <div>
               <span v-t="'text.components.partialListSearchItem.city'" />
               <span class="font-weight-bold">
-                {{ city ?? $t("words.undefined") }}
+                {{ cities?.join(", ") ?? $t("words.undefined") }}
               </span>
             </div>
           </div>
@@ -87,8 +87,8 @@ const props = defineProps({
     type: Date,
     required: true,
   },
-  city: {
-    type: String,
+  cities: {
+    type: Array as () => string[],
     default: null,
   },
 });

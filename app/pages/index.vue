@@ -7,12 +7,7 @@
           :class="{ 'flex-row': !mobile, 'flex-column': mobile }"
         >
           <span class="px-4">
-            <v-icon
-              icon="mdi-book"
-              size="32"
-              color="primary"
-              class="mr-2"
-            />
+            <v-icon icon="mdi-book" size="32" color="primary" class="mr-2" />
             <span
               v-t="'text.mySearch.createdSearches'"
               class="text-uppercase text-subtitle-1 text-primary"
@@ -30,31 +25,24 @@
             chips
             hide-details="auto"
           />
-          <v-btn
-            size="small"
-            color="primary"
-            :icon="!mobile"
-            :block="mobile"
-          >
-            <v-icon
-              icon="mdi-magnify"
-              color="white"
-            />
+          <v-btn size="small" color="primary" :icon="!mobile" :block="mobile">
+            <v-icon icon="mdi-magnify" color="white" />
             <span v-t="'words.search'" v-if="mobile" />
           </v-btn>
         </div>
         <v-infinite-scroll
           class="my-2 ml-4"
           height="74vh"
-          :items="items"
+          :items="mySearches"
           @load="load"
         >
-          <template v-for="(item, index) in items" :key="item">
+          <template v-for="(item, index) in mySearches" :key="index">
             <div>
               <LazyPartialListSearchItem
-                :update-at="new Date('2025-04-10T17:00:00Z')"
-                :created-at="new Date('2025-04-10T17:00:00Z')"
-                :title="'Search ' + index"
+                :update-at="new Date(item.createdAt)"
+                :created-at="new Date(item.createdAt)"
+                :title="item.name"
+                :cities="item.cities.map((city) => city.city.name)"
               />
               <v-divider
                 v-if="index < items.length - 1"
@@ -84,15 +72,16 @@
           <v-infinite-scroll
             class="ml-4"
             height="32vh"
-            :items="items"
-            @load="load"
+            :items="mySearches"
+            @load="({done}) => done('error')"
           >
-            <template v-for="(item, index) in items" :key="item">
+            <template v-for="(item, index) in mySearches" :key="index">
               <div>
                 <LazyPartialListSearchItem
-                  :created-at="new Date('2025-04-10T17:00:00Z')"
-                  :update-at="new Date('2025-04-10T17:00:00Z')"
-                  :title="'Search ' + index"
+                  :update-at="new Date(item.createdAt)"
+                  :created-at="new Date(item.createdAt)"
+                  :title="item.name"
+                  :cities="item.cities.map((city) => city.city.name)"
                 />
                 <v-divider
                   v-if="index < items.length - 1"
@@ -121,15 +110,16 @@
           <v-infinite-scroll
             class="ml-4"
             height="34vh"
-            :items="items"
-            @load="load"
+            :items="mySearches"
+            @load="({done}) => done('error')"
           >
-            <template v-for="(item, index) in items" :key="item">
+            <template v-for="(item, index) in mySearches" :key="index">
               <div>
                 <LazyPartialListSearchItem
-                  :created-at="new Date('2025-04-10T17:00:00Z')"
-                  :update-at="new Date('2025-04-10T17:00:00Z')"
-                  :title="'Search ' + index"
+                  :update-at="new Date(item.createdAt)"
+                  :created-at="new Date(item.createdAt)"
+                  :title="item.name"
+                  :cities="item.cities.map((city) => city.city.name)"
                 />
                 <v-divider
                   v-if="index < items.length - 1"
@@ -147,6 +137,7 @@
 <script setup lang="ts">
 import auth from "../ middleware/auth";
 import { LazyPartialListSearchItem } from "#components";
+import type { PriceCollectionItem } from "~~/server/api/priceCollection";
 
 const { t } = useI18n();
 
@@ -163,34 +154,33 @@ useHead({
 const { mobile } = useDisplay();
 const items = ref(Array.from({ length: 30 }, (k, v) => v + 1));
 
-async function api() {
-  return new Promise<number[]>((resolve) => {
-    setTimeout(() => {
-      resolve(
-        Array.from({ length: 10 }, (k, v) => v + items.value.at(-1)! + 1)
-      );
-    }, 1000);
-  });
-}
+const mySearches = ref<PriceCollectionItem[]>([]);
+
 async function load({
   done,
 }: {
   done: (status: "error" | "loading" | "empty" | "ok") => void;
 }) {
   // Perform API call
-  const res = await api();
-
-  items.value.push(...res);
-
-  done("ok");
+  await $fetch("/api/priceCollection", {
+    method: "GET",
+    params: {
+      offset: mySearches.value.length,
+      limit: 10,
+    },
+  })
+    .then((res) => {
+      console.log(res);
+      mySearches.value.push(...res);
+      if (res.length === 0) {
+        done("error");
+      } else {
+        done("ok");
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      done("error");
+    });
 }
-
-onMounted(() => {
-  $fetch('/api/priceCollection/').then((res) => {
-    console.log(res);
-  }).catch((err) => {
-    console.error(err);
-  });
-})
-
 </script>
