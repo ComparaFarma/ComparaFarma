@@ -30,11 +30,12 @@
           <v-card-text>
             <v-text-field :loading="loadingImport" append-inner-icon="mdi-magnify"
               :label="$t('text.newSearch.searchTextField')" variant="underlined" hide-details single-line
-              @click:append-inner="onClickSearch"></v-text-field>
+              :model="searchValue" 
+              @update:model-value="onUpdateSearch"></v-text-field>
           </v-card-text>
           <v-card-item>
-            <template v-if="myProducts.length > 0">
-              <v-virtual-scroll height="23vh" :items="myProducts" @load="load">
+            <template v-if="filterMyProducts.length > 0">
+              <v-virtual-scroll height="23vh" :items="filterMyProducts" @load="load">
                 <template #default="{ item }">
                   <LazyPartialListEanItem :ean="item" />
                   <v-divider :key="'divider' + item" class="my-2" />
@@ -79,6 +80,8 @@ useHead({
 const { mobile } = useDisplay();
 const loadingImport = ref(false);
 const myProducts = ref<Array<string>>([]);
+const filterMyProducts = ref<Array<string>>([]);
+const searchValue = ref<string>("");
 
 async function load({
   done,
@@ -115,6 +118,7 @@ async function handleFileImport(event: Event) {
       .map(row => row[0]?.toString().trim());
 
     myProducts.value = eans as Array<string>;
+    filterMyProducts.value = myProducts.value;
   }).catch((error) => {
     console.error('Error reading file:', error);
   }).finally(() => {
@@ -122,10 +126,12 @@ async function handleFileImport(event: Event) {
   });
 }
 
-function onClickSearch() {
-  loading.value = true;
-  setTimeout(() => {
-    loading.value = false;
-  }, 2000);
+function onUpdateSearch(value:string) {
+  filterMyProducts.value = myProducts.value.filter((item) => {
+    return item.toLowerCase().includes(value);
+  });
+  if (filterMyProducts.value.length === 0) {
+    filterMyProducts.value = myProducts.value;
+  } 
 }
 </script>
