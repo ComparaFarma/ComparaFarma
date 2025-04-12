@@ -33,7 +33,7 @@
         <v-infinite-scroll
           :key="keyForInfiniteScroll"
           class="my-2 ml-4"
-          height="74vh"
+          :height="mobile ? '60vh' : '74vh'"
           :items="mySearches"
           empty-text=""
           @load="load"
