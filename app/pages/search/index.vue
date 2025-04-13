@@ -7,8 +7,10 @@
             <v-icon icon="mdi-map-marker" size="32" color="primary" class="mr-2" />
             <span v-t="'text.newSearch.createNewSearches'" class="text-uppercase text-subtitle-1 text-primary" />
           </span>
-          <v-text-field v-model="title" :label="$t('text.newSearch.titleNewSearchTextField')" density="compact" v-bind="titleProps" :error-messages="errors.title" />
-          <v-select v-model="cities" :label="$t('words.city', { count: 2 })" density="compact" multiple chips v-bind="citiesProps" />
+          <v-text-field v-model="title" :label="$t('text.newSearch.titleNewSearchTextField')" density="compact"
+            v-bind="titleProps" :error-messages="errors.title" />
+          <v-select v-model="cities" :label="$t('words.city', { count: 2 })" density="compact" multiple chips
+            v-bind="citiesProps" :items="[{ id: 2931103, name: 'Tanquinho' }]" item-title="name" item-value="id" />
         </div>
       </v-col>
     </v-row>
@@ -16,27 +18,35 @@
       <v-col cols="12" md="6">
         <v-card class="mx-auto border-md" variant="outlined" width="100%">
           <template v-slot:prepend>
-            <span v-t="'text.newSearch.titleSearchProduct'" class="text-uppercase text-h6 text-grey-darken-3" />
+            <span v-t="'text.newSearch.titleSearchProduct'" class="text-uppercase text-grey-darken-3"
+              :class="mobile ? 'text-subtitle-2' : 'text-h6'" />
           </template>
+
           <template v-slot:append>
-            <div class="px-4 ga-4">
-              <v-btn prepend-icon="mdi-download-box-outline" variant="outlined" color="success"
-                @click="triggerFileDownload" class="mr-2">
+            <div class="px-2" :class="{'d-flex flex-column ga-2':mobile, 'd-flex align-center ga-4':!mobile}">
+              <v-btn prepend-icon="mdi-download-box-outline" variant="outlined" color="success" :size="mobile?'x-small': 'small'" :class="mobile ? 'w-100' : 'mr-2'" @click="triggerFileDownload" >
                 <span v-t="'text.newSearch.downloadModelImportButton'" class="text-success" />
               </v-btn>
-              <v-btn prepend-icon="mdi-import" variant="outlined" color="primary" @click="triggerFileInput">
+
+              <v-btn prepend-icon="mdi-import" variant="outlined" color="primary" :size="mobile?'x-small': 'small'" @click="triggerFileInput">
                 <span v-t="'text.newSearch.importEanButton'" class="text-primary" />
               </v-btn>
-              <input type="file" ref="fileInput" style="display: none" @change="handleFileImport"
-                accept=".csv,.xlsx,.txt">
+
+              <input ref="fileInput" type="file" style="display: none" accept=".csv,.xlsx,.txt" @change="handleFileImport">
             </div>
           </template>
           <v-card-text>
-            <v-text-field :loading="loading" append-inner-icon="mdi-magnify"
+            <v-text-field append-inner-icon="mdi-magnify"
               :label="$t('text.newSearch.searchTextField')" variant="underlined" hide-details single-line
               :model="searchValue" @update:model-value="onUpdateSearch"></v-text-field>
           </v-card-text>
           <v-card-item>
+            <template v-if="loadingImport">
+              <div class="d-flex flex-column align-center justify-center h-100">
+                <v-progress-circular indeterminate color="primary" />
+                <p class="mt-2 text-grey">{{ $t('text.newSearch.loadingImport') }}</p>
+              </div>
+            </template>
             <template v-if="filterMyProducts.length > 0">
               <v-virtual-scroll height="23vh" :items="filterMyProducts">
                 <template #default="{ item }">
@@ -70,7 +80,6 @@
 <script setup lang="ts">
 import auth from "../../ middleware/auth";
 import { LazyPartialListEanItem } from "#components";
-import type { PriceCollectionItem } from "~~/server/api/priceCollection";
 import { useForm } from 'vee-validate';
 import { useNotifyStore } from '~/store/notifyStore';
 
@@ -88,14 +97,17 @@ useHead({
   title: t("text.mySearch.title"),
 });
 
+const { mobile } = useDisplay();
+const loading = ref(false);
+const loadingImport = ref(false);
+const myProducts = ref<Array<string>>([]);
+const filterMyProducts = ref<Array<string>>([]);
+const searchValue = ref<string>("");
+
 // Configuração do formulário com validação
 const { defineField, errors, validate } = useForm({
   validationSchema: {
-    title: (value: string) => {
-      if (!value) return 'Título é obrigatório';
-      if (value.length < 3) return 'Mínimo 3 caracteres';
-      return true;
-    },
+    title: 'required',
     cities: 'required'
   }
 });
@@ -107,17 +119,9 @@ const vuetifyConfig = (state: any) => ({
   },
 });
 
-
 const [title, titleProps] = defineField("title", vuetifyConfig);
 const [cities, citiesProps] = defineField("cities", vuetifyConfig);
 const selectedEans = ref<Array<string>>([]);
-
-
-const { mobile } = useDisplay();
-const loading = ref(false);
-const myProducts = ref<Array<string>>([]);
-const filterMyProducts = ref<Array<string>>([]);
-const searchValue = ref<string>("");
 
 function triggerFileInput() {
   const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
@@ -134,6 +138,8 @@ function triggerFileDownload() {
 }
 
 async function handleFileImport(event: Event) {
+  loadingImport.value = true;
+
   const fileInput = event.target as HTMLInputElement;
 
   if (!fileInput.files || fileInput.files.length === 0) {
@@ -156,7 +162,9 @@ async function handleFileImport(event: Event) {
     selectedEans.value = eans as Array<string>;
   }).catch((error) => {
     console.error('Error reading file:', error);
-  })
+  }).finally(() => {
+    loadingImport.value = false;
+  });
 }
 
 function onUpdateSearch(value: string) {
@@ -192,20 +200,41 @@ function onChangeEan(event: { target: { checked: boolean; value: string } }) {
   }
 }
 
-function createNewSearch() {
+async function createNewSearch() {
   loading.value = true;
-  validate().then((resp) => {
-    if (resp.valid) {
-      console.log('Form is valid', resp);
-    }else{
-      loading.value = false;
-      console.log('Form is invalid');
-      return;
-    }
-  }
-  ).catch(() => {
+
+  // Validação dos campos
+  const { valid } = await validate();
+
+  // Validação adicional para os EANs
+  if (!selectedEans.value || selectedEans.value.length === 0) {
+    notifyStore.showNotification('Selecione pelo menos um EAN', 'error');
     loading.value = false;
-    console.log('Error');
+    return;
+  }
+
+  if (!valid) {
+    loading.value = false;
+    return;
+  }
+
+  await $fetch('/api/priceCollection/create', {
+    method: 'POST',
+    body: {
+      name: title.value,
+      cities: cities.value,
+      products: selectedEans.value
+    }
+  }).then((res) => {
+    console.log(res);
+    notifyStore.showNotification('Pesquisa criada com sucesso!', 'success');
+    clearImport();
+  }).catch((error) => {
+    console.error('Error creating search:', error);
+    notifyStore.showNotification(
+      error.message || 'Erro ao criar pesquisa',
+      'error'
+    );
   });
 }
 </script>

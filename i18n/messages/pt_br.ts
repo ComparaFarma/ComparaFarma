@@ -60,7 +60,8 @@ export default {
       titleSearchProduct: "Produtos selecionados",
       importEanButton: "Importar EANS",
       downloadModelImportButton: "Baixar modelo",
-      searchTextField: "Pesquisar EAN"
+      searchTextField: "Pesquisar EAN",
+      loadingImport: "Carregando...",
     },
     bottomNavigation: {
       mySearches: "Minhas Buscas",
