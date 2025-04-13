@@ -8,9 +8,9 @@
             <span v-t="'text.newSearch.createNewSearches'" class="text-uppercase text-subtitle-1 text-primary" />
           </span>
           <v-text-field v-model="title" :label="$t('text.newSearch.titleNewSearchTextField')" density="compact"
-            v-bind="titleProps" :error-messages="errors.title" />
+            hide-details="auto" v-bind="titleProps" :error-messages="errors.title" />
           <v-select v-model="cities" :label="$t('words.city', { count: 2 })" density="compact" multiple chips
-            v-bind="citiesProps" :items="[{ id: 2931103, name: 'Tanquinho' }]" item-title="name" item-value="id" />
+            hide-details="auto" v-bind="citiesProps" :items="cityStore.cities" item-title="name" item-value="id" />
         </div>
       </v-col>
     </v-row>
@@ -23,22 +23,25 @@
           </template>
 
           <template v-slot:append>
-            <div class="px-2" :class="{'d-flex flex-column ga-2':mobile, 'd-flex align-center ga-4':!mobile}">
-              <v-btn prepend-icon="mdi-download-box-outline" variant="outlined" color="success" :size="mobile?'x-small': 'small'" :class="mobile ? 'w-100' : 'mr-2'" @click="triggerFileDownload" >
+            <div class="px-2" :class="{ 'd-flex flex-column ga-2': mobile, 'd-flex align-center ga-4': !mobile }">
+              <v-btn prepend-icon="mdi-download-box-outline" variant="outlined" color="success"
+                :size="mobile ? 'x-small' : 'small'" :class="mobile ? 'w-100' : 'mr-2'" @click="triggerFileDownload">
                 <span v-t="'text.newSearch.downloadModelImportButton'" class="text-success" />
               </v-btn>
 
-              <v-btn prepend-icon="mdi-import" variant="outlined" color="primary" :size="mobile?'x-small': 'small'" @click="triggerFileInput">
+              <v-btn prepend-icon="mdi-import" variant="outlined" color="primary" :size="mobile ? 'x-small' : 'small'"
+                @click="triggerFileInput">
                 <span v-t="'text.newSearch.importEanButton'" class="text-primary" />
               </v-btn>
 
-              <input ref="fileInput" type="file" style="display: none" accept=".csv,.xlsx,.txt" @change="handleFileImport">
+              <input ref="fileInput" type="file" style="display: none" accept=".csv,.xlsx,.txt"
+                @change="handleFileImport">
             </div>
           </template>
           <v-card-text>
-            <v-text-field append-inner-icon="mdi-magnify"
-              :label="$t('text.newSearch.searchTextField')" variant="underlined" hide-details single-line
-              :model="searchValue" @update:model-value="onUpdateSearch"></v-text-field>
+            <v-text-field append-inner-icon="mdi-magnify" :label="$t('text.newSearch.searchTextField')"
+              variant="underlined" hide-details single-line :model="searchValue"
+              @update:model-value="onUpdateSearch"></v-text-field>
           </v-card-text>
           <v-card-item>
             <template v-if="loadingImport">
@@ -67,11 +70,11 @@
     </v-row>
     <v-row class="my-4">
       <v-col cols="12" class="ga-2 d-flex justify-end">
-        <v-btn v-if="myProducts.length > 0" prepend-icon="mdi-cancel" color="secondary">
+        <v-btn v-if="myProducts.length > 0" prepend-icon="mdi-cancel" color="secondary" :size="mobile ? 'x-small' : 'small'">
           <span v-t="'text.newSearch.clearSearchImportButton'" class="text-withe" @click="clearImport" />
         </v-btn>
-        <v-btn prepend-icon="mdi-plus" color="primary" @click="createNewSearch">
-          <span v-t="'text.newSearch.crateSearchButton'" class="text-withe" />
+        <v-btn prepend-icon="mdi-plus" color="primary" @click="createNewSearch" >
+          <span v-t="'text.newSearch.crateSearchButton'" class="text-white" />
         </v-btn>
       </v-col>
     </v-row>
@@ -82,10 +85,12 @@ import auth from "../../ middleware/auth";
 import { LazyPartialListEanItem } from "#components";
 import { useForm } from 'vee-validate';
 import { useNotifyStore } from '~/store/notifyStore';
+import { useCityStore } from "~/store/cityStore";
 
 
 const { t } = useI18n();
 const notifyStore = useNotifyStore();
+
 
 definePageMeta({
   layout: "dashboard",
@@ -103,6 +108,8 @@ const loadingImport = ref(false);
 const myProducts = ref<Array<string>>([]);
 const filterMyProducts = ref<Array<string>>([]);
 const searchValue = ref<string>("");
+
+const cityStore = useCityStore();
 
 // Configuração do formulário com validação
 const { defineField, errors, validate } = useForm({
