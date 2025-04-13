@@ -56,12 +56,11 @@ export default {
       titleNewSearchTextField: "Titulo da nova busca",
       searchButton: "Buscar",
       crateSearchButton: "Criar Consulta",
+      clearSearchImportButton: "Limpar",
       titleSearchProduct: "Produtos selecionados",
       importEanButton: "Importar EANS",
-      searchTextField: "Pesquisar EAN",
-
-      noResults: "Nenhum resultado encontrado",
-      noResultsDescription: "Nenhum resultado encontrado para o EAN ou lista informada",
+      downloadModelImportButton: "Baixar modelo",
+      searchTextField: "Pesquisar EAN"
     },
     bottomNavigation: {
       mySearches: "Minhas Buscas",

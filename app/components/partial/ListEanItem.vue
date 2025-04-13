@@ -8,7 +8,7 @@
                 </div>
             </v-col>
             <v-col cols="2" class="d-flex justify-end">
-                <v-checkbox v-model="eanModel" color="primary" value="primary" hide-details   @change="emit('selected', $event)" />
+                <v-checkbox v-model="eanModel" color="primary" :value="ean" hide-details   @change="emit('change', $event)" />
             </v-col>
         </v-row>
     </div>
@@ -18,11 +18,15 @@ const props = defineProps({
     ean: {
         type: String,
         required: true,
-    }
+    },
+    eans: {
+        type: Array,
+        default: () => [],
+    },
 });
 
-const eanModel = ref(props.ean);
+const eanModel = ref(props.eans);
 
-const emit = defineEmits(["selected"]);
+const emit = defineEmits(["change"]);
 
 </script>
