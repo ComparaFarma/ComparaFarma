@@ -87,7 +87,7 @@
         icon
         :value="BottomNavigationType.CREATE_SEARCH"
         size="medium"
-        to="/teste"
+        to="/search"
       >
         <v-icon icon="mdi-plus" />
         <span class="text-uppercase">
@@ -105,6 +105,8 @@ import {
 import { useNotifyStore } from "~/store/notifyStore";
 import { VPullToRefresh } from "vuetify/labs/VPullToRefresh";
 import { useApiSupabase } from "~/composables/useApiSupabase";
+import { useCityStore } from "~/store/cityStore";
+
 
 const notifyStore = useNotifyStore();
 const pullDownThreshold = 56;
@@ -114,6 +116,9 @@ const dashboardStore = useDashboardStore();
 
 const { currentBottomSheet } = storeToRefs(dashboardStore);
 const logoutLoading = ref(false);
+
+const cityStore = useCityStore();
+cityStore.fetchCities();
 
 const apiSupabase = useApiSupabase();
 async function logout() {

@@ -49,6 +49,7 @@ export default defineNuxtConfig({
   },
 
   vite: {
+    assetsInclude: ['**/*.xlsx'], // Adicione esta linha
     ssr: {
       noExternal: ['vuetify'],
     },
