@@ -41,7 +41,9 @@
           <template v-for="(item, index) in mySearches" :key="index">
             <div>
               <LazyPartialListSearchItem
-                :update-at="new Date(item.createdAt)"
+                :update-at="
+                  item.lastcheckdate ? new Date(item.lastcheckdate) : undefined
+                "
                 :created-at="new Date(item.createdAt)"
                 :title="item.name"
                 :cities="item.cities.map((city) => city.city.name)"
@@ -80,7 +82,11 @@
             <template v-for="(item, index) in mySearches" :key="index">
               <div>
                 <LazyPartialListSearchItem
-                  :update-at="new Date(item.createdAt)"
+                  :update-at="
+                    item.lastcheckdate
+                      ? new Date(item.lastcheckdate)
+                      : undefined
+                  "
                   :created-at="new Date(item.createdAt)"
                   :title="item.name"
                   :cities="item.cities.map((city) => city.city.name)"
@@ -118,7 +124,11 @@
             <template v-for="(item, index) in mySearches" :key="index">
               <div>
                 <LazyPartialListSearchItem
-                  :update-at="new Date(item.createdAt)"
+                  :update-at="
+                    item.lastcheckdate
+                      ? new Date(item.lastcheckdate)
+                      : undefined
+                  "
                   :created-at="new Date(item.createdAt)"
                   :title="item.name"
                   :cities="item.cities.map((city) => city.city.name)"
@@ -180,7 +190,6 @@ async function load({
     },
   })
     .then((res) => {
-      console.log(res);
       mySearches.value.push(...res);
       if (res.length === 0) {
         done("empty");
@@ -188,8 +197,7 @@ async function load({
         done("ok");
       }
     })
-    .catch((err) => {
-      console.error(err);
+    .catch(() => {
       done("error");
     });
 }

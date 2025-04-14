@@ -85,7 +85,7 @@ const props = defineProps({
   },
   updateAt: {
     type: Date,
-    required: true,
+    default: null
   },
   cities: {
     type: Array as () => string[],
@@ -96,13 +96,17 @@ const props = defineProps({
 const emit = defineEmits(["visualize", "delete"]);
 
 const { mobile } = useDisplay();
+const {t} = useI18n();
 
 const { getDateFromNowFormated, getDateCalendarFormated } = useDateUtils();
 const updatedAtString = computed(() => {
+  if (!props.updateAt) {
+    return t('words.undefined')
+  }
   return getDateFromNowFormated(props.updateAt).toLowerCase();
 });
 
 const createdAtString = computed(() => {
-  return getDateCalendarFormated(props.updateAt).toLowerCase();
+  return getDateCalendarFormated(props.createdAt).toLowerCase();
 });
 </script>

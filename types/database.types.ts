@@ -100,6 +100,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "LogRequest_priceCollectionId_fkey"
+            columns: ["priceCollectionId"]
+            isOneToOne: false
+            referencedRelation: "view_pricecollection"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "LogRequest_userId_fkey"
             columns: ["userId"]
             isOneToOne: false
@@ -180,6 +187,13 @@ export type Database = {
             referencedRelation: "PriceCollection"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "PriceCollectionCity_priceCollectionId_fkey"
+            columns: ["priceCollectionId"]
+            isOneToOne: false
+            referencedRelation: "view_pricecollection"
+            referencedColumns: ["id"]
+          },
         ]
       }
       PriceCollectionProduct: {
@@ -210,6 +224,13 @@ export type Database = {
             columns: ["priceCollectionId"]
             isOneToOne: false
             referencedRelation: "PriceCollection"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "PriceCollectionProduct_priceCollectionId_fkey"
+            columns: ["priceCollectionId"]
+            isOneToOne: false
+            referencedRelation: "view_pricecollection"
             referencedColumns: ["id"]
           },
         ]
@@ -331,7 +352,73 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      view_pricecollection: {
+        Row: {
+          createdAt: string | null
+          description: string | null
+          id: number | null
+          lastcheckdate: string | null
+          name: string | null
+          updatedAt: string | null
+          userId: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "PriceCollection_userId_fkey"
+            columns: ["userId"]
+            isOneToOne: false
+            referencedRelation: "User"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      view_pricecollectionproducthistory: {
+        Row: {
+          barcode: string | null
+          cityId: number | null
+          createdAt: string | null
+          description: string | null
+          id: number | null
+          image: string | null
+          interval: string | null
+          lastCheckDate: string | null
+          priceCollectionId: number | null
+          storeCnpj: string | null
+          unit: string | null
+          updatedAt: string | null
+          value: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "PriceCollectionProduct_priceCollectionId_fkey"
+            columns: ["priceCollectionId"]
+            isOneToOne: false
+            referencedRelation: "PriceCollection"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "PriceCollectionProduct_priceCollectionId_fkey"
+            columns: ["priceCollectionId"]
+            isOneToOne: false
+            referencedRelation: "view_pricecollection"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "PriceCollectionProductHistory_storeCnpj_fkey"
+            columns: ["storeCnpj"]
+            isOneToOne: false
+            referencedRelation: "Store"
+            referencedColumns: ["cnpj"]
+          },
+          {
+            foreignKeyName: "Store_cityId_fkey"
+            columns: ["cityId"]
+            isOneToOne: false
+            referencedRelation: "City"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       [_ in never]: never
