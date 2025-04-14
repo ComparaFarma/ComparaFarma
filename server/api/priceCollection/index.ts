@@ -34,9 +34,6 @@ export default eventHandler(async (event) => {
         .select<'*', PriceCollectionItem>('*')
         .in('id', (data as PriceCollectionItem[]).map(item => item.id))
 
-    console.log('response:' + priceCollectionWithDate)
-
-
     return (data as PriceCollectionItem[]).map(item => {
         return {
             ...item,
