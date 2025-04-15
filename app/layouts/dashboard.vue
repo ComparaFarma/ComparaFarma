@@ -66,9 +66,10 @@
       </template>
     </v-snackbar>
     <v-bottom-navigation
-      v-model="currentBottomSheet"
+      :model-value="currentBottomNavigation"
       active
       grow
+      mandatory
       class="bottom-0"
       color="secondary"
     >
@@ -76,7 +77,7 @@
         icon
         :value="BottomNavigationType.MY_SEARCHES"
         size="medium"
-        to="/"
+        @click="navigateTo('/')"
       >
         <v-icon icon="mdi-heart" />
         <span class="text-uppercase">
@@ -87,7 +88,7 @@
         icon
         :value="BottomNavigationType.CREATE_SEARCH"
         size="medium"
-        to="/search"
+        @click="navigateTo('/search')"
       >
         <v-icon icon="mdi-plus" />
         <span class="text-uppercase">
@@ -114,7 +115,7 @@ const { message, show } = storeToRefs(notifyStore);
 
 const dashboardStore = useDashboardStore();
 
-const { currentBottomSheet } = storeToRefs(dashboardStore);
+const { currentBottomNavigation } = storeToRefs(dashboardStore);
 const logoutLoading = ref(false);
 
 const cityStore = useCityStore();

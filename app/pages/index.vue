@@ -90,6 +90,7 @@
                   :created-at="new Date(item.createdAt)"
                   :title="item.name"
                   :cities="item.cities.map((city) => city.city.name)"
+                  @visualize="() => navigateTo(`/search/${item.id}`)"
                 />
                 <v-divider
                   v-if="index < items.length - 1"
@@ -132,6 +133,7 @@
                   :created-at="new Date(item.createdAt)"
                   :title="item.name"
                   :cities="item.cities.map((city) => city.city.name)"
+                  @visualize="() => navigateTo(`/search/${item.id}`)"
                 />
                 <v-divider
                   v-if="index < items.length - 1"
