@@ -35,7 +35,6 @@
           class="my-2 ml-4"
           :height="mobile ? '60vh' : '74vh'"
           :items="mySearches"
-          empty-text=""
           @load="load"
         >
           <template v-for="(item, index) in mySearches" :key="index">

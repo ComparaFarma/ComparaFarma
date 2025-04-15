@@ -9,7 +9,9 @@ export default {
     noDataText: "Nenhum dado encontrado",
     infiniteScroll: {
       empty: "Não há mais dados",
-    }    
+    },
+    open: "Abrir",
+    close: "Fechar", 
   },
   supabaseCodes: {
     validation_failed: "Credenciais inválidas",
