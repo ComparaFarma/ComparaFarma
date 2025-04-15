@@ -1,7 +1,7 @@
 <template>
-  <v-layout ref="app" class="rounded rounded-md border">
+  <v-layout ref="app">
     <v-app-bar elevation="4" color="surface" name="app-bar">
-      <v-app-bar-title to="/index" class="cursor-pointer">
+      <v-app-bar-title @click="navigateTo('/')" class="cursor-pointer">
         <div class="d-flex align-center">
           <v-icon size="40" class="mr-2">
             <v-img
