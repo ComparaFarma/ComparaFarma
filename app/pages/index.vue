@@ -153,7 +153,6 @@ import auth from "../ middleware/auth";
 import { LazyPartialListSearchItem } from "#components";
 import type { PriceCollectionItem } from "~~/server/api/priceCollection";
 import { useDashboardStore } from "~/store/dashboardStore";
-import type { VInfiniteScroll } from "vuetify/components/VInfiniteScroll";
 
 const { t } = useI18n();
 
