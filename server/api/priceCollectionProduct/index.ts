@@ -1,6 +1,8 @@
 import { serverSupabaseClient } from '#supabase/server'
 import type { Tables } from '~~/types/database.types'
 
+export type ViewPriceCollectionProduct = Tables<'view_pricecollectionproduct'>;
+
 export default eventHandler(async (event) => {
 
     const client = await serverSupabaseClient<Tables<'view_pricecollectionproduct'>>(event)
@@ -20,6 +22,6 @@ export default eventHandler(async (event) => {
     }
 
 
-    return (data as Tables<'view_pricecollectionproduct'>[])
+    return (data as ViewPriceCollectionProduct[])
 
 })

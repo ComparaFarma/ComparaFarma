@@ -68,6 +68,10 @@ export default {
       searchTextField: "Pesquisar EAN",
       loadingImport: "Carregando...",
     },
+    priceCollectionId: {
+      countProduct: "{count} produto | {count} produtos",
+      searchEanOrDescription: "Pesquisar EAN ou descrição",
+    },
     bottomNavigation: {
       mySearches: "Minhas Buscas",
       createSearch: "Novas Consultas",
@@ -96,5 +100,7 @@ export default {
     visualize: "Visualizar",
     delete: "Deletar",
     search: "Pesquisar",
+    product: "Produto | Produtos",
+    concurrent: "Concorrente | Concorrentes",
   },
 };
