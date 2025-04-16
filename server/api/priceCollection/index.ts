@@ -1,16 +1,15 @@
 import { serverSupabaseClient } from '#supabase/server'
 import type { Tables } from '~~/types/database.types'
-export interface PriceCollectionItem extends Tables<'PriceCollection'> {
+export interface PriceCollectionItem extends Tables<'view_pricecollection'> {
     cities: { city: Tables<'City'> }[],
-    lastcheckdate: string | undefined
 }
 export default eventHandler(async (event) => {
 
-    const client = await serverSupabaseClient<Tables<'PriceCollection'>>(event)
+    const client = await serverSupabaseClient<Tables<'view_pricecollection'>>(event)
     const { limit, offset } = getQuery(event)
 
     const { data, error } = await client
-        .from('PriceCollection')
+        .from('view_pricecollection')
         .select(`*, cities: PriceCollectionCity(
             city:City(
                 id,
@@ -29,16 +28,7 @@ export default eventHandler(async (event) => {
         throw createError({ statusCode: 404, statusMessage: 'No data found' })
     }
 
-    const { data: priceCollectionWithDate } = await client
-        .from('view_pricecollection')
-        .select<'*', PriceCollectionItem>('*')
-        .in('id', (data as PriceCollectionItem[]).map(item => item.id))
 
-    return (data as PriceCollectionItem[]).map(item => {
-        return {
-            ...item,
-            lastcheckdate: priceCollectionWithDate?.find(e => e.id == item.id)?.lastcheckdate ?? undefined
-        }
-    })
+    return (data as PriceCollectionItem[])
 
 })
