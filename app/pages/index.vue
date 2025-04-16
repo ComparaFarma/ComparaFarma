@@ -209,6 +209,9 @@ async function load({
 const OFFSET = 0;
 const LIMIT = 10;
 onMounted(() => {
+  if (mobile.value) {
+    return;
+  }
   $fetch("/api/priceCollection", {
     method: "GET",
     params: {
