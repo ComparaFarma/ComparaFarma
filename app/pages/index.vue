@@ -79,7 +79,7 @@
             :items="mySearches"
             @load="({ done }) => done('error')"
           >
-            <template v-for="(item, index) in mySearches" :key="index">
+            <template v-for="(item, index) in newSearches" :key="index">
               <div>
                 <LazyPartialListSearchItem
                   :update-at="
@@ -122,7 +122,7 @@
             :items="mySearches"
             @load="({ done }) => done('error')"
           >
-            <template v-for="(item, index) in mySearches" :key="index">
+            <template v-for="(item, index) in lastUpdateSearches" :key="index">
               <div>
                 <LazyPartialListSearchItem
                   :update-at="
@@ -170,6 +170,9 @@ const { mobile } = useDisplay();
 const items = ref(Array.from({ length: 30 }, (k, v) => v + 1));
 
 const mySearches = ref<PriceCollectionItem[]>([]);
+const newSearches = ref<PriceCollectionItem[]>([]);
+const lastUpdateSearches = ref<PriceCollectionItem[]>([]);
+
 const keyForInfiniteScroll = ref(0);
 const dashboard = useDashboardStore();
 dashboard.setReloadCallback(async () => {
@@ -202,4 +205,30 @@ async function load({
       done("error");
     });
 }
+
+const OFFSET = 0;
+const LIMIT = 10;
+onMounted(() => {
+  $fetch("/api/priceCollection", {
+    method: "GET",
+    params: {
+      offset: OFFSET,
+      limit: LIMIT,
+      orderBy: "createdAt",
+    },
+  }).then((res) => {
+    newSearches.value = res;
+  });
+
+  $fetch("/api/priceCollection", {
+    method: "GET",
+    params: {
+      offset: OFFSET,
+      limit: LIMIT,
+      orderBy: "updatedAt",
+    },
+  }).then((res) => {
+    lastUpdateSearches.value = res;
+  });
+});
 </script>

@@ -6,7 +6,11 @@ export type ViewPriceCollectionProduct = Tables<'view_pricecollectionproduct'>;
 export default eventHandler(async (event) => {
 
     const client = await serverSupabaseClient<Tables<'view_pricecollectionproduct'>>(event)
-    const { limit, offset, priceCollectionId } = getQuery(event)
+    const { limit, offset, priceCollectionId } = getQuery<{
+        limit: number,
+        offset: number,
+        priceCollectionId: number
+    }>(event)
 
     const { data, error } = await client
         .from('view_pricecollectionproduct')
