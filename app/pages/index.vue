@@ -35,7 +35,6 @@
           class="my-2 ml-4"
           :height="mobile ? '60vh' : '74vh'"
           :items="mySearches"
-          empty-text=""
           @load="load"
         >
           <template v-for="(item, index) in mySearches" :key="index">
@@ -47,6 +46,7 @@
                 :created-at="new Date(item.createdAt)"
                 :title="item.name"
                 :cities="item.cities.map((city) => city.city.name)"
+                @visualize="() => navigateTo(`/search/${item.id}`)"
               />
               <v-divider
                 v-if="index < items.length - 1"
@@ -79,7 +79,7 @@
             :items="mySearches"
             @load="({ done }) => done('error')"
           >
-            <template v-for="(item, index) in mySearches" :key="index">
+            <template v-for="(item, index) in newSearches" :key="index">
               <div>
                 <LazyPartialListSearchItem
                   :update-at="
@@ -90,6 +90,7 @@
                   :created-at="new Date(item.createdAt)"
                   :title="item.name"
                   :cities="item.cities.map((city) => city.city.name)"
+                  @visualize="() => navigateTo(`/search/${item.id}`)"
                 />
                 <v-divider
                   v-if="index < items.length - 1"
@@ -121,7 +122,7 @@
             :items="mySearches"
             @load="({ done }) => done('error')"
           >
-            <template v-for="(item, index) in mySearches" :key="index">
+            <template v-for="(item, index) in lastUpdateSearches" :key="index">
               <div>
                 <LazyPartialListSearchItem
                   :update-at="
@@ -132,6 +133,7 @@
                   :created-at="new Date(item.createdAt)"
                   :title="item.name"
                   :cities="item.cities.map((city) => city.city.name)"
+                  @visualize="() => navigateTo(`/search/${item.id}`)"
                 />
                 <v-divider
                   v-if="index < items.length - 1"
@@ -151,7 +153,6 @@ import auth from "../ middleware/auth";
 import { LazyPartialListSearchItem } from "#components";
 import type { PriceCollectionItem } from "~~/server/api/priceCollection";
 import { useDashboardStore } from "~/store/dashboardStore";
-import type { VInfiniteScroll } from "vuetify/components/VInfiniteScroll";
 
 const { t } = useI18n();
 
@@ -169,6 +170,9 @@ const { mobile } = useDisplay();
 const items = ref(Array.from({ length: 30 }, (k, v) => v + 1));
 
 const mySearches = ref<PriceCollectionItem[]>([]);
+const newSearches = ref<PriceCollectionItem[]>([]);
+const lastUpdateSearches = ref<PriceCollectionItem[]>([]);
+
 const keyForInfiniteScroll = ref(0);
 const dashboard = useDashboardStore();
 dashboard.setReloadCallback(async () => {
@@ -182,7 +186,7 @@ async function load({
   done: (status: "error" | "loading" | "empty" | "ok") => void;
 }) {
   // Perform API call
-  await $fetch("/api/priceCollection", {
+  $fetch("/api/priceCollection", {
     method: "GET",
     params: {
       offset: mySearches.value.length,
@@ -201,4 +205,33 @@ async function load({
       done("error");
     });
 }
+
+const OFFSET = 0;
+const LIMIT = 10;
+onMounted(() => {
+  if (mobile.value) {
+    return;
+  }
+  $fetch("/api/priceCollection", {
+    method: "GET",
+    params: {
+      offset: OFFSET,
+      limit: LIMIT,
+      orderBy: "createdAt",
+    },
+  }).then((res) => {
+    newSearches.value = res;
+  });
+
+  $fetch("/api/priceCollection", {
+    method: "GET",
+    params: {
+      offset: OFFSET,
+      limit: LIMIT,
+      orderBy: "updatedAt",
+    },
+  }).then((res) => {
+    lastUpdateSearches.value = res;
+  });
+});
 </script>

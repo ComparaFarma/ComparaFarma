@@ -354,6 +354,7 @@ export type Database = {
     Views: {
       view_pricecollection: {
         Row: {
+          countproduct: number | null
           createdAt: string | null
           description: string | null
           id: number | null
@@ -368,6 +369,35 @@ export type Database = {
             columns: ["userId"]
             isOneToOne: false
             referencedRelation: "User"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      view_pricecollectionproduct: {
+        Row: {
+          barcode: string | null
+          countstore: number | null
+          description: string | null
+          id: number | null
+          image: string | null
+          lastupdateat: string | null
+          maxvalue: number | null
+          minvalue: number | null
+          priceCollectionId: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "PriceCollectionProduct_priceCollectionId_fkey"
+            columns: ["priceCollectionId"]
+            isOneToOne: false
+            referencedRelation: "PriceCollection"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "PriceCollectionProduct_priceCollectionId_fkey"
+            columns: ["priceCollectionId"]
+            isOneToOne: false
+            referencedRelation: "view_pricecollection"
             referencedColumns: ["id"]
           },
         ]

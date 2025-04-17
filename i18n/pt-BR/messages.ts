@@ -9,7 +9,9 @@ export default {
     noDataText: "Nenhum dado encontrado",
     infiniteScroll: {
       empty: "Não há mais dados",
-    }    
+    },
+    open: "Abrir",
+    close: "Fechar", 
   },
   supabaseCodes: {
     validation_failed: "Credenciais inválidas",
@@ -66,6 +68,14 @@ export default {
       searchTextField: "Pesquisar EAN",
       loadingImport: "Carregando...",
     },
+    priceCollectionId: {
+      countProduct: "{count} produto | {count} produtos",
+      searchEanOrDescription: "Pesquisar EAN ou descrição",
+      compareStore: "Compare em {count} loja | Compare em {count} lojas",
+      minPrice: "Menor preço",
+      maxPrice: "Maior preço",
+      updatedAt: "Atualizado {time}",
+    },
     bottomNavigation: {
       mySearches: "Minhas Buscas",
       createSearch: "Novas Consultas",
@@ -94,5 +104,8 @@ export default {
     visualize: "Visualizar",
     delete: "Deletar",
     search: "Pesquisar",
+    product: "Produto | Produtos",
+    concurrent: "Concorrente | Concorrentes",
+    barcode: "Código de Barras",
   },
 };
