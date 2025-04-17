@@ -382,7 +382,9 @@ export type Database = {
           image: string | null
           lastupdateat: string | null
           maxvalue: number | null
+          maxvaluestorename: string | null
           minvalue: number | null
+          minvaluestorename: string | null
           priceCollectionId: number | null
         }
         Relationships: [
