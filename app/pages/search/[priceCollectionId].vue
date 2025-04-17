@@ -169,14 +169,9 @@ function validateIdParam(route: RouteLocationNormalized) {
     !isNaN(Number(route.params.priceCollectionId))) as boolean;
 }
 const { getDateFromNowFormated } = useDateUtils();
-const { t } = useI18n();
 definePageMeta({
   layout: "dashboard",
   validate: validateIdParam,
-});
-
-useHead({
-  title: t("text.mySearch.title"),
 });
 
 const dashboard = useDashboardStore();
@@ -187,13 +182,13 @@ const route = useRoute();
 const priceCollection = ref<PriceCollectionItem | null>(null);
 const priceCollectionProducts = ref<ViewPriceCollectionProduct[]>([]);
 
-dashboard.setReloadCallback(async () => {
-  // Reload the page
-  priceCollectionProducts.value = [];
-  keyForInfiniteScroll.value++;
-});
 
 onMounted(() => {
+  dashboard.setReloadCallback(async () => {
+    // Reload the page
+    priceCollectionProducts.value = [];
+    keyForInfiniteScroll.value++;
+  });
   $fetch("/api/priceCollection/show", {
     method: "GET",
     params: {
