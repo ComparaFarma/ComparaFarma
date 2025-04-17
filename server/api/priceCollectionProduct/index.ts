@@ -1,22 +1,44 @@
 import { serverSupabaseClient } from '#supabase/server'
-import type { Tables } from '~~/types/database.types'
 
-export type ViewPriceCollectionProduct = Tables<'view_pricecollectionproduct'>;
+export interface GetPriceCollectionProducts {
+    id: number
+    pricecollectionid: number
+    barcode: string
+    maxvalue: number
+    minvalue: number
+    description: string
+    lastupdateat: string
+    countstore: number
+    image: string
+    maxvaluestorename: string
+    minvaluestorename: string
+}
 
 export default eventHandler(async (event) => {
 
-    const client = await serverSupabaseClient<Tables<'view_pricecollectionproduct'>>(event)
-    const { limit, offset, priceCollectionId } = getQuery<{
+    const { limit, offset, priceCollectionId, cityId, productEanOrDescription } = getQuery<{
         limit: number,
         offset: number,
-        priceCollectionId: number
+        cityId?: number,
+        priceCollectionId: number,
+        productEanOrDescription?: string
     }>(event)
 
-    const { data, error } = await client
-        .from('view_pricecollectionproduct')
-        .select(`*`)
-        .eq('priceCollectionId', priceCollectionId)
-        .range(Number(offset ?? 0), Number(offset ?? 0) + Number(limit ?? 10))
+    const client = await serverSupabaseClient(event)
+
+    const { data, error } = await client.rpc('get_price_collection_products',
+        ({
+            p_limit: limit ?? 10,
+            p_offset: offset ?? 0,
+            p_price_collection_id: priceCollectionId,
+            p_city_id: cityId,
+            p_barcode_or_description: productEanOrDescription
+        } as unknown) as undefined, // working around for stop ts error
+        {
+            get: true
+        });
+
+
 
     if (error) {
         throw createError({ statusCode: 500, statusMessage: error.message })
@@ -26,6 +48,6 @@ export default eventHandler(async (event) => {
     }
 
 
-    return (data as ViewPriceCollectionProduct[])
+    return (data as GetPriceCollectionProducts[])
 
 })

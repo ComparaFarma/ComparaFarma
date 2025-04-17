@@ -373,37 +373,6 @@ export type Database = {
           },
         ]
       }
-      view_pricecollectionproduct: {
-        Row: {
-          barcode: string | null
-          countstore: number | null
-          description: string | null
-          id: number | null
-          image: string | null
-          lastupdateat: string | null
-          maxvalue: number | null
-          maxvaluestorename: string | null
-          minvalue: number | null
-          minvaluestorename: string | null
-          priceCollectionId: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "PriceCollectionProduct_priceCollectionId_fkey"
-            columns: ["priceCollectionId"]
-            isOneToOne: false
-            referencedRelation: "PriceCollection"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "PriceCollectionProduct_priceCollectionId_fkey"
-            columns: ["priceCollectionId"]
-            isOneToOne: false
-            referencedRelation: "view_pricecollection"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       view_pricecollectionproducthistory: {
         Row: {
           barcode: string | null
@@ -453,7 +422,43 @@ export type Database = {
       }
     }
     Functions: {
-      [_ in never]: never
+      get_price_collection_products: {
+        Args:
+          | {
+              p_price_collection_id?: number
+              p_city_id?: number
+              p_barcode?: string
+              p_description?: string
+            }
+          | {
+              p_price_collection_id?: number
+              p_city_id?: number
+              p_barcode?: string
+              p_description?: string
+              p_limit?: number
+              p_offset?: number
+            }
+          | {
+              p_price_collection_id?: number
+              p_city_id?: number
+              p_barcode_or_description?: string
+              p_limit?: number
+              p_offset?: number
+            }
+        Returns: {
+          id: number
+          pricecollectionid: number
+          barcode: string
+          maxvalue: number
+          minvalue: number
+          description: string
+          lastupdateat: string
+          countstore: number
+          image: string
+          maxvaluestorename: string
+          minvaluestorename: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

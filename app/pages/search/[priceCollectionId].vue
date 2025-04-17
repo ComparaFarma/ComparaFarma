@@ -23,9 +23,12 @@
           </v-card-title>
           <v-card-text>
             <v-text-field
+              v-model="filters.productEanOrDescription"
+              clearable
               variant="underlined"
               :label="$t('text.priceCollectionId.searchEanOrDescription')"
               append-icon="mdi-magnify"
+              @update:model-value="reloadSearch"
             />
           </v-card-text>
         </v-card>
@@ -37,8 +40,9 @@
           </v-card-title>
           <v-card-text>
             <v-text-field
+              clearable
               variant="underlined"
-              :label="$t('text.priceCollectionId.searchEanOrDescription')"
+              :label="$t('words.concurrent')"
               append-icon="mdi-magnify"
             />
           </v-card-text>
@@ -51,20 +55,22 @@
           </v-card-title>
           <v-card-text>
             <v-autocomplete
+              v-model="filters.cityId"
               :items="cities"
               item-title="name"
               item-value="id"
-
               variant="underlined"
-              :label="$t('text.priceCollectionId.searchEanOrDescription')"
+              :label="$t('words.city')"
               append-icon="mdi-magnify"
+              clearable
+              @update:model-value="reloadSearch"
             />
           </v-card-text>
         </v-card>
       </v-col>
     </v-row>
     <v-infinite-scroll
-      height="60vh"
+      height="80vh"
       :items="priceCollectionProducts"
       @load="load"
       :key="keyForInfiniteScroll"
@@ -74,9 +80,48 @@
           v-for="(item, index) in priceCollectionProducts"
           :key="index"
           class="text-body-1"
-          :title="item.description ?? $t('words.undefined')"
         >
-          <template #text>
+          <v-expansion-panel-title v-slot="{ expanded }">
+            <v-row align="center" justify="space-between">
+              <v-col cols="12" md="3" class="d-flex flex-column">
+                <span>
+                  {{ item.description ?? $t("words.undefined") }}
+                </span>
+                <span class="d-flex flex-row ga-1 align-center">
+                  <v-icon icon="mdi-barcode" size="20" color="grey" />
+                  <span class="text-subtitle-1 font-weight-bold">
+                    {{ item.barcode }}
+                  </span>
+                </span>
+              </v-col>
+              <v-col v-if="!expanded" cols="12" md="3">
+                <v-row justify="space-evenly">
+                  <v-col cols="auto">
+                    <v-row class="ga-2" align="center">
+                      <v-icon icon="mdi-trending-down" color="success" />
+
+                      <div class="d-flex flex-column ga-2">
+                        <p class="text-body-1 font-weight-bold">
+                          {{ $n(item.minvalue ?? 0, "currency") }}
+                        </p>
+                      </div>
+                    </v-row>
+                  </v-col>
+                  <v-col cols="auto">
+                    <v-row class="ga-2" align="center">
+                      <v-icon icon="mdi-trending-up" color="secondary" />
+                      <div class="d-flex flex-column ga-2">
+                        <p class="text-body-1 font-weight-bold">
+                          {{ $n(item.maxvalue ?? 0, "currency") }}
+                        </p>
+                      </div>
+                    </v-row>
+                  </v-col>
+                </v-row>
+              </v-col>
+            </v-row>
+          </v-expansion-panel-title>
+          <v-expansion-panel-text>
             <v-row align="center" justify="space-between">
               <v-col cols="12" md="3">
                 <v-img
@@ -152,7 +197,7 @@
                 </v-row>
               </v-col>
             </v-row>
-          </template>
+          </v-expansion-panel-text>
         </v-expansion-panel>
       </v-expansion-panels>
     </v-infinite-scroll>
@@ -164,8 +209,8 @@ import {
   useDashboardStore,
 } from "~/store/dashboardStore";
 import type { RouteLocationNormalized } from "vue-router";
-import type { ViewPriceCollectionProduct } from "~~/server/api/priceCollectionProduct";
 import type { PriceCollectionItem } from "~~/server/api/priceCollection";
+import type { GetPriceCollectionProducts } from "~~/server/api/priceCollectionProduct";
 
 function validateIdParam(route: RouteLocationNormalized) {
   return (route.params.priceCollectionId &&
@@ -183,14 +228,29 @@ dashboard.openBottomNavigation(BottomNavigationType.MY_SEARCHES);
 const route = useRoute();
 
 const priceCollection = ref<PriceCollectionItem | null>(null);
-const priceCollectionProducts = ref<ViewPriceCollectionProduct[]>([]);
+const priceCollectionProducts = ref<GetPriceCollectionProducts[]>([]);
 
-onMounted(() => {
-  dashboard.setReloadCallback(async () => {
-    // Reload the page
+const filters = ref<{
+  cityId: number | null;
+  productEanOrDescription: string | null;
+}>({
+  cityId: null,
+  productEanOrDescription: null,
+});
+
+const timeout = ref<ReturnType<typeof setTimeout> | null>(null);
+async function reloadSearch() {
+  if (timeout.value) {
+    clearTimeout(timeout.value);
+  }
+  timeout.value = setTimeout(() => {
     priceCollectionProducts.value = [];
     keyForInfiniteScroll.value++;
-  });
+  }, 500);
+}
+
+onMounted(() => {
+  dashboard.setReloadCallback(reloadSearch);
   $fetch("/api/priceCollection/show", {
     method: "GET",
     params: {
@@ -222,6 +282,9 @@ async function load({
       offset: priceCollectionProducts.value.length,
       limit: 10,
       priceCollectionId: route.params.priceCollectionId,
+      cityId: filters.value.cityId ?? undefined,
+      productEanOrDescription:
+        filters.value.productEanOrDescription ?? undefined,
     },
   })
     .then((res) => {
