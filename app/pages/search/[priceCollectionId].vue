@@ -67,7 +67,7 @@
       </v-col>
     </v-row>
     <v-infinite-scroll
-      height="60vh"
+      height="80vh"
       :items="priceCollectionProducts"
       @load="load"
       :key="keyForInfiniteScroll"
@@ -77,9 +77,8 @@
           v-for="(item, index) in priceCollectionProducts"
           :key="index"
           class="text-body-1"
-          :title="item.description ?? $t('words.undefined')"
         >
-          <template #title>
+          <v-expansion-panel-title v-slot="{ expanded }">
             <v-row align="center" justify="space-between">
               <v-col cols="12" md="3" class="d-flex flex-column">
                 <span>
@@ -92,7 +91,7 @@
                   </span>
                 </span>
               </v-col>
-              <v-col cols="12" md="3">
+              <v-col v-if="!expanded" cols="12" md="3">
                 <v-row justify="space-evenly">
                   <v-col cols="auto">
                     <v-row class="ga-2" align="center">
@@ -118,8 +117,8 @@
                 </v-row>
               </v-col>
             </v-row>
-          </template>
-          <template #text>
+          </v-expansion-panel-title>
+          <v-expansion-panel-text>
             <v-row align="center" justify="space-between">
               <v-col cols="12" md="3">
                 <v-img
@@ -195,7 +194,7 @@
                 </v-row>
               </v-col>
             </v-row>
-          </template>
+          </v-expansion-panel-text>
         </v-expansion-panel>
       </v-expansion-panels>
     </v-infinite-scroll>
