@@ -65,7 +65,7 @@
       @load="load"
       :key="keyForInfiniteScroll"
     >
-      <v-expansion-panels class="d-flex flex-row ga-3">
+      <v-expansion-panels class="d-flex flex-row ga-1">
         <v-expansion-panel
           v-for="(item, index) in priceCollectionProducts"
           :key="index"
@@ -88,42 +88,41 @@
                   align-content="center"
                   class="mb-1"
                 >
-                  <v-col cols="12" md="6">
+                  <v-col cols="6">
                     <v-row class="ga-2" align="center">
                       <span
                         v-t="'text.priceCollectionId.minPrice'"
                         class="text-body-1 font-weight-black text-success price-collection-item"
                       />
-                      <div>
-                        <span class="text-h4 font-weight-bold">{{
-                          $n(item.minvalue ?? 0, "currency")
-                        }}</span>
+                      <div class="d-flex flex-column ga-2">
+                        <p class="text-h4 font-weight-bold">
+                          {{ $n(item.minvalue ?? 0, "currency") }}
+                        </p>
+                        <p>{{ item.minvaluestorename }}</p>
                       </div>
                     </v-row>
                   </v-col>
-                  <v-col cols="12" md="6">
+                  <v-col cols="6">
                     <v-row class="ga-2" align="center">
                       <span
                         v-t="'text.priceCollectionId.maxPrice'"
                         class="text-body-1 font-weight-black text-secondary price-collection-item"
                       />
-                      <div>
-                        <span class="text-h4 font-weight-bold">{{
-                          $n(item.maxvalue ?? 0, "currency")
-                        }}</span>
+                      <div class="d-flex flex-column ga-2">
+                        <p class="text-h4 font-weight-bold">
+                          {{ $n(item.maxvalue ?? 0, "currency") }}
+                        </p>
+                        <p>{{ item.maxvaluestorename }}</p>
                       </div>
                     </v-row>
                   </v-col>
                 </v-row>
                 <v-row align="center" class="ga-1 mb-1">
                   <v-icon icon="mdi-barcode" size="40" color="grey" />
-                  <span
-                    v-t="'words.barcode'"
-                    class="text-subtitle-1 font-weight-bold"
-                  />
-                  <span class="text-subtitle-1 font-weight-bold"
-                    >: {{ item.barcode }}</span
-                  >
+                  <span v-t="'words.barcode'" class="text-subtitle-1" />
+                  <span class="text-subtitle-1 font-weight-bold">{{
+                    item.barcode
+                  }}</span>
                 </v-row>
                 <v-row class="mb-1">
                   <span>{{
@@ -137,7 +136,7 @@
               </v-col>
               <v-col cols="12" md="3">
                 <v-row justify="end">
-                  <v-btn color="primary" size="large">
+                  <v-btn color="primary" size="large" :block="mobile">
                     <span class="text-none text-h6">
                       {{
                         $t("text.priceCollectionId.compareStore", {
@@ -173,7 +172,7 @@ definePageMeta({
   layout: "dashboard",
   validate: validateIdParam,
 });
-
+const { mobile } = useDisplay();
 const dashboard = useDashboardStore();
 const keyForInfiniteScroll = ref(0);
 dashboard.openBottomNavigation(BottomNavigationType.MY_SEARCHES);
@@ -181,7 +180,6 @@ const route = useRoute();
 
 const priceCollection = ref<PriceCollectionItem | null>(null);
 const priceCollectionProducts = ref<ViewPriceCollectionProduct[]>([]);
-
 
 onMounted(() => {
   dashboard.setReloadCallback(async () => {
