@@ -24,10 +24,10 @@
           <v-card-text>
             <v-text-field
               v-model="filters.productEanOrDescription"
-              @update:model-value="reloadSearch"
               variant="underlined"
               :label="$t('text.priceCollectionId.searchEanOrDescription')"
               append-icon="mdi-magnify"
+              @update:model-value="reloadSearch"
             />
           </v-card-text>
         </v-card>
@@ -40,7 +40,7 @@
           <v-card-text>
             <v-text-field
               variant="underlined"
-              :label="$t('text.priceCollectionId.searchEanOrDescription')"
+              :label="$t('words.concurrent')"
               append-icon="mdi-magnify"
             />
           </v-card-text>
@@ -54,13 +54,13 @@
           <v-card-text>
             <v-autocomplete
               v-model="filters.cityId"
-              @update:model-value="reloadSearch"
               :items="cities"
               item-title="name"
               item-value="id"
               variant="underlined"
-              :label="$t('text.priceCollectionId.searchEanOrDescription')"
+              :label="$t('words.city')"
               append-icon="mdi-magnify"
+              @update:model-value="reloadSearch"
             />
           </v-card-text>
         </v-card>
