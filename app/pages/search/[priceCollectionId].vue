@@ -10,7 +10,7 @@
         rounded="0"
         :content="
           $t('text.priceCollectionId.countProduct', {
-            count: priceCollectionProducts.length,
+            count: priceCollection?.countproduct,
           })
         "
       />
@@ -59,6 +59,99 @@
         </v-card>
       </v-col>
     </v-row>
+    <v-infinite-scroll
+      height="60vh"
+      :items="priceCollectionProducts"
+      @load="load"
+    >
+      <v-expansion-panels class="d-flex flex-row ga-3">
+        <v-expansion-panel
+          v-for="(item, index) in priceCollectionProducts"
+          :key="index"
+          class="text-body-1"
+          :title="item.description ?? $t('words.undefined')"
+        >
+          <template #text>
+            <v-row align="center" justify="space-between">
+              <v-col cols="12" md="3">
+                <v-img
+                  :src="item.image ?? undefined"
+                  :alt="item.description ?? undefined"
+                  max-height="170px"
+                />
+              </v-col>
+              <v-col cols="12" md="5">
+                <v-row
+                  justify="center"
+                  align="center"
+                  align-content="center"
+                  class="mb-1"
+                >
+                  <v-col cols="12" md="6">
+                    <v-row class="ga-2" align="center">
+                      <span
+                        v-t="'text.priceCollectionId.minPrice'"
+                        class="text-body-1 font-weight-black text-success price-collection-item"
+                      />
+                      <div>
+                        <span class="text-h4 font-weight-bold">{{
+                          $n(item.minvalue ?? 0, "currency")
+                        }}</span>
+                      </div>
+                    </v-row>
+                  </v-col>
+                  <v-col cols="12" md="6">
+                    <v-row class="ga-2" align="center">
+                      <span
+                        v-t="'text.priceCollectionId.maxPrice'"
+                        class="text-body-1 font-weight-black text-secondary price-collection-item"
+                      />
+                      <div>
+                        <span class="text-h4 font-weight-bold">{{
+                          $n(item.maxvalue ?? 0, "currency")
+                        }}</span>
+                      </div>
+                    </v-row>
+                  </v-col>
+                </v-row>
+                <v-row align="center" class="ga-1 mb-1">
+                  <v-icon icon="mdi-barcode" size="40" color="grey" />
+                  <span
+                    v-t="'words.barcode'"
+                    class="text-subtitle-1 font-weight-bold"
+                  />
+                  <span class="text-subtitle-1 font-weight-bold"
+                    >: {{ item.barcode }}</span
+                  >
+                </v-row>
+                <v-row class="mb-1">
+                  <span>{{
+                    $t("text.priceCollectionId.updatedAt", {
+                      time: item.lastupdateat
+                        ? getDateFromNowFormated(new Date(item.lastupdateat))
+                        : $t("words.undefined"),
+                    })
+                  }}</span>
+                </v-row>
+              </v-col>
+              <v-col cols="12" md="3">
+                <v-row justify="end">
+                  <v-btn color="primary" size="large">
+                    <span class="text-none text-h6">
+                      {{
+                        $t("text.priceCollectionId.compareStore", {
+                          count: item.countstore,
+                        })
+                      }}
+                    </span>
+                  </v-btn>
+                </v-row>
+              </v-col>
+            </v-row>
+          </template>
+        </v-expansion-panel>
+      </v-expansion-panels>
+    </v-infinite-scroll>
   </div>
 </template>
 <script setup lang="ts">
@@ -71,11 +164,10 @@ import type { ViewPriceCollectionProduct } from "~~/server/api/priceCollectionPr
 import type { PriceCollectionItem } from "~~/server/api/priceCollection";
 
 function validateIdParam(route: RouteLocationNormalized) {
-  console.log(route.params.priceCollectionId);
   return (route.params.priceCollectionId &&
     !isNaN(Number(route.params.priceCollectionId))) as boolean;
 }
-
+const { getDateFromNowFormated } = useDateUtils();
 const { t } = useI18n();
 definePageMeta({
   layout: "dashboard",
@@ -101,14 +193,37 @@ onMounted(() => {
   }).then((res) => {
     priceCollection.value = res;
   });
+});
 
+async function load({
+  done,
+}: {
+  done: (status: "error" | "loading" | "empty" | "ok") => void;
+}) {
+  // Perform API call
   $fetch("/api/priceCollectionProduct", {
     method: "GET",
     params: {
+      offset: priceCollectionProducts.value.length,
+      limit: 10,
       priceCollectionId: route.params.priceCollectionId,
     },
-  }).then((res) => {
-    priceCollectionProducts.value = res;
-  });
-});
+  })
+    .then((res) => {
+      if (res.length === 0) {
+        done("empty");
+      } else {
+        priceCollectionProducts.value.push(...res);
+        done("ok");
+      }
+    })
+    .catch(() => {
+      done("error");
+    });
+}
 </script>
+<style scoped lang="scss">
+.price-collection-item {
+  width: 48px;
+}
+</style>

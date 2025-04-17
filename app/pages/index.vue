@@ -186,7 +186,7 @@ async function load({
   done: (status: "error" | "loading" | "empty" | "ok") => void;
 }) {
   // Perform API call
-  await $fetch("/api/priceCollection", {
+  $fetch("/api/priceCollection", {
     method: "GET",
     params: {
       offset: mySearches.value.length,

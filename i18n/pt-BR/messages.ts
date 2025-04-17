@@ -71,6 +71,10 @@ export default {
     priceCollectionId: {
       countProduct: "{count} produto | {count} produtos",
       searchEanOrDescription: "Pesquisar EAN ou descrição",
+      compareStore: "Compare em {count} loja | Compare em {count} lojas",
+      minPrice: "Menor preço",
+      maxPrice: "Maior preço",
+      updatedAt: "Atualizado {time}",
     },
     bottomNavigation: {
       mySearches: "Minhas Buscas",
@@ -102,5 +106,6 @@ export default {
     search: "Pesquisar",
     product: "Produto | Produtos",
     concurrent: "Concorrente | Concorrentes",
+    barcode: "Código de Barras",
   },
 };

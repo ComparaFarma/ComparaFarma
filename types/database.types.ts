@@ -379,6 +379,7 @@ export type Database = {
           countstore: number | null
           description: string | null
           id: number | null
+          image: string | null
           lastupdateat: string | null
           maxvalue: number | null
           minvalue: number | null
