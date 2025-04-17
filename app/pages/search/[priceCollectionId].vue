@@ -79,6 +79,46 @@
           class="text-body-1"
           :title="item.description ?? $t('words.undefined')"
         >
+          <template #title>
+            <v-row align="center" justify="space-between">
+              <v-col cols="12" md="3" class="d-flex flex-column">
+                <span>
+                  {{ item.description ?? $t("words.undefined") }}
+                </span>
+                <span class="d-flex flex-row ga-1 align-center">
+                  <v-icon icon="mdi-barcode" size="20" color="grey" />
+                  <span class="text-subtitle-1 font-weight-bold">
+                    {{ item.barcode }}
+                  </span>
+                </span>
+              </v-col>
+              <v-col cols="12" md="3">
+                <v-row justify="space-evenly">
+                  <v-col cols="auto">
+                    <v-row class="ga-2" align="center">
+                      <v-icon icon="mdi-trending-down" color="success" />
+
+                      <div class="d-flex flex-column ga-2">
+                        <p class="text-body-1 font-weight-bold">
+                          {{ $n(item.minvalue ?? 0, "currency") }}
+                        </p>
+                      </div>
+                    </v-row>
+                  </v-col>
+                  <v-col cols="auto">
+                    <v-row class="ga-2" align="center">
+                      <v-icon icon="mdi-trending-up" color="secondary" />
+                      <div class="d-flex flex-column ga-2">
+                        <p class="text-body-1 font-weight-bold">
+                          {{ $n(item.maxvalue ?? 0, "currency") }}
+                        </p>
+                      </div>
+                    </v-row>
+                  </v-col>
+                </v-row>
+              </v-col>
+            </v-row>
+          </template>
           <template #text>
             <v-row align="center" justify="space-between">
               <v-col cols="12" md="3">
@@ -235,7 +275,8 @@ async function load({
       limit: 10,
       priceCollectionId: route.params.priceCollectionId,
       cityId: filters.value.cityId ?? undefined,
-      productEanOrDescription: filters.value.productEanOrDescription ?? undefined,
+      productEanOrDescription:
+        filters.value.productEanOrDescription ?? undefined,
     },
   })
     .then((res) => {
