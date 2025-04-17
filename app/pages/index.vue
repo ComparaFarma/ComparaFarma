@@ -174,14 +174,21 @@ const newSearches = ref<PriceCollectionItem[]>([]);
 const lastUpdateSearches = ref<PriceCollectionItem[]>([]);
 
 const keyForInfiniteScroll = ref(0);
+const timeout = ref<ReturnType<typeof setTimeout> | null>(null);
 const dashboard = useDashboardStore();
 dashboard.setReloadCallback(async () => {
   // Reload the page
-  setTimeout(() => {
+  if (timeout.value) {
+    clearTimeout(timeout.value);
+  }
+  timeout.value = setTimeout(() => {
     mySearches.value = [];
     keyForInfiniteScroll.value++;
-  }, 100);
+  }, 500);
+  mySearches.value = [];
+  keyForInfiniteScroll.value++;
 });
+
 async function load({
   done,
 }: {

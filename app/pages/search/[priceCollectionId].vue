@@ -24,6 +24,7 @@
           <v-card-text>
             <v-text-field
               v-model="filters.productEanOrDescription"
+              clearable
               variant="underlined"
               :label="$t('text.priceCollectionId.searchEanOrDescription')"
               append-icon="mdi-magnify"
@@ -39,6 +40,7 @@
           </v-card-title>
           <v-card-text>
             <v-text-field
+              clearable
               variant="underlined"
               :label="$t('words.concurrent')"
               append-icon="mdi-magnify"
@@ -60,6 +62,7 @@
               variant="underlined"
               :label="$t('words.city')"
               append-icon="mdi-magnify"
+              clearable
               @update:model-value="reloadSearch"
             />
           </v-card-text>
@@ -235,11 +238,15 @@ const filters = ref<{
   productEanOrDescription: null,
 });
 
+const timeout = ref<ReturnType<typeof setTimeout> | null>(null);
 async function reloadSearch() {
-  setTimeout(() => {
+  if (timeout.value) {
+    clearTimeout(timeout.value);
+  }
+  timeout.value = setTimeout(() => {
     priceCollectionProducts.value = [];
     keyForInfiniteScroll.value++;
-  }, 100);
+  }, 500);
 }
 
 onMounted(() => {
