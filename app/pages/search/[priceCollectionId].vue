@@ -63,6 +63,7 @@
       height="60vh"
       :items="priceCollectionProducts"
       @load="load"
+      :key="keyForInfiniteScroll"
     >
       <v-expansion-panels class="d-flex flex-row ga-3">
         <v-expansion-panel
@@ -179,11 +180,19 @@ useHead({
 });
 
 const dashboard = useDashboardStore();
+const keyForInfiniteScroll = ref(0);
 dashboard.openBottomNavigation(BottomNavigationType.MY_SEARCHES);
 const route = useRoute();
 
 const priceCollection = ref<PriceCollectionItem | null>(null);
 const priceCollectionProducts = ref<ViewPriceCollectionProduct[]>([]);
+
+dashboard.setReloadCallback(async () => {
+  // Reload the page
+  priceCollectionProducts.value = [];
+  keyForInfiniteScroll.value++;
+});
+
 onMounted(() => {
   $fetch("/api/priceCollection/show", {
     method: "GET",
