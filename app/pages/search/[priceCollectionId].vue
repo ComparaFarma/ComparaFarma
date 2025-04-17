@@ -23,6 +23,8 @@
           </v-card-title>
           <v-card-text>
             <v-text-field
+              v-model="filters.productEanOrDescription"
+              @update:model-value="reloadSearch"
               variant="underlined"
               :label="$t('text.priceCollectionId.searchEanOrDescription')"
               append-icon="mdi-magnify"
@@ -51,10 +53,11 @@
           </v-card-title>
           <v-card-text>
             <v-autocomplete
+              v-model="filters.cityId"
+              @update:model-value="reloadSearch"
               :items="cities"
               item-title="name"
               item-value="id"
-
               variant="underlined"
               :label="$t('text.priceCollectionId.searchEanOrDescription')"
               append-icon="mdi-magnify"
@@ -164,8 +167,8 @@ import {
   useDashboardStore,
 } from "~/store/dashboardStore";
 import type { RouteLocationNormalized } from "vue-router";
-import type { ViewPriceCollectionProduct } from "~~/server/api/priceCollectionProduct";
 import type { PriceCollectionItem } from "~~/server/api/priceCollection";
+import type { GetPriceCollectionProducts } from "~~/server/api/priceCollectionProduct";
 
 function validateIdParam(route: RouteLocationNormalized) {
   return (route.params.priceCollectionId &&
@@ -183,14 +186,23 @@ dashboard.openBottomNavigation(BottomNavigationType.MY_SEARCHES);
 const route = useRoute();
 
 const priceCollection = ref<PriceCollectionItem | null>(null);
-const priceCollectionProducts = ref<ViewPriceCollectionProduct[]>([]);
+const priceCollectionProducts = ref<GetPriceCollectionProducts[]>([]);
+
+const filters = ref<{
+  cityId: number | null;
+  productEanOrDescription: string | null;
+}>({
+  cityId: null,
+  productEanOrDescription: null,
+});
+
+async function reloadSearch() {
+  priceCollectionProducts.value = [];
+  keyForInfiniteScroll.value++;
+}
 
 onMounted(() => {
-  dashboard.setReloadCallback(async () => {
-    // Reload the page
-    priceCollectionProducts.value = [];
-    keyForInfiniteScroll.value++;
-  });
+  dashboard.setReloadCallback(reloadSearch);
   $fetch("/api/priceCollection/show", {
     method: "GET",
     params: {
@@ -222,6 +234,8 @@ async function load({
       offset: priceCollectionProducts.value.length,
       limit: 10,
       priceCollectionId: route.params.priceCollectionId,
+      cityId: filters.value.cityId ?? undefined,
+      productEanOrDescription: filters.value.productEanOrDescription ?? undefined,
     },
   })
     .then((res) => {
