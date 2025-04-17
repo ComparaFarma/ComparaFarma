@@ -236,8 +236,10 @@ const filters = ref<{
 });
 
 async function reloadSearch() {
-  priceCollectionProducts.value = [];
-  keyForInfiniteScroll.value++;
+  setTimeout(() => {
+    priceCollectionProducts.value = [];
+    keyForInfiniteScroll.value++;
+  }, 100);
 }
 
 onMounted(() => {

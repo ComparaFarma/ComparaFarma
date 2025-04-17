@@ -177,8 +177,10 @@ const keyForInfiniteScroll = ref(0);
 const dashboard = useDashboardStore();
 dashboard.setReloadCallback(async () => {
   // Reload the page
-  mySearches.value = [];
-  keyForInfiniteScroll.value++;
+  setTimeout(() => {
+    mySearches.value = [];
+    keyForInfiniteScroll.value++;
+  }, 100);
 });
 async function load({
   done,
