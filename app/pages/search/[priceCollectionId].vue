@@ -51,6 +51,10 @@
           </v-card-title>
           <v-card-text>
             <v-autocomplete
+              :items="cities"
+              item-title="name"
+              item-value="id"
+
               variant="underlined"
               :label="$t('text.priceCollectionId.searchEanOrDescription')"
               append-icon="mdi-magnify"
@@ -194,6 +198,15 @@ onMounted(() => {
     },
   }).then((res) => {
     priceCollection.value = res;
+  });
+});
+
+const cities = computed(() => {
+  return priceCollection.value?.cities.map((city) => {
+    return {
+      id: city.city.id,
+      name: city.city.name,
+    };
   });
 });
 
