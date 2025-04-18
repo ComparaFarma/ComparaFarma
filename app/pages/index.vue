@@ -14,20 +14,26 @@
             />
           </span>
           <v-text-field
+            v-model="filters.name"
             :label="$t('text.mySearch.searchTextField')"
             density="compact"
             hide-details="auto"
+            @update:model-value="reload"
           />
-          <v-select
+          <v-autocomplete
+            v-model="filters.cityId"
+            :items="cities"
+            item-title="name"
+            item-value="id"
             :label="$t('words.city', { count: 2 })"
-            density="compact"
-            multiple
-            chips
             hide-details="auto"
+            variant="outlined"
+            density="compact"
+            @update:model-value="reload"
           />
           <v-btn size="small" color="primary" :icon="!mobile" :block="mobile">
             <v-icon icon="mdi-magnify" color="white" />
-            <span v-t="'words.search'" v-if="mobile" />
+            <span v-if="mobile" v-t="'words.search'" />
           </v-btn>
         </div>
         <v-infinite-scroll
@@ -153,6 +159,7 @@ import auth from "../ middleware/auth";
 import { LazyPartialListSearchItem } from "#components";
 import type { PriceCollectionItem } from "~~/server/api/priceCollection";
 import { useDashboardStore } from "~/store/dashboardStore";
+import type { City } from "~~/server/api/city";
 
 const { t } = useI18n();
 
@@ -173,10 +180,21 @@ const mySearches = ref<PriceCollectionItem[]>([]);
 const newSearches = ref<PriceCollectionItem[]>([]);
 const lastUpdateSearches = ref<PriceCollectionItem[]>([]);
 
+const cities = ref<City[]>([]);
+
+const filters = ref<{
+  name: string;
+  cityId: number | null;
+}>({
+  name: "",
+  cityId: null,
+});
+
 const keyForInfiniteScroll = ref(0);
 const timeout = ref<ReturnType<typeof setTimeout> | null>(null);
 const dashboard = useDashboardStore();
-dashboard.setReloadCallback(async () => {
+
+async function reload() {
   // Reload the page
   if (timeout.value) {
     clearTimeout(timeout.value);
@@ -185,9 +203,9 @@ dashboard.setReloadCallback(async () => {
     mySearches.value = [];
     keyForInfiniteScroll.value++;
   }, 500);
-  mySearches.value = [];
-  keyForInfiniteScroll.value++;
-});
+}
+
+dashboard.setReloadCallback(reload);
 
 async function load({
   done,
@@ -200,6 +218,8 @@ async function load({
     params: {
       offset: mySearches.value.length,
       limit: 10,
+      cityId: filters.value.cityId,
+      name: filters.value.name,
     },
   })
     .then((res) => {
@@ -218,6 +238,13 @@ async function load({
 const OFFSET = 0;
 const LIMIT = 10;
 onMounted(() => {
+  $fetch("/api/city", {
+    method: "GET",
+  }).then((res) => {
+    console.log(res);
+    cities.value = res;
+  });
+
   if (mobile.value) {
     return;
   }
