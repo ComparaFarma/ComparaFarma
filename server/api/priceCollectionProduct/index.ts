@@ -16,12 +16,13 @@ export interface GetPriceCollectionProducts {
 
 export default eventHandler(async (event) => {
 
-    const { limit, offset, priceCollectionId, cityId, productEanOrDescription } = getQuery<{
+    const { limit, offset, priceCollectionId, cityId, productEanOrDescription, storeCnpj } = getQuery<{
         limit: number,
         offset: number,
         cityId?: number,
         priceCollectionId: number,
         productEanOrDescription?: string
+        storeCnpj?: number
     }>(event)
 
     const client = await serverSupabaseClient(event)
@@ -32,7 +33,8 @@ export default eventHandler(async (event) => {
             p_offset: offset ?? 0,
             p_price_collection_id: priceCollectionId,
             p_city_id: cityId,
-            p_barcode_or_description: productEanOrDescription
+            p_barcode_or_description: productEanOrDescription,
+            p_store_cnpj: storeCnpj
         } as unknown) as undefined, // working around for stop ts error
         {
             get: true

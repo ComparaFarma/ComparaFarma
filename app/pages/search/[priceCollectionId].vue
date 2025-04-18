@@ -39,12 +39,32 @@
             <span v-t="'words.concurrent'" class="text-h6 font-weight-black" />
           </v-card-title>
           <v-card-text>
-            <v-text-field
-              clearable
+            <v-autocomplete
+              v-model="filters.storeCnpj"
+              :items="stores"
+              item-value="cnpj"
               variant="underlined"
               :label="$t('words.concurrent')"
               append-icon="mdi-magnify"
-            />
+              clearable
+              item-title="name"
+              @update:model-value="reloadSearch"
+              
+            >
+              <template #item="{ props, item }">
+                <v-list-item
+                  v-bind="props"
+                  :subtitle="item.raw.cnpj"
+                  :title="item.raw.name"
+                />
+              </template>
+              <template #selection="{ props, item }">
+                <v-list-item
+                  v-bind="props"
+                  :title="`${item.raw.name} (${item.raw.cnpj})`"
+                />
+              </template>
+            </v-autocomplete>
           </v-card-text>
         </v-card>
       </v-col>
@@ -211,6 +231,7 @@ import {
 import type { RouteLocationNormalized } from "vue-router";
 import type { PriceCollectionItem } from "~~/server/api/priceCollection";
 import type { GetPriceCollectionProducts } from "~~/server/api/priceCollectionProduct";
+import type { Store } from "~~/server/api/store";
 
 function validateIdParam(route: RouteLocationNormalized) {
   return (route.params.priceCollectionId &&
@@ -229,13 +250,15 @@ const route = useRoute();
 
 const priceCollection = ref<PriceCollectionItem | null>(null);
 const priceCollectionProducts = ref<GetPriceCollectionProducts[]>([]);
-
+const stores = ref<Store[]>([]);
 const filters = ref<{
   cityId: number | null;
   productEanOrDescription: string | null;
+  storeCnpj: number | null;
 }>({
   cityId: null,
   productEanOrDescription: null,
+  storeCnpj: null,
 });
 
 const timeout = ref<ReturnType<typeof setTimeout> | null>(null);
@@ -258,6 +281,15 @@ onMounted(() => {
     },
   }).then((res) => {
     priceCollection.value = res;
+  });
+
+  $fetch("/api/store", {
+    method: "GET",
+    params: {
+      priceCollectionId: route.params.priceCollectionId,
+    },
+  }).then((res) => {
+    stores.value = res;
   });
 });
 
@@ -285,6 +317,7 @@ async function load({
       cityId: filters.value.cityId ?? undefined,
       productEanOrDescription:
         filters.value.productEanOrDescription ?? undefined,
+        storeCnpj: filters.value.storeCnpj ?? undefined,
     },
   })
     .then((res) => {
