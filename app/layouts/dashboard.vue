@@ -57,14 +57,8 @@
         <slot />
       </v-pull-to-refresh>
     </v-main>
-    <v-snackbar v-model="show" multi-line>
-      {{ message }}
-      <template #actions>
-        <v-btn color="red" variant="text" @click="notifyStore.hideNotification">
-          <v-icon icon="mdi-close" />
-        </v-btn>
-      </template>
-    </v-snackbar>
+    
+    <v-snackbar-queue v-model="messages" multi-line closable />
     <v-bottom-navigation
       :model-value="currentBottomNavigation"
       active
@@ -111,7 +105,7 @@ import { useCityStore } from "~/store/cityStore";
 
 const notifyStore = useNotifyStore();
 const pullDownThreshold = 56;
-const { message, show } = storeToRefs(notifyStore);
+const { messages } = storeToRefs(notifyStore);
 
 const dashboardStore = useDashboardStore();
 
