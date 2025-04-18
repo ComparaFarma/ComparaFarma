@@ -58,9 +58,8 @@
                   :title="item.raw.name"
                 />
               </template>
-              <template #selection="{ props, item }">
+              <template #selection="{ item }">
                 <v-list-item
-                  v-bind="props"
                   :title="`${item.raw.name} (${item.raw.cnpj})`"
                 />
               </template>

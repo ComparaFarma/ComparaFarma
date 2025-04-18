@@ -13,7 +13,7 @@ export default eventHandler(async (event) => {
 
     const select = client
         .from('Store')
-        .select(`*, City(PriceCollectionCity(*))`)
+        .select(`*, City!inner(PriceCollectionCity!inner(*))`)
         .order('name', { ascending: true })
         
     if (priceCollectionId) {
