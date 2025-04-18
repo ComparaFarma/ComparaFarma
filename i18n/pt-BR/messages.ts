@@ -11,7 +11,8 @@ export default {
       empty: "Não há mais dados",
     },
     open: "Abrir",
-    close: "Fechar", 
+    close: "Fechar",
+    dismiss: "Fechar",
   },
   supabaseCodes: {
     validation_failed: "Credenciais inválidas",
@@ -53,7 +54,7 @@ export default {
       lastSearches: "Últimas Consultas",
       lastUpdates: "Últimas Atualizações",
     },
-    newSearch:{
+    newSearch: {
       title: "Nova Busca",
       ean: "EAN",
       list: "Lista",

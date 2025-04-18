@@ -18,25 +18,14 @@
           </v-col>
         </v-col>
       </v-row>
-      <v-snackbar v-model="show" multi-line>
-      {{ message }}
-      <template #actions>
-        <v-btn color="red" variant="text" @click="notifyStore.hideNotification">
-          <v-icon icon="mdi-close" />
-        </v-btn>
-      </template>
-    </v-snackbar>
+      <v-snackbar-queue v-model="messages" multi-line closable />
     </v-container>
   </v-app>
 </template>
 <script setup lang="ts">
-
 import { useNotifyStore } from "~/store/notifyStore";
 
 const notifyStore = useNotifyStore();
 
-const { message, show } = storeToRefs(notifyStore);
-
-
-
+const { messages } = storeToRefs(notifyStore);
 </script>
