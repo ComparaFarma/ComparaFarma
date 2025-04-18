@@ -19,6 +19,7 @@ export default {
     dismiss: "Fechar",
   },
   supabaseCodes: {
+    user_banned: "Usuário bloqueado. Entre em contato com o suporte",
     validation_failed: "Credenciais inválidas",
     user_already_exists: "Usuário já existe",
     weak_password: "Senha fraca",
