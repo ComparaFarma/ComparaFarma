@@ -10,6 +10,10 @@ export default {
     infiniteScroll: {
       empty: "Não há mais dados",
     },
+    input: {
+      clear: "Limpar",
+    },
+    badge: "Novo",
     open: "Abrir",
     close: "Fechar",
     dismiss: "Fechar",
