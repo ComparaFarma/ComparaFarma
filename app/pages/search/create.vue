@@ -152,8 +152,8 @@ function triggerFileInput() {
 
 function triggerFileDownload() {
   const link = document.createElement('a')
-  link.href = '/model-import.xlsx' // Caminho direto para o arquivo em /public
-  link.download = 'modelo-importacao.xlsx' // Nome que aparecerá no download
+  link.href = '/api/download/modelo-importacao' // Nova rota de API que serve o arquivo
+  link.download = '' // opcional: pode deixar em branco, o servidor já define o nome
   link.click()
 }
 
