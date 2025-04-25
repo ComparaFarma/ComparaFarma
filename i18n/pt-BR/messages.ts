@@ -73,6 +73,12 @@ export default {
       downloadModelImportButton: "Baixar modelo",
       searchTextField: "Pesquisar EAN",
       loadingImport: "Carregando...",
+      notify:{
+        success: "Busca criada com sucesso",
+        error: "Erro ao criar busca",
+        requireProduct: "Selecione pelo menos um EAN",
+        errorReadFile: "Erro ao ler o arquivo",
+      }
     },
     priceCollectionId: {
       countProduct: "{count} produto | {count} produtos",
@@ -97,6 +103,11 @@ export default {
         createdAt: "Criado: {time}",
       },
     },
+    composables:{
+      importXlsx:{
+        invalidFileType: "Tipo de arquivo inválido. Por favor, faça o upload de um arquivo Excel.",
+      }
+    }
   },
   actions: {
     backToLogin: "Voltar para o login",
