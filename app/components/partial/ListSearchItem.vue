@@ -58,7 +58,7 @@
           <span v-t="'words.visualize'" />
         </v-btn>
       </v-col>
-      <v-col :cols="mobile ? 12 : 1">
+      <v-col :cols="mobile ? 12 : 1" class="d-flex justify-end">
         <v-btn
           color="error"
           :icon="!mobile"

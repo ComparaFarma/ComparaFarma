@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-row class="my-4">
-      <v-col cols="12" lg="6">
+      <v-col cols="12" lg="9">
         <div
           class="ga-2 d-flex"
           :class="{ 'flex-row': !mobile, 'flex-column': mobile }"
@@ -39,7 +39,7 @@
         <v-infinite-scroll
           :key="keyForInfiniteScroll"
           class="my-2 ml-4"
-          :height="mobile ? '60vh' : '74vh'"
+          :height="mobile ? '60vh' : '80vh'"
           :items="mySearches"
           @load="load"
         >
@@ -63,50 +63,7 @@
           </template>
         </v-infinite-scroll>
       </v-col>
-      <v-col cols="12" md="6" v-if="!mobile" class="align-end">
-        <div class="py-2 mb-6">
-          <div class="px-4 ga-4">
-            <v-icon
-              icon="mdi-history"
-              size="34"
-              color="secondary"
-              class="mr-2"
-              :alt="$t('text.mySearch.lastSearches')"
-              :title="$t('text.mySearch.lastSearches')"
-            />
-            <span
-              v-t="'text.mySearch.lastSearches'"
-              class="text-uppercase text-subtitle-1 text-secondary"
-            />
-          </div>
-          <v-infinite-scroll
-            class="ml-4"
-            height="32vh"
-            :items="mySearches"
-            @load="({ done }) => done('error')"
-          >
-            <template v-for="(item, index) in newSearches" :key="index">
-              <div>
-                <LazyPartialListSearchItem
-                  :update-at="
-                    item.lastcheckdate
-                      ? new Date(item.lastcheckdate)
-                      : undefined
-                  "
-                  :created-at="new Date(item.createdAt)"
-                  :title="item.name"
-                  :cities="item.cities.map((city) => city.city.name)"
-                  @visualize="() => navigateTo(`/search/${item.id}`)"
-                />
-                <v-divider
-                  v-if="index < items.length - 1"
-                  :key="'divider' + index"
-                  class="my-2"
-                />
-              </div>
-            </template>
-          </v-infinite-scroll>
-        </div>
+      <v-col v-if="!mobile" cols="12" md="3" class="align-end">
         <div class="py-2">
           <div class="px-4 ga-4">
             <v-icon
@@ -124,7 +81,7 @@
           </div>
           <v-infinite-scroll
             class="ml-4"
-            height="34vh"
+            height="80vh"
             :items="mySearches"
             @load="({ done }) => done('error')"
           >
@@ -177,7 +134,6 @@ const { mobile } = useDisplay();
 const items = ref(Array.from({ length: 30 }, (k, v) => v + 1));
 
 const mySearches = ref<PriceCollectionItem[]>([]);
-const newSearches = ref<PriceCollectionItem[]>([]);
 const lastUpdateSearches = ref<PriceCollectionItem[]>([]);
 
 const cities = ref<City[]>([]);
@@ -220,6 +176,7 @@ async function load({
       limit: 10,
       cityId: filters.value.cityId,
       name: filters.value.name,
+      orderBy: "createdAt",
     },
   })
     .then((res) => {
@@ -236,35 +193,24 @@ async function load({
 }
 
 const OFFSET = 0;
-const LIMIT = 10;
+const LIMIT = 5;
 onMounted(() => {
   $fetch("/api/city", {
     method: "GET",
   }).then((res) => {
-    console.log(res);
     cities.value = res;
   });
 
   if (mobile.value) {
     return;
   }
-  $fetch("/api/priceCollection", {
-    method: "GET",
-    params: {
-      offset: OFFSET,
-      limit: LIMIT,
-      orderBy: "createdAt",
-    },
-  }).then((res) => {
-    newSearches.value = res;
-  });
 
   $fetch("/api/priceCollection", {
     method: "GET",
     params: {
       offset: OFFSET,
       limit: LIMIT,
-      orderBy: "updatedAt",
+      orderBy: "lastcheckdate",
     },
   }).then((res) => {
     lastUpdateSearches.value = res;

@@ -28,8 +28,8 @@ export default eventHandler(async (event) => {
                 )
             )`,
         )
-        .order(orderBy ?? 'createdAt', { ascending: false })
-        .range(Number(offset), Number(offset) + Number(limit))
+        .order(orderBy ?? 'createdAt', { ascending: true })
+        .range(Number(offset), Number(offset) + Number(limit-1))
     if (cityId) {
         select.eq('cities.city.id', cityId)
     }
