@@ -78,6 +78,7 @@ export default {
         error: "Erro ao criar busca",
         requireProduct: "Selecione pelo menos um EAN",
         errorReadFile: "Erro ao ler o arquivo",
+        errorEmptyFile: "Arquivo vazio",
       }
     },
     priceCollectionId: {

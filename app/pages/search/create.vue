@@ -78,8 +78,8 @@
     </v-row>
     <v-row class="my-4">
       <v-col cols="12" class="ga-2 d-flex justify-end">
-        <v-btn v-if="myProducts.length > 0" prepend-icon="mdi-cancel" color="secondary">
-          <span v-t="'text.newSearch.clearSearchImportButton'" class="text-withe" @click="clearImport" />
+        <v-btn v-if="myProducts.length > 0" prepend-icon="mdi-cancel" color="secondary"  @click="clearImport" >
+          <span v-t="'text.newSearch.clearSearchImportButton'" class="text-withe"/>
         </v-btn>
         <v-btn prepend-icon="mdi-plus" color="primary" @click="createNewSearch">
           <span v-t="'text.newSearch.crateSearchButton'" class="text-white" />
@@ -94,6 +94,10 @@ import { LazyPartialListEanItem } from "#components";
 import { useForm } from 'vee-validate';
 import { useNotifyStore } from '~/store/notifyStore';
 import { useCityStore } from "~/store/cityStore";
+import {
+  BottomNavigationType,
+  useDashboardStore,
+} from "~/store/dashboardStore";
 
 
 const { t } = useI18n();
@@ -118,6 +122,11 @@ const filterMyProducts = ref<Array<string>>([]);
 const searchValue = ref<string>("");
 
 const cityStore = useCityStore();
+const dashboard = useDashboardStore();
+
+onMounted(() => {
+  dashboard.openBottomNavigation(BottomNavigationType.CREATE_SEARCH);
+});
 
 // Configuração do formulário com validação
 const { defineField, errors, validate } = useForm({
@@ -164,6 +173,7 @@ async function handleFileImport(event: Event) {
 
   if (!fileInput.files || fileInput.files.length === 0) {
     console.error('No file selected');
+    loadingImport.value = false;
     return;
   }
 
@@ -176,6 +186,12 @@ async function handleFileImport(event: Event) {
     // Process your rows here
     const eans = rows.slice(1) // Skip header row
       .map(row => row[0]?.toString().trim());
+
+    if (eans.length === 0) {
+      notifyStore.showNotification(t('text.newSearch.notify.errorEmptyFile'), 'error');
+      loadingImport.value = false;
+      return;
+    }
 
     myProducts.value = eans as Array<string>;
     filterMyProducts.value = myProducts.value;
@@ -198,17 +214,16 @@ function onUpdateSearch(value: string) {
 }
 
 function clearImport() {
+  selectedEans.value = [];
   myProducts.value = [];
   filterMyProducts.value = [];
   searchValue.value = "";
+  title.value = "";
+  cities.value = [];
   const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
   if (fileInput) {
     fileInput.value = '';
   }
-
-  selectedEans.value = [];
-  title.value = "";
-  cities.value = [];
 }
 
 function onChangeEan(event: { target: { checked: boolean; value: string } }) {

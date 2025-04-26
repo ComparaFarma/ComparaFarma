@@ -134,8 +134,9 @@ onMounted(() => {
   if (!apiSupabase.isAuthenticated()) {
     navigateTo("/auth/login");
   }
-
-  if (!cityStore.cities) {
+  
+  // Check if the user has cities
+  if (cityStore.cities.length == 0) {
     cityStore.fetchCities();
   }
 });
