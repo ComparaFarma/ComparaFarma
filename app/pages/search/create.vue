@@ -9,8 +9,11 @@
           </span>
           <v-text-field v-model="title" :label="$t('text.newSearch.titleNewSearchTextField')" density="compact"
             hide-details="auto" v-bind="titleProps" :error-messages="errors.title" />
-          <v-select v-model="cities" :label="$t('words.city', { count: 2 })" density="compact" multiple chips
-            hide-details="auto" v-bind="citiesProps" :items="cityStore.cities" item-title="name" item-value="id" />
+
+          <v-autocomplete v-model="cities" :label="$t('words.city', { count: 2 })" density="compact" variant="outlined"
+            multiple chips hide-details="auto" v-bind="citiesProps" :items="cityStore.cities" item-title="name"
+            item-value="id" />
+
         </div>
       </v-col>
     </v-row>
@@ -18,8 +21,13 @@
       <v-col cols="12" md="6">
         <v-card class="mx-auto border-md" variant="outlined" width="100%">
           <template v-slot:prepend>
-            <span v-t="'text.newSearch.titleSearchProduct'" class="text-uppercase text-grey-darken-3"
-              :class="mobile ? 'text-subtitle-2' : 'text-h6'" />
+            <section class="d-flex ga-2">
+              <span v-t="'text.newSearch.titleSearchProduct'" class="text-uppercase text-grey-darken-3"
+                :class="mobile ? 'text-subtitle-2' : 'text-h6'" />
+              <v-chip v-if="!mobile" variant="elevated">
+                {{ countEans }}
+              </v-chip>
+            </section>
           </template>
 
           <template v-slot:append>
@@ -70,10 +78,10 @@
     </v-row>
     <v-row class="my-4">
       <v-col cols="12" class="ga-2 d-flex justify-end">
-        <v-btn v-if="myProducts.length > 0" prepend-icon="mdi-cancel" color="secondary" :size="mobile ? 'x-small' : 'small'">
-          <span v-t="'text.newSearch.clearSearchImportButton'" class="text-withe" @click="clearImport" />
+        <v-btn v-if="myProducts.length > 0" prepend-icon="mdi-cancel" color="secondary"  @click="clearImport" >
+          <span v-t="'text.newSearch.clearSearchImportButton'" class="text-withe"/>
         </v-btn>
-        <v-btn prepend-icon="mdi-plus" color="primary" @click="createNewSearch" >
+        <v-btn prepend-icon="mdi-plus" color="primary" @click="createNewSearch">
           <span v-t="'text.newSearch.crateSearchButton'" class="text-white" />
         </v-btn>
       </v-col>
@@ -86,6 +94,10 @@ import { LazyPartialListEanItem } from "#components";
 import { useForm } from 'vee-validate';
 import { useNotifyStore } from '~/store/notifyStore';
 import { useCityStore } from "~/store/cityStore";
+import {
+  BottomNavigationType,
+  useDashboardStore,
+} from "~/store/dashboardStore";
 
 
 const { t } = useI18n();
@@ -95,7 +107,7 @@ const notifyStore = useNotifyStore();
 definePageMeta({
   layout: "dashboard",
   middleware: auth,
-  name: "new-search",
+  name: "create",
 });
 
 useHead({
@@ -110,6 +122,11 @@ const filterMyProducts = ref<Array<string>>([]);
 const searchValue = ref<string>("");
 
 const cityStore = useCityStore();
+const dashboard = useDashboardStore();
+
+onMounted(() => {
+  dashboard.openBottomNavigation(BottomNavigationType.CREATE_SEARCH);
+});
 
 // Configuração do formulário com validação
 const { defineField, errors, validate } = useForm({
@@ -130,6 +147,11 @@ const [title, titleProps] = defineField("title", vuetifyConfig);
 const [cities, citiesProps] = defineField("cities", vuetifyConfig);
 const selectedEans = ref<Array<string>>([]);
 
+const countEans = computed(() => {
+  return selectedEans.value.length;
+});
+
+
 function triggerFileInput() {
   const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
   if (fileInput) {
@@ -139,8 +161,8 @@ function triggerFileInput() {
 
 function triggerFileDownload() {
   const link = document.createElement('a')
-  link.href = '/model-import.xlsx' // Caminho direto para o arquivo em /public
-  link.download = 'modelo-importacao.xlsx' // Nome que aparecerá no download
+  link.href = '/api/download/modelo-importacao' // Nova rota de API que serve o arquivo
+  link.download = '' // opcional: pode deixar em branco, o servidor já define o nome
   link.click()
 }
 
@@ -151,6 +173,7 @@ async function handleFileImport(event: Event) {
 
   if (!fileInput.files || fileInput.files.length === 0) {
     console.error('No file selected');
+    loadingImport.value = false;
     return;
   }
 
@@ -164,10 +187,17 @@ async function handleFileImport(event: Event) {
     const eans = rows.slice(1) // Skip header row
       .map(row => row[0]?.toString().trim());
 
+    if (eans.length === 0) {
+      notifyStore.showNotification(t('text.newSearch.notify.errorEmptyFile'), 'error');
+      loadingImport.value = false;
+      return;
+    }
+
     myProducts.value = eans as Array<string>;
     filterMyProducts.value = myProducts.value;
     selectedEans.value = eans as Array<string>;
   }).catch((error) => {
+    notifyStore.showNotification(t('text.newSearch.notify.errorReadFile'), 'error');
     console.error('Error reading file:', error);
   }).finally(() => {
     loadingImport.value = false;
@@ -184,17 +214,16 @@ function onUpdateSearch(value: string) {
 }
 
 function clearImport() {
+  selectedEans.value = [];
   myProducts.value = [];
   filterMyProducts.value = [];
   searchValue.value = "";
+  title.value = "";
+  cities.value = [];
   const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
   if (fileInput) {
     fileInput.value = '';
   }
-
-  selectedEans.value = [];
-  title.value = "";
-  cities.value = [];
 }
 
 function onChangeEan(event: { target: { checked: boolean; value: string } }) {
@@ -215,7 +244,7 @@ async function createNewSearch() {
 
   // Validação adicional para os EANs
   if (!selectedEans.value || selectedEans.value.length === 0) {
-    notifyStore.showNotification('Selecione pelo menos um EAN', 'error');
+    notifyStore.showNotification(t('text.newSearch.notify.requireProduct'), 'error');
     loading.value = false;
     return;
   }
@@ -234,10 +263,10 @@ async function createNewSearch() {
     }
   }).then((res) => {
     console.log(res);
-    notifyStore.showNotification('Pesquisa criada com sucesso!', 'success');
+    notifyStore.showNotification(t('text.newSearch.notify.success'), 'success');
     clearImport();
   }).catch((error) => {
-    console.error('Error creating search:', error);
+    console.error(t('text.newSearch.notify.error'), error);
     notifyStore.showNotification(
       error.message || 'Erro ao criar pesquisa',
       'error'

@@ -33,7 +33,7 @@ export default eventHandler(async (event) => {
     throw createError({
       statusCode: 500,
       statusMessage: "Failed to create price collection",
-      data: newCollection,
+      data: collectionError,
     });
   }
 

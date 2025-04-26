@@ -7,13 +7,14 @@ export const useCityStore = defineStore('city', {
   }),
   actions: {
         async fetchCities() {
-            const { data, error } = await useFetch('/api/city', {
+            await $fetch('/api/city', {
                 method: 'GET'
-            });
-            if (error.value) {
+            }).catch((error) => {
                 throw new Error(error.value.message);
             }
-            this.cities = data.value as City[];
+            ).then((data) => {
+                this.cities = data as City[];
+            });
         },
         getCityById(id: number) {
             return this.cities.find(city => city.id === id);

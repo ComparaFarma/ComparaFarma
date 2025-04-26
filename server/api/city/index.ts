@@ -1,10 +1,7 @@
 import { serverSupabaseClient } from '#supabase/server'
 import type { Tables } from '~~/types/database.types'
 
-export interface City extends Tables<'City'> {
-    id: number
-    name: string
-}
+export type City = Pick<Tables<'City'>, "name" | "id">;
 
 export default eventHandler(async (event) => {
 

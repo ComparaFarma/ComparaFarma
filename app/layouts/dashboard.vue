@@ -82,7 +82,7 @@
         icon
         :value="BottomNavigationType.CREATE_SEARCH"
         size="medium"
-        @click="navigateTo('/search')"
+        @click="navigateTo('/search/create')"
       >
         <v-icon icon="mdi-plus" />
         <span class="text-uppercase">
@@ -113,7 +113,6 @@ const { currentBottomNavigation } = storeToRefs(dashboardStore);
 const logoutLoading = ref(false);
 
 const cityStore = useCityStore();
-cityStore.fetchCities();
 
 const apiSupabase = useApiSupabase();
 async function logout() {
@@ -134,6 +133,11 @@ onMounted(() => {
   // Check if the user is authenticated
   if (!apiSupabase.isAuthenticated()) {
     navigateTo("/auth/login");
+  }
+  
+  // Check if the user has cities
+  if (cityStore.cities.length == 0) {
+    cityStore.fetchCities();
   }
 });
 </script>
