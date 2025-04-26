@@ -179,7 +179,7 @@ async function handleFileImport(event: Event) {
 
   const file = fileInput.files[0] as File;
 
-  const { importXlsx } = useImportXlsx(t)
+  const { importXlsx } = useImportXlsx()
 
   importXlsx(file).then((rows) => {
     console.log('Excel data:', rows);
