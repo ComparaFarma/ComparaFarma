@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-row class="my-4">
-      <v-col cols="12" lg="9">
+      <v-col cols="12" lg="8">
         <div
           class="ga-2 d-flex"
           :class="{ 'flex-row': !mobile, 'flex-column': mobile }"
@@ -39,7 +39,7 @@
         <v-infinite-scroll
           :key="keyForInfiniteScroll"
           class="my-2 ml-4"
-          :height="mobile ? '60vh' : '80vh'"
+          :height="mobile ? '60vh' : '76vh'"
           :items="mySearches"
           @load="load"
         >
@@ -63,7 +63,7 @@
           </template>
         </v-infinite-scroll>
       </v-col>
-      <v-col v-if="!mobile" cols="12" md="3" class="align-end">
+      <v-col v-if="!mobile" cols="12" md="4" class="align-end">
         <div class="py-2">
           <div class="px-4 ga-4">
             <v-icon
@@ -81,7 +81,7 @@
           </div>
           <v-infinite-scroll
             class="ml-4"
-            height="80vh"
+            height="76vh"
             :items="mySearches"
             @load="({ done }) => done('error')"
           >
@@ -193,7 +193,7 @@ async function load({
 }
 
 const OFFSET = 0;
-const LIMIT = 5;
+const LIMIT = 4;
 onMounted(() => {
   $fetch("/api/city", {
     method: "GET",
