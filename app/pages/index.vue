@@ -39,7 +39,7 @@
         <v-infinite-scroll
           :key="keyForInfiniteScroll"
           class="my-2 ml-4"
-          :height="mobile ? '60vh' : '76vh'"
+          :height="mobile ? '60vh' : '74vh'"
           :items="mySearches"
           @load="load"
         >
@@ -81,7 +81,7 @@
           </div>
           <v-infinite-scroll
             class="ml-4"
-            height="76vh"
+            height="74vh"
             :items="mySearches"
             @load="({ done }) => done('error')"
           >
