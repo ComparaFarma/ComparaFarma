@@ -10,6 +10,7 @@
               height="40"
               contain
               class="rounded-lg"
+              :alt="$t('words.brand')"
             />
           </v-icon>
 

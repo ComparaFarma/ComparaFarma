@@ -125,5 +125,6 @@ export default {
     product: "Produto | Produtos",
     concurrent: "Concorrente | Concorrentes",
     barcode: "Código de Barras",
+    brand: "Logo",
   },
 };

@@ -8,6 +8,7 @@
             max-width="500"
             max-height="500"
             contain
+            :alt="$t('words.brand')"
           />
         </v-col>
         <v-col cols="12" md="6">
