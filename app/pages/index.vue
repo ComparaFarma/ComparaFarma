@@ -211,6 +211,7 @@ onMounted(() => {
       offset: OFFSET,
       limit: LIMIT,
       orderBy: "lastcheckdate",
+      hasLastcheckdate: true,
     },
   }).then((res) => {
     lastUpdateSearches.value = res;
