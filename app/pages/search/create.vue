@@ -31,7 +31,7 @@
           </template>
 
           <template v-slot:append>
-            <div class="px-2" :class="{ 'd-flex flex-column ga-2': mobile, 'd-flex align-center ga-4': !mobile }">
+            <div class="px-2" :class="{ 'd-flex flex-column ga-2': mobile, 'd-flex align-center ga-2': !mobile }">
               <v-btn prepend-icon="mdi-download-box-outline" variant="outlined" color="success"
                 :size="mobile ? 'x-small' : 'small'" :class="mobile ? 'w-100' : 'mr-2'" @click="triggerFileDownload">
                 <span v-t="'text.newSearch.downloadModelImportButton'" class="text-success" />
