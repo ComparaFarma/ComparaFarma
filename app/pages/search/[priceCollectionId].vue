@@ -89,10 +89,10 @@
       </v-col>
     </v-row>
     <v-infinite-scroll
+      :key="keyForInfiniteScroll"
       height="80vh"
       :items="priceCollectionProducts"
       @load="load"
-      :key="keyForInfiniteScroll"
     >
       <v-expansion-panels class="d-flex flex-row ga-1">
         <v-expansion-panel

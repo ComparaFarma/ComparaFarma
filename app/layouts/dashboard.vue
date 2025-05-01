@@ -1,7 +1,7 @@
 <template>
   <v-layout ref="app">
     <v-app-bar elevation="4" color="surface" name="app-bar">
-      <v-app-bar-title @click="navigateTo('/')" class="cursor-pointer">
+      <v-app-bar-title class="cursor-pointer" @click="navigateTo('/')">
         <div class="d-flex align-center">
           <v-icon size="40" class="mr-2">
             <v-img
