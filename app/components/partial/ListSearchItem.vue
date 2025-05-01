@@ -64,10 +64,34 @@
           :icon="!mobile"
           :block="!!mobile"
           size="small"
-          @click="emit('delete')"
         >
           <v-icon icon="mdi-delete" size="24" />
-          <span v-t="'words.delete'" v-show="mobile" />
+          <span v-show="mobile" v-t="'words.delete'"/>
+          <v-dialog activator="parent" max-width="340">
+            <template #default="{ isActive }">
+              <v-card
+                prepend-icon="mdi-delete"
+                :text="$t('text.components.partialListSearchItem.confirmDelete')"
+                :title="$t('text.components.partialListSearchItem.deleteTitle')"
+              >
+                <template #actions>
+                  <v-btn
+                  class="ml-auto"
+                  :text="$t('words.cancel')"
+                  @click="isActive.value = false"
+                  />
+                  <v-btn
+                    color="error"
+                    :text="$t('words.delete')"
+                    @click="() => {
+                      emit('delete');
+                      isActive.value = false;
+                    }"
+                  />
+                </template>
+              </v-card>
+            </template>
+          </v-dialog>
         </v-btn>
       </v-col>
     </v-row>

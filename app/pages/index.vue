@@ -44,7 +44,7 @@
           @load="load"
         >
           <template v-for="(item, index) in mySearches" :key="index">
-            <div>
+            <div v-if="item.id">
               <LazyPartialListSearchItem
                 :update-at="
                   item.lastcheckdate ? new Date(item.lastcheckdate) : undefined
@@ -53,6 +53,7 @@
                 :title="item.name"
                 :cities="item.cities.map((city) => city.city.name)"
                 @visualize="() => navigateTo(`/search/${item.id}`)"
+                @delete="onDelete(item.id)"
               />
               <v-divider
                 v-if="index < items.length - 1"
@@ -86,7 +87,7 @@
             @load="({ done }) => done('error')"
           >
             <template v-for="(item, index) in lastUpdateSearches" :key="index">
-              <div>
+              <div v-if="item.id">
                 <LazyPartialListSearchItem
                   :update-at="
                     item.lastcheckdate
@@ -97,6 +98,7 @@
                   :title="item.name"
                   :cities="item.cities.map((city) => city.city.name)"
                   @visualize="() => navigateTo(`/search/${item.id}`)"
+                  @delete="onDelete(item.id)"
                 />
                 <v-divider
                   v-if="index < items.length - 1"
@@ -117,6 +119,7 @@ import { LazyPartialListSearchItem } from "#components";
 import type { PriceCollectionItem } from "~~/server/api/priceCollection";
 import { useDashboardStore } from "~/store/dashboardStore";
 import type { City } from "~~/server/api/city";
+import { useNotifyStore } from "~/store/notifyStore";
 
 const { t } = useI18n();
 
@@ -189,6 +192,27 @@ async function load({
     })
     .catch(() => {
       done("error");
+    });
+}
+
+const notify = useNotifyStore();
+
+function onDelete(id: number) {
+  $fetch(`/api/priceCollection/delete`, {
+    method: "DELETE",
+    body: {
+      id,
+    },
+  })
+    .then(() => {
+      mySearches.value = mySearches.value.filter((item) => item.id != id);
+      lastUpdateSearches.value = lastUpdateSearches.value.filter(
+        (item) => item.id != id
+      );
+      notify.showNotification(t("text.mySearch.deleteSuccess"), "success");
+    })
+    .catch(() => {
+      notify.showNotification(t("text.mySearch.deleteError"), "error");
     });
 }
 
