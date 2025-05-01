@@ -52,6 +52,7 @@
                 :created-at="new Date(item.createdAt)"
                 :title="item.name"
                 :cities="item.cities.map((city) => city.city.name)"
+                :loading="loading"
                 @visualize="() => navigateTo(`/search/${item.id}`)"
                 @delete="onDelete(item.id)"
               />
@@ -97,6 +98,7 @@
                   :created-at="new Date(item.createdAt)"
                   :title="item.name"
                   :cities="item.cities.map((city) => city.city.name)"
+                  :loading="loading"
                   @visualize="() => navigateTo(`/search/${item.id}`)"
                   @delete="onDelete(item.id)"
                 />
@@ -196,8 +198,13 @@ async function load({
 }
 
 const notify = useNotifyStore();
+const loading = ref(false);
 
 function onDelete(id: number) {
+  if (loading.value) {
+    return;
+  }
+  loading.value = true;
   $fetch(`/api/priceCollection/delete`, {
     method: "DELETE",
     body: {
@@ -213,6 +220,8 @@ function onDelete(id: number) {
     })
     .catch(() => {
       notify.showNotification(t("text.mySearch.deleteError"), "error");
+    }).finally(() => {
+      loading.value = false;
     });
 }
 

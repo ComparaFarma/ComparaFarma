@@ -85,10 +85,10 @@ append-inner-icon="mdi-magnify" :label="$t('text.newSearch.searchTextField')"
     </v-row>
     <v-row class="my-4">
       <v-col cols="12" class="ga-2 d-flex justify-end">
-        <v-btn v-if="myProducts.length > 0" prepend-icon="mdi-cancel" color="secondary"  @click="clearImport" >
+        <v-btn v-if="myProducts.length > 0" prepend-icon="mdi-cancel" color="secondary" :disabled="loading"  @click="clearImport" >
           <span v-t="'text.newSearch.clearSearchImportButton'" class="text-withe"/>
         </v-btn>
-        <v-btn prepend-icon="mdi-plus" color="primary" @click="createNewSearch">
+        <v-btn prepend-icon="mdi-plus" color="primary" :loading="loading" @click="createNewSearch">
           <span v-t="'text.newSearch.crateSearchButton'" class="text-white" />
         </v-btn>
       </v-col>
@@ -224,7 +224,11 @@ function clearImport() {
   selectedEans.value = [];
   myProducts.value = [];
   filterMyProducts.value = [];
-  
+  const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+  if (fileInput) {
+    fileInput.value = '';
+  }
+
   resetForm();
 }
 
@@ -274,5 +278,6 @@ async function createNewSearch() {
       'error'
     );
   });
+  loading.value = false;
 }
 </script>
