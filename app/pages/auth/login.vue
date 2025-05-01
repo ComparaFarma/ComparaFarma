@@ -75,7 +75,7 @@ const i18n = useI18n();
 const notifyStore = useNotifyStore();
 const loading = ref(false);
 
-const submit = handleSubmit(async (values) => {
+const submit = handleSubmit(async () => {
   loading.value = true;
   const { error } = await apiSupabase.signIn(
     email.value,
