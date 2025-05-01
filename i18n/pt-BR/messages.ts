@@ -58,6 +58,8 @@ export default {
       searchTextField: "Pesquisar EAN ou Lista",
       lastSearches: "Últimas Consultas",
       lastUpdates: "Últimas Atualizações",
+      deleteSuccess: "Busca deletada com sucesso",
+      deleteError: "Erro ao deletar busca",
     },
     newSearch: {
       title: "Nova Busca",
@@ -102,6 +104,8 @@ export default {
         updatedAt: "Última atualização {time}",
         city: "Cidade: ",
         createdAt: "Criado: {time}",
+        deleteTitle: "Deletar busca",
+        confirmDelete: "Você tem certeza que deseja deletar essa busca?",
       },
     },
     composables:{
@@ -126,5 +130,6 @@ export default {
     concurrent: "Concorrente | Concorrentes",
     barcode: "Código de Barras",
     brand: "Logo",
+    cancel: "Cancelar",
   },
 };

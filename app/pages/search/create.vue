@@ -129,7 +129,7 @@ onMounted(() => {
 });
 
 // Configuração do formulário com validação
-const { defineField, errors, validate } = useForm({
+const { defineField, errors, validate, resetForm } = useForm({
   validationSchema: {
     title: 'required',
     cities: 'required'
@@ -217,13 +217,8 @@ function clearImport() {
   selectedEans.value = [];
   myProducts.value = [];
   filterMyProducts.value = [];
-  searchValue.value = "";
-  title.value = "";
-  cities.value = [];
-  const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-  if (fileInput) {
-    fileInput.value = '';
-  }
+  
+  resetForm();
 }
 
 function onChangeEan(event: { target: { checked: boolean; value: string } }) {
