@@ -2,22 +2,25 @@ import moment from "moment"
 import 'moment/dist/locale/pt-br.js';
 
 export const useDateUtils = () => {
-    const { $i18n } = useNuxtApp()
-    moment.locale($i18n.locale.value)
-
     const formatDate = (date: Date, format: string) => {
-        return moment(date).format(format)
+        return moment(date.toUTCString()).format(format)
+    }
+
+    const getDate = (parse: string) => {
+        return moment.utc(parse).toDate()
     }
 
     const getDateFromNowFormated = (date: Date) => {
-        return moment(date).fromNow()
+        return moment(date.toUTCString()).fromNow()
     }
 
     const getDateCalendarFormated = (date: Date) => {
-        return moment(date).calendar()
+        console.log(date)
+        return moment(date.toUTCString()).calendar()
     }
     
     return {
+        getDate,
         formatDate,
         getDateFromNowFormated,
         getDateCalendarFormated,

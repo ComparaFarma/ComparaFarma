@@ -47,9 +47,9 @@
             <div v-if="item.id">
               <LazyPartialListSearchItem
                 :update-at="
-                  item.lastcheckdate ? new Date(item.lastcheckdate) : undefined
+                  item.lastcheckdate ? getDate(item.lastcheckdate) : undefined
                 "
-                :created-at="new Date(item.createdAt)"
+                :created-at="getDate(item.createdAt)"
                 :title="item.name"
                 :cities="item.cities.map((city) => city.city.name)"
                 :loading="loading"
@@ -92,10 +92,10 @@
                 <LazyPartialListSearchItem
                   :update-at="
                     item.lastcheckdate
-                      ? new Date(item.lastcheckdate)
+                      ? getDate(item.lastcheckdate)
                       : undefined
                   "
-                  :created-at="new Date(item.createdAt)"
+                  :created-at="getDate(item.createdAt)"
                   :title="item.name"
                   :cities="item.cities.map((city) => city.city.name)"
                   :loading="loading"
@@ -134,7 +134,7 @@ definePageMeta({
 useHead({
   title: t("text.mySearch.title"),
 });
-
+const {getDate } = useDateUtils();
 const { mobile } = useDisplay();
 const items = ref(Array.from({ length: 30 }, (k, v) => v + 1));
 
