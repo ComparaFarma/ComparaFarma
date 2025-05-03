@@ -482,6 +482,7 @@ export type Database = {
           updatedAt: string;
           lastCheckDate: string;
           unit: string;
+          value: number;
           cnpj: string;
           endDistrict: string;
           endStreet: string;

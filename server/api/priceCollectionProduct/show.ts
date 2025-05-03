@@ -3,6 +3,7 @@ import { serverSupabaseClient } from '#supabase/server'
 export interface GetPriceCollectionPriceHistory {
     barcode: string, 
     description: string, 
+    value: number,
     image: string, 
     updatedAt: string, 
     lastCheckDate: string, 

@@ -9,7 +9,15 @@
       })
         " />
     </div>
-    <v-infinite-scroll height="80vh" :items="priceHistory" @load="load" :key="keyForInfiniteScroll"></v-infinite-scroll>
+    <v-infinite-scroll height="80vh" :items="priceHistoryComputed" @load="load" :key="keyForInfiniteScroll">
+      <template v-for="(item, index) in priceHistoryComputed" :key="index">
+        <div>
+          <LazyPartialListStoreItem :discount="item.discount" :value="item.value" :barcode="item.barcode"
+            :description="item.description" :cnpj="item.cnpj" :address="item.endStreet + ', ' + item.endDistrict"
+            :store-name="item.name" :telephone="item.phone" :unit="item.unit"/>
+        </div>
+      </template>
+    </v-infinite-scroll>
   </div>
 </template>
 <script setup lang="ts">
@@ -23,6 +31,8 @@ import type { GetPriceCollectionProducts } from "~~/server/api/priceCollectionPr
 import type { Store } from "~~/server/api/store";
 import { useNotifyStore } from '~/store/notifyStore';
 import type { GetPriceCollectionPriceHistory } from "~~/server/api/priceCollectionProduct/show";
+import { LazyPartialListStoreItem } from "#components";
+
 
 function validateIdParam(route: RouteLocationNormalized) {
   return (route.params.ean &&
@@ -47,6 +57,25 @@ const keyForInfiniteScroll = ref(0);
 
 const priceHistory = ref<GetPriceCollectionPriceHistory[]>([])
 
+const maxValueHistory = computed(() => {
+  return priceHistory.value.reduce((acc, item) => {
+    return Math.max(acc, item.value);
+  }, 0);
+});
+
+const priceHistoryComputed = computed(() => {
+  return priceHistory.value.map((item) => {
+    return {
+      ...item,
+      discount: (item.value / maxValueHistory.value * 100).toFixed(1),
+      cnpj: item.cnpj?.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5"),
+      phone: item.phone?.replace(/(\d{2})(\d{4,5})(\d{4})/, "($1) $2-$3"),
+      endDistrict: item.endDistrict?.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5"),
+      endStreet: item.endStreet?.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5")
+    };
+  });
+});
+
 const filters = ref<{
   cityId: number | null;
   productEanOrDescription: string | null;
@@ -59,8 +88,8 @@ const filters = ref<{
 
 onMounted(() => {
   dashboard.openBottomNavigation(BottomNavigationType.MY_SEARCHES);
-
 });
+
 
 async function load({
   done,
