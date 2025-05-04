@@ -474,6 +474,18 @@ export type Database = {
               p_store_cnpj?: string;
               p_limit?: number;
               p_offset?: number;
+            }
+          | {
+              p_price_collection_id?: number;
+              p_city_id?: number;
+              p_product_ean_or_description: string;
+              p_store_cnpj?: string;
+              p_limit?: number;
+              p_offset?: number;
+              p_min_price?: number;
+              p_max_price?: number;
+              p_sort_by?: string;
+              p_descending?: boolean;
             };
         Returns: {
           barcode: string;

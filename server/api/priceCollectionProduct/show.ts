@@ -19,13 +19,18 @@ export interface GetPriceCollectionPriceHistory {
 
 export default eventHandler(async (event) => {
 
-    const { limit, offset, priceCollectionId, cityId, productEanOrDescription, storeCnpj } = getQuery<{
+    const { limit, offset, priceCollectionId, cityId, productEanOrDescription, storeCnpj, minPrice, maxPrice, sortBy, descending } = getQuery<{
         limit: number,
         offset: number,
         cityId?: number,
         priceCollectionId: number,
-        productEanOrDescription: string
-        storeCnpj?: number
+        productEanOrDescription: string,
+        storeCnpj?: number,
+        minPrice?: number,
+        maxPrice?: number,
+        sortBy?:string,
+        descending?:boolean
+
     }>(event)
 
     const client = await serverSupabaseClient(event)
@@ -37,7 +42,11 @@ export default eventHandler(async (event) => {
             p_offset: offset ?? 0,
             p_price_collection_id: priceCollectionId,
             p_product_ean_or_description: productEanOrDescription,
-            p_store_cnpj: storeCnpj    
+            p_store_cnpj: storeCnpj,
+            p_min_price: minPrice,
+            p_max_price: maxPrice,
+            p_sort_by: sortBy,
+            p_descending: descending 
         } as unknown) as undefined, // working around for stop ts error
         {
             get: true

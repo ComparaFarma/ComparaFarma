@@ -1,5 +1,5 @@
 <template>
-    <v-card class="mx-auto" max-width="400" elevation="4">
+    <v-card class="mx-auto" width="350" min-height="550" elevation="4">
         <v-card-text class="text-right">
             <v-badge inline color="success" rounded :content="discount + '%'" />
         </v-card-text>
@@ -15,8 +15,8 @@
         <v-divider></v-divider>
 
         <v-card-text class="text-center">
-            <div class="">
-                <span class="text-h4 font-weight-bold">{{ value }}</span><span>{{ ' /' + unit }}</span>
+            <div>
+                <span class="text-h4 font-weight-bold">{{ value }}</span><span>{{ `/${unit}` }}</span>
             </div>
             <div class="text-subtitle-1 mt-2">{{ description }}</div>
         </v-card-text>
@@ -57,7 +57,7 @@ const props = defineProps({
     },
     unit: {
         type: String,
-        default: 'UN',
+        default: 'UND',
     },
     barcode: {
         type: String,
@@ -90,3 +90,6 @@ function getImageUrl() {
 }
 
 </script>
+
+<style scoped lang="scss">
+</style>

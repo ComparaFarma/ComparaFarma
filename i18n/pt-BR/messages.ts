@@ -89,6 +89,12 @@ export default {
       maxPrice: "Maior preço",
       updatedAt: "Atualizado {time}",
     },
+    priceHistory: {
+      sortBy:{
+        minPrice: "Menor preço",
+        maxPrice: "Maior preço",
+      }
+    },
     bottomNavigation: {
       mySearches: "Minhas Buscas",
       createSearch: "Novas Consultas",
