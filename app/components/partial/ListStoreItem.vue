@@ -1,7 +1,7 @@
 <template>
     <v-card class="mx-auto" width="300" height="600" elevation="4">
         <v-card-text class="text-right">
-            <v-badge inline color="success" rounded :content="discount + '%'" />
+            <v-badge inline color="success" rounded :content="$t('text.components.partialListStoreItem.discount',{discount})" />
         </v-card-text>
 
         <v-card-item class="text-center pt-0">
@@ -16,7 +16,7 @@
 
         <v-card-text class="text-center">
             <div>
-                <span class="text-h4 font-weight-bold">{{ value }}</span><span>{{ `/${unit}` }}</span>
+                <span class="text-h4 font-weight-bold">{{ $t('text.components.partialListStoreItem.price',{value}) }}</span><span>{{ $t('text.components.partialListStoreItem.unit',{unit}) }}</span>
             </div>
             <div class="text-subtitle-1 mt-2">{{ description }}</div>
         </v-card-text>
@@ -81,12 +81,13 @@ const props = defineProps({
     },
     telephone: {
         type: String,
-        required: true,
+        default: null,
+        required: false,
     },
 });
 
 function getImageUrl() {
-    return new URL(`/assets/stores/${props.barcode}`, import.meta.url).href;
+    return new URL(`/assets/stores/${props.storeName}.png`, import.meta.url).href;
 }
 
 </script>

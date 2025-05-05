@@ -120,6 +120,11 @@ export default {
         city: "Cidade: ",
         createdAt: "Criado: {time}",
       },
+      partialListStoreItem: {
+        discount: "{discount} %",
+        price: "R$ {value}",
+        unit: "/{unit}",
+      }
     },
     composables:{
       importXlsx:{
