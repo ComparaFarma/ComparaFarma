@@ -2,72 +2,79 @@
   <div class="d-flex flex-column my-5 ga-5">
     <div class="d-flex flex-row ga-2">
       <h1 class="text-body-1 font-weight-bold">
-        EXPEC HEDRA 7MG 100ML
+        {{ titlePage }}
       </h1>
       <v-badge inline color="primary" rounded="0" :content="$t('text.priceCollectionId.countProduct', {
-        count: 0,
+        count: countStores,
       })
         " />
     </div>
-    <div class="d-flex flex-row ga-2">
+    <div class="d-flex ga-2" :class="{ 'flex-row': !mobile, 'flex-column': mobile }">
       <span class="text-caption font-weight-bold text-center ma-2">
         Filtros:
       </span>
-      <div class="d-flex justify-space-between w-100 align-center">
-        <div class="d-flex flex-row ga-2">
+      <div class="d-flex justify-space-between w-100 align-center"
+        :class="{ 'flex-row': !mobile, 'flex-column': mobile }">
+        <div class="d-flex flex-row ga-2" :class="{ 'flex-row': !mobile, 'flex-column w-100': mobile }">
           <!-- Botão que abre o diálogo -->
-          <v-btn color="primary" variant="outlined" class="ma-2" rounded="xl" @click="dialog = true">
-            <span class="d-flex align-center">
-              Preço
-              <v-badge v-if="filters.minPrice || filters.maxPrice" color="primary" content="1" inline class="ml-1" />
-            </span>
-          </v-btn>
+          <v-menu v-model="dialog" :close-on-content-click="false">
+            <template v-slot:activator="{ props }">
+              <v-btn color="primary" variant="outlined" class="ma-2" rounded="xl" v-bind="props">
+                <span class="d-flex align-center">
+                  Preço
+                  <v-badge v-if="filters.minPrice || filters.maxPrice" color="primary" content="1" inline
+                    class="ml-1" />
+                </span>
+              </v-btn>
+            </template>
 
-          <v-autocomplete v-model="storeModel" clearable color="primary" label="LOJA" item-title="text" item-value="value" rounded
-            :items="storeOptions" variant="outlined" class="ma-2 text-primary	" density="compact" min-width="150" />
+            <v-card>
+              <v-card-title class="text-h6 d-flex justify-space-between align-center">
+                Filtrar por Preço
+                <v-btn icon @click="dialog = false">
+                  <v-icon>mdi-close</v-icon>
+                </v-btn>
+              </v-card-title>
+
+              <v-card-text>
+                <v-row class="align-center">
+                  <v-col cols="5">
+                    <v-text-field v-model="filters.minPrice" label="Mínimo" type="number" prefix="R$" step="0.01"
+                      min="0" density="compact"></v-text-field>
+                  </v-col>
+
+                  <v-col cols="2" class="text-center">
+                    <span class="text-h6">até</span>
+                  </v-col>
+
+                  <v-col cols="5">
+                    <v-text-field v-model="filters.maxPrice" label="Máximo" type="number" prefix="R$" step="0.01"
+                      :min="filters.minPrice" density="compact"></v-text-field>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="red" variant="text" size="small" @click="clearPriceFilter">
+                  Limpar
+                </v-btn>
+                <v-btn color="primary" variant="text" size="small" @click="applyPriceFilter">
+                  Aplicar
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-menu>
+
+          <v-autocomplete v-model="storeModel" clearable color="primary" label="LOJA" item-title="text"
+            item-value="value" rounded :items="storeOptions" variant="outlined" class="ma-2 text-primary"
+            density="compact" min-width="150" />
         </div>
-        <v-select v-model="sortByModel" item-title="text" item-value="value" :items="sortByOptions" variant="outlined"
-          class="ml-2 text-primary" max-width="200" :dense="mobile" />
+        <div class="d-flex flex-row ga-2" :class="{ 'w-10': !mobile, 'w-100': mobile }">
+          <v-select v-model="sortByModel" item-title="text" item-value="value" :items="sortByOptions" variant="outlined"
+            class="ma-2 text-primary" density="compact" :dense="mobile" />
+        </div>
       </div>
-      <!-- Diálogo de filtro -->
-      <v-dialog v-model="dialog" width="auto">
-        <v-card class="pa-4">
-          <v-card-title class="text-h6 d-flex justify-space-between align-center">
-            Filtrar por Preço
-            <v-btn icon @click="dialog = false">
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
-          </v-card-title>
-
-          <v-card-text>
-            <v-row class="align-center">
-              <v-col cols="5">
-                <v-text-field v-model="filters.minPrice" label="Mínimo" type="number" prefix="R$" step="0.01" min="0"
-                  density="compact"></v-text-field>
-              </v-col>
-
-              <v-col cols="2" class="text-center">
-                <span class="text-h6">até</span>
-              </v-col>
-
-              <v-col cols="5">
-                <v-text-field v-model="filters.maxPrice" label="Máximo" type="number" prefix="R$" step="0.01"
-                  :min="filters.minPrice" density="compact"></v-text-field>
-              </v-col>
-            </v-row>
-          </v-card-text>
-
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="red" variant="text" size="small" @click="clearPriceFilter">
-              Limpar
-            </v-btn>
-            <v-btn color="primary" variant="text" size="small" @click="applyPriceFilter">
-              Aplicar
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
     </div>
     <v-infinite-scroll height="80vh" :items="priceHistoryComputed" @load="load" :key="keyForInfiniteScroll">
       <div class="d-flex flex-wrap align-content-start">
@@ -88,9 +95,6 @@ import {
   useDashboardStore,
 } from "~/store/dashboardStore";
 import type { RouteLocationNormalized } from "vue-router";
-import type { PriceCollectionItem } from "~~/server/api/priceCollection";
-import type { GetPriceCollectionProducts } from "~~/server/api/priceCollectionProduct";
-import type { Store } from "~~/server/api/store";
 import { useNotifyStore } from '~/store/notifyStore';
 import type { GetPriceCollectionPriceHistory } from "~~/server/api/priceCollectionProduct/show";
 import { LazyPartialListStoreItem } from "#components";
@@ -107,15 +111,13 @@ definePageMeta({
 });
 
 const dashboard = useDashboardStore();
-const { getDateFromNowFormated } = useDateUtils();
 const route = useRoute();
 const { t } = useI18n();
 const notifyStore = useNotifyStore();
-const loading = ref(false);
-const loadingImport = ref(false);
 const { mobile } = useDisplay();
 const keyForInfiniteScroll = ref(0);
 const dialog = ref(false);
+const titlePage = ref("");
 
 
 const timeout = ref<ReturnType<typeof setTimeout> | null>(null);
@@ -139,9 +141,9 @@ const storeModel = ref(null)
 
 const storeOptions = computed(() => {
   return priceHistory.value.map((item) => ({
-        text: item.name + " - " + item.cnpj?.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5"),
-        value: item.cnpj,
-      }));
+    text: item.name + " - " + item.cnpj?.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5"),
+    value: item.cnpj,
+  }));
 });
 
 watch(() => sortByModel.value, (newValue) => {
@@ -169,7 +171,7 @@ watch(() => storeModel.value, (newValue) => {
       console.log(status);
     },
   });
-}); 
+});
 
 const priceHistory = ref<GetPriceCollectionPriceHistory[]>([])
 
@@ -177,6 +179,10 @@ const maxValueHistory = computed(() => {
   return priceHistory.value.reduce((acc, item) => {
     return Math.max(acc, item.value);
   }, 0);
+});
+
+const countStores = computed(() => {
+  return priceHistory.value.length;
 });
 
 const priceHistoryComputed = computed(() => {
@@ -268,6 +274,10 @@ async function load({
         done("empty");
       } else {
         priceHistory.value.push(...res);
+
+        if (titlePage.value === "") {
+          titlePage.value = priceHistory.value[0]?.description ?? "";
+        }
         done("ok");
       }
     })
