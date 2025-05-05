@@ -90,6 +90,17 @@ export default {
       updatedAt: "Atualizado {time}",
     },
     priceHistory: {
+      countStore: "{count} loja | {count} lojas",
+      filters:{
+        title: "Filtros: ",
+        btnLabelStore: "Loja",
+        btnLabelPrice: "Preço",
+        cardTitle: "Filtros de Preço",
+        labelSeparator: "até",
+        selectLabelStore: "Loja",
+        btnLabelApply: "Aplicar",
+        btnLabelClear: "Limpar",
+      },
       sortBy:{
         minPrice: "Menor preço",
         maxPrice: "Maior preço",

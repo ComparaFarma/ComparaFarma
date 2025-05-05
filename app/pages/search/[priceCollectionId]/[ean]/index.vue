@@ -1,17 +1,22 @@
 <template>
-  <div class="d-flex flex-column my-5 ga-5">
+  <div class="d-flex flex-column my-5 ga-2">
+    <div class="d-flex flex-row ga-2 align-center">
+      <v-btn size="small" icon color="primary" @click="$router.back()">
+        <v-icon>mdi-arrow-left</v-icon>
+      </v-btn>
+    </div>
     <div class="d-flex flex-row ga-2">
       <h1 class="text-body-1 font-weight-bold">
         {{ titlePage }}
       </h1>
-      <v-badge inline color="primary" rounded="0" :content="$t('text.priceCollectionId.countProduct', {
+      <v-badge inline color="primary" rounded="0" :content="$t('text.priceHistory.countStore', {
         count: countStores,
       })
         " />
     </div>
     <div class="d-flex ga-2" :class="{ 'flex-row': !mobile, 'flex-column': mobile }">
       <span class="text-caption font-weight-bold text-center ma-2">
-        Filtros:
+        {{ t("text.priceHistory.filters.title") }}
       </span>
       <div class="d-flex justify-space-between w-100 align-center"
         :class="{ 'flex-row': !mobile, 'flex-column': mobile }">
@@ -19,9 +24,9 @@
           <!-- Botão que abre o diálogo -->
           <v-menu v-model="dialog" :close-on-content-click="false">
             <template v-slot:activator="{ props }">
-              <v-btn color="primary" variant="outlined" class="ma-2" rounded="xl" v-bind="props">
+              <v-btn color="primary" variant="outlined" rounded="xl" v-bind="props">
                 <span class="d-flex align-center">
-                  Preço
+                  {{ $t("text.priceHistory.filters.btnLabelPrice") }}
                   <v-badge v-if="filters.minPrice || filters.maxPrice" color="primary" content="1" inline
                     class="ml-1" />
                 </span>
@@ -30,7 +35,7 @@
 
             <v-card>
               <v-card-title class="text-h6 d-flex justify-space-between align-center">
-                Filtrar por Preço
+                <span>{{ $t("text.priceHistory.filters.cardTitle") }}</span>
                 <v-btn icon @click="dialog = false">
                   <v-icon>mdi-close</v-icon>
                 </v-btn>
@@ -44,7 +49,7 @@
                   </v-col>
 
                   <v-col cols="2" class="text-center">
-                    <span class="text-h6">até</span>
+                    <span class="text-h6">{{$t("text.priceHistory.filters.labelSeparator")}}</span>
                   </v-col>
 
                   <v-col cols="5">
@@ -57,22 +62,22 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="red" variant="text" size="small" @click="clearPriceFilter">
-                  Limpar
+                  {{ $t("text.priceHistory.filters.btnLabelClear") }}
                 </v-btn>
                 <v-btn color="primary" variant="text" size="small" @click="applyPriceFilter">
-                  Aplicar
+                  {{ $t("text.priceHistory.filters.btnLabelApply") }}
                 </v-btn>
               </v-card-actions>
             </v-card>
           </v-menu>
 
-          <v-autocomplete v-model="storeModel" clearable color="primary" label="LOJA" item-title="text"
-            item-value="value" rounded :items="storeOptions" variant="outlined" class="ma-2 text-primary"
+          <v-autocomplete v-model="storeModel" clearable color="primary" :label="$t('text.priceHistory.filters.selectLabelStore')" item-title="text"
+            item-value="value" rounded :items="storeOptions" variant="outlined" class="text-primary"
             density="compact" min-width="150" />
         </div>
         <div class="d-flex flex-row ga-2" :class="{ 'w-10': !mobile, 'w-100': mobile }">
           <v-select v-model="sortByModel" item-title="text" item-value="value" :items="sortByOptions" variant="outlined"
-            class="ma-2 text-primary" density="compact" :dense="mobile" />
+            class="text-primary" density="compact" :dense="mobile" />
         </div>
       </div>
     </div>
@@ -113,7 +118,6 @@ definePageMeta({
 const dashboard = useDashboardStore();
 const route = useRoute();
 const { t } = useI18n();
-const notifyStore = useNotifyStore();
 const { mobile } = useDisplay();
 const keyForInfiniteScroll = ref(0);
 const dialog = ref(false);

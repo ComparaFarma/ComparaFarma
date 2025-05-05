@@ -1,5 +1,5 @@
 <template>
-    <v-card class="mx-auto" width="300" min-height="550" elevation="4">
+    <v-card class="mx-auto" width="300" height="600" elevation="4">
         <v-card-text class="text-right">
             <v-badge inline color="success" rounded :content="discount + '%'" />
         </v-card-text>
