@@ -100,7 +100,6 @@ import {
   useDashboardStore,
 } from "~/store/dashboardStore";
 import type { RouteLocationNormalized } from "vue-router";
-import { useNotifyStore } from '~/store/notifyStore';
 import type { GetPriceCollectionPriceHistory } from "~~/server/api/priceCollectionProduct/show";
 import { LazyPartialListStoreItem } from "#components";
 
@@ -125,6 +124,7 @@ const titlePage = ref("");
 
 
 const timeout = ref<ReturnType<typeof setTimeout> | null>(null);
+  
 async function reloadSearch() {
   if (timeout.value) {
     clearTimeout(timeout.value);

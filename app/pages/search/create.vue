@@ -7,10 +7,12 @@
             <v-icon icon="mdi-map-marker" size="32" color="primary" class="mr-2" />
             <span v-t="'text.newSearch.createNewSearches'" class="text-uppercase text-subtitle-1 text-primary" />
           </span>
-          <v-text-field v-model="title" :label="$t('text.newSearch.titleNewSearchTextField')" density="compact"
+          <v-text-field
+v-model="title" :label="$t('text.newSearch.titleNewSearchTextField')" density="compact"
             hide-details="auto" v-bind="titleProps" :error-messages="errors.title" />
 
-          <v-autocomplete v-model="cities" :label="$t('words.city', { count: 2 })" density="compact" variant="outlined"
+          <v-autocomplete
+v-model="cities" :label="$t('words.city', { count: 2 })" density="compact" variant="outlined"
             multiple chips hide-details="auto" v-bind="citiesProps" :items="cityStore.cities" item-title="name"
             item-value="id" />
 
@@ -20,9 +22,10 @@
     <v-row class="my-4 d-flex justify-center">
       <v-col cols="12" md="6">
         <v-card class="mx-auto border-md" variant="outlined" width="100%">
-          <template v-slot:prepend>
+          <template #prepend>
             <section class="d-flex ga-2">
-              <span v-t="'text.newSearch.titleSearchProduct'" class="text-uppercase text-grey-darken-3"
+              <span
+v-t="'text.newSearch.titleSearchProduct'" class="text-uppercase text-grey-darken-3"
                 :class="mobile ? 'text-subtitle-2' : 'text-h6'" />
               <v-chip v-if="!mobile" variant="elevated">
                 {{ countEans }}
@@ -30,26 +33,30 @@
             </section>
           </template>
 
-          <template v-slot:append>
-            <div class="px-2" :class="{ 'd-flex flex-column ga-2': mobile, 'd-flex align-center ga-2': !mobile }">
-              <v-btn prepend-icon="mdi-download-box-outline" variant="outlined" color="success"
+          <template #append>
+            <div class="px-2" :class="{ 'd-flex flex-column ga-2': mobile, 'd-flex align-center ga-4': !mobile }">
+              <v-btn
+prepend-icon="mdi-download-box-outline" variant="outlined" color="success"
                 :size="mobile ? 'x-small' : 'small'" :class="mobile ? 'w-100' : 'mr-2'" @click="triggerFileDownload">
                 <span v-t="'text.newSearch.downloadModelImportButton'" class="text-success" />
               </v-btn>
 
-              <v-btn prepend-icon="mdi-import" variant="outlined" color="primary" :size="mobile ? 'x-small' : 'small'"
+              <v-btn
+prepend-icon="mdi-import" variant="outlined" color="primary" :size="mobile ? 'x-small' : 'small'"
                 @click="triggerFileInput">
                 <span v-t="'text.newSearch.importEanButton'" class="text-primary" />
               </v-btn>
 
-              <input ref="fileInput" type="file" style="display: none" accept=".csv,.xlsx,.txt"
+              <input
+ref="fileInput" type="file" style="display: none" accept=".csv,.xlsx,.txt"
                 @change="handleFileImport">
             </div>
           </template>
           <v-card-text>
-            <v-text-field append-inner-icon="mdi-magnify" :label="$t('text.newSearch.searchTextField')"
+            <v-text-field
+append-inner-icon="mdi-magnify" :label="$t('text.newSearch.searchTextField')"
               variant="underlined" hide-details single-line :model="searchValue"
-              @update:model-value="onUpdateSearch"></v-text-field>
+              @update:model-value="onUpdateSearch"/>
           </v-card-text>
           <v-card-item>
             <template v-if="loadingImport">
@@ -78,10 +85,10 @@
     </v-row>
     <v-row class="my-4">
       <v-col cols="12" class="ga-2 d-flex justify-end">
-        <v-btn v-if="myProducts.length > 0" prepend-icon="mdi-cancel" color="secondary"  @click="clearImport" >
+        <v-btn v-if="myProducts.length > 0" prepend-icon="mdi-cancel" color="secondary" :disabled="loading"  @click="clearImport" >
           <span v-t="'text.newSearch.clearSearchImportButton'" class="text-withe"/>
         </v-btn>
-        <v-btn prepend-icon="mdi-plus" color="primary" @click="createNewSearch">
+        <v-btn prepend-icon="mdi-plus" color="primary" :loading="loading" @click="createNewSearch">
           <span v-t="'text.newSearch.crateSearchButton'" class="text-white" />
         </v-btn>
       </v-col>
@@ -129,7 +136,7 @@ onMounted(() => {
 });
 
 // Configuração do formulário com validação
-const { defineField, errors, validate } = useForm({
+const { defineField, errors, validate, resetForm } = useForm({
   validationSchema: {
     title: 'required',
     cities: 'required'
@@ -217,13 +224,12 @@ function clearImport() {
   selectedEans.value = [];
   myProducts.value = [];
   filterMyProducts.value = [];
-  searchValue.value = "";
-  title.value = "";
-  cities.value = [];
   const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
   if (fileInput) {
     fileInput.value = '';
   }
+
+  resetForm();
 }
 
 function onChangeEan(event: { target: { checked: boolean; value: string } }) {
@@ -272,5 +278,6 @@ async function createNewSearch() {
       'error'
     );
   });
+  loading.value = false;
 }
 </script>

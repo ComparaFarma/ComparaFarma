@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-row class="my-4">
-      <v-col cols="12" lg="6">
+      <v-col cols="12" lg="8">
         <div
           class="ga-2 d-flex"
           :class="{ 'flex-row': !mobile, 'flex-column': mobile }"
@@ -44,15 +44,17 @@
           @load="load"
         >
           <template v-for="(item, index) in mySearches" :key="index">
-            <div>
+            <div v-if="item.id">
               <LazyPartialListSearchItem
                 :update-at="
-                  item.lastcheckdate ? new Date(item.lastcheckdate) : undefined
+                  item.lastcheckdate ? getDate(item.lastcheckdate) : undefined
                 "
-                :created-at="new Date(item.createdAt)"
+                :created-at="getDate(item.createdAt)"
                 :title="item.name"
                 :cities="item.cities.map((city) => city.city.name)"
+                :loading="loading"
                 @visualize="() => navigateTo(`/search/${item.id}`)"
+                @delete="onDelete(item.id)"
               />
               <v-divider
                 v-if="index < items.length - 1"
@@ -63,50 +65,7 @@
           </template>
         </v-infinite-scroll>
       </v-col>
-      <v-col cols="12" md="6" v-if="!mobile" class="align-end">
-        <div class="py-2 mb-6">
-          <div class="px-4 ga-4">
-            <v-icon
-              icon="mdi-history"
-              size="34"
-              color="secondary"
-              class="mr-2"
-              :alt="$t('text.mySearch.lastSearches')"
-              :title="$t('text.mySearch.lastSearches')"
-            />
-            <span
-              v-t="'text.mySearch.lastSearches'"
-              class="text-uppercase text-subtitle-1 text-secondary"
-            />
-          </div>
-          <v-infinite-scroll
-            class="ml-4"
-            height="32vh"
-            :items="mySearches"
-            @load="({ done }) => done('error')"
-          >
-            <template v-for="(item, index) in newSearches" :key="index">
-              <div>
-                <LazyPartialListSearchItem
-                  :update-at="
-                    item.lastcheckdate
-                      ? new Date(item.lastcheckdate)
-                      : undefined
-                  "
-                  :created-at="new Date(item.createdAt)"
-                  :title="item.name"
-                  :cities="item.cities.map((city) => city.city.name)"
-                  @visualize="() => navigateTo(`/search/${item.id}`)"
-                />
-                <v-divider
-                  v-if="index < items.length - 1"
-                  :key="'divider' + index"
-                  class="my-2"
-                />
-              </div>
-            </template>
-          </v-infinite-scroll>
-        </div>
+      <v-col v-if="!mobile" cols="12" md="4" class="align-end">
         <div class="py-2">
           <div class="px-4 ga-4">
             <v-icon
@@ -124,22 +83,24 @@
           </div>
           <v-infinite-scroll
             class="ml-4"
-            height="34vh"
+            height="74vh"
             :items="mySearches"
             @load="({ done }) => done('error')"
           >
             <template v-for="(item, index) in lastUpdateSearches" :key="index">
-              <div>
+              <div v-if="item.id">
                 <LazyPartialListSearchItem
                   :update-at="
                     item.lastcheckdate
-                      ? new Date(item.lastcheckdate)
+                      ? getDate(item.lastcheckdate)
                       : undefined
                   "
-                  :created-at="new Date(item.createdAt)"
+                  :created-at="getDate(item.createdAt)"
                   :title="item.name"
                   :cities="item.cities.map((city) => city.city.name)"
+                  :loading="loading"
                   @visualize="() => navigateTo(`/search/${item.id}`)"
+                  @delete="onDelete(item.id)"
                 />
                 <v-divider
                   v-if="index < items.length - 1"
@@ -160,6 +121,7 @@ import { LazyPartialListSearchItem } from "#components";
 import type { PriceCollectionItem } from "~~/server/api/priceCollection";
 import { useDashboardStore } from "~/store/dashboardStore";
 import type { City } from "~~/server/api/city";
+import { useNotifyStore } from "~/store/notifyStore";
 
 const { t } = useI18n();
 
@@ -172,12 +134,11 @@ definePageMeta({
 useHead({
   title: t("text.mySearch.title"),
 });
-
+const {getDate } = useDateUtils();
 const { mobile } = useDisplay();
 const items = ref(Array.from({ length: 30 }, (k, v) => v + 1));
 
 const mySearches = ref<PriceCollectionItem[]>([]);
-const newSearches = ref<PriceCollectionItem[]>([]);
 const lastUpdateSearches = ref<PriceCollectionItem[]>([]);
 
 const cities = ref<City[]>([]);
@@ -220,6 +181,7 @@ async function load({
       limit: 10,
       cityId: filters.value.cityId,
       name: filters.value.name,
+      orderBy: "createdAt",
     },
   })
     .then((res) => {
@@ -235,36 +197,54 @@ async function load({
     });
 }
 
+const notify = useNotifyStore();
+const loading = ref(false);
+
+function onDelete(id: number) {
+  if (loading.value) {
+    return;
+  }
+  loading.value = true;
+  $fetch(`/api/priceCollection/delete`, {
+    method: "DELETE",
+    body: {
+      id,
+    },
+  })
+    .then(() => {
+      mySearches.value = mySearches.value.filter((item) => item.id != id);
+      lastUpdateSearches.value = lastUpdateSearches.value.filter(
+        (item) => item.id != id
+      );
+      notify.showNotification(t("text.mySearch.deleteSuccess"), "success");
+    })
+    .catch(() => {
+      notify.showNotification(t("text.mySearch.deleteError"), "error");
+    }).finally(() => {
+      loading.value = false;
+    });
+}
+
 const OFFSET = 0;
-const LIMIT = 10;
+const LIMIT = 4;
 onMounted(() => {
   $fetch("/api/city", {
     method: "GET",
   }).then((res) => {
-    console.log(res);
     cities.value = res;
   });
 
   if (mobile.value) {
     return;
   }
-  $fetch("/api/priceCollection", {
-    method: "GET",
-    params: {
-      offset: OFFSET,
-      limit: LIMIT,
-      orderBy: "createdAt",
-    },
-  }).then((res) => {
-    newSearches.value = res;
-  });
 
   $fetch("/api/priceCollection", {
     method: "GET",
     params: {
       offset: OFFSET,
       limit: LIMIT,
-      orderBy: "updatedAt",
+      orderBy: "lastcheckdate",
+      hasLastcheckdate: true,
     },
   }).then((res) => {
     lastUpdateSearches.value = res;

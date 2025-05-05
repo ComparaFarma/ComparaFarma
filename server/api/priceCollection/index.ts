@@ -10,12 +10,13 @@ export interface PriceCollectionItem extends Tables<'view_pricecollection'> {
 export default eventHandler(async (event) => {
 
     const client = await serverSupabaseClient<Tables<'view_pricecollection'>>(event)
-    const { limit, offset, orderBy, cityId, name } = getQuery<{
+    const { limit, offset, orderBy, cityId, name, hasLastcheckdate } = getQuery<{
         limit: number,
         offset: number,
         orderBy: string,
         cityId?: number,
-        name?: string
+        name?: string,
+        hasLastcheckdate?: boolean,
     }>(event)
 
     const select = client
@@ -29,9 +30,13 @@ export default eventHandler(async (event) => {
             )`,
         )
         .order(orderBy ?? 'createdAt', { ascending: false })
-        .range(Number(offset), Number(offset) + Number(limit))
+        .range(Number(offset), Number(offset) + Number(limit-1))
     if (cityId) {
         select.eq('cities.city.id', cityId)
+    }
+
+    if (hasLastcheckdate) {
+        select.not('lastcheckdate', 'is', null)
     }
 
     if (name) {

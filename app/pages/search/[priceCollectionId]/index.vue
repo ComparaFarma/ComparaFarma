@@ -49,7 +49,6 @@
               clearable
               item-title="name"
               @update:model-value="reloadSearch"
-              
             >
               <template #item="{ props, item }">
                 <v-list-item
@@ -59,9 +58,7 @@
                 />
               </template>
               <template #selection="{ item }">
-                <v-list-item
-                  :title="`${item.raw.name} (${item.raw.cnpj})`"
-                />
+                <v-list-item :title="`${item.raw.name} (${item.raw.cnpj})`" />
               </template>
             </v-autocomplete>
           </v-card-text>
@@ -89,10 +86,10 @@
       </v-col>
     </v-row>
     <v-infinite-scroll
+      :key="keyForInfiniteScroll"
       height="80vh"
       :items="priceCollectionProducts"
       @load="load"
-      :key="keyForInfiniteScroll"
     >
       <v-expansion-panels class="d-flex flex-row ga-1">
         <v-expansion-panel
@@ -196,7 +193,7 @@
                   <span>{{
                     $t("text.priceCollectionId.updatedAt", {
                       time: item.lastupdateat
-                        ? getDateFromNowFormated(new Date(item.lastupdateat))
+                        ? getDateFromNowFormated(getDate(item.lastupdateat))
                         : $t("words.undefined"),
                     })
                   }}</span>
@@ -241,6 +238,7 @@ definePageMeta({
   layout: "dashboard",
   validate: validateIdParam,
 });
+const { getDate } = useDateUtils();
 const { mobile } = useDisplay();
 const dashboard = useDashboardStore();
 const keyForInfiniteScroll = ref(0);
@@ -316,7 +314,7 @@ async function load({
       cityId: filters.value.cityId ?? undefined,
       productEanOrDescription:
         filters.value.productEanOrDescription ?? undefined,
-        storeCnpj: filters.value.storeCnpj ?? undefined,
+      storeCnpj: filters.value.storeCnpj ?? undefined,
     },
   })
     .then((res) => {
