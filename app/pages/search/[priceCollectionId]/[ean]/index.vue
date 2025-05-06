@@ -9,26 +9,21 @@
       <h1 class="text-body-1 font-weight-bold">
         {{ titlePage }}
       </h1>
-      <v-badge inline color="primary" rounded="0" :content="$t('text.priceHistory.countStore', {
-        count: countStores,
-      })
-        " />
+      <v-badge inline color="primary" rounded="0" :content="$t('text.priceHistory.countStore', {count: countStores})" />
     </div>
     <div class="d-flex ga-2" :class="{ 'flex-row': !mobile, 'flex-column': mobile }">
       <span class="text-caption font-weight-bold text-center ma-2">
         {{ t("text.priceHistory.filters.title") }}
       </span>
-      <div class="d-flex justify-space-between w-100 align-center"
-        :class="{ 'flex-row': !mobile, 'flex-column': mobile }">
+      <div class="d-flex justify-space-between w-100 align-center" :class="{ 'flex-row': !mobile, 'flex-column': mobile }">
         <div class="d-flex flex-row ga-2" :class="{ 'flex-row': !mobile, 'flex-column w-100': mobile }">
           <!-- Botão que abre o diálogo -->
           <v-menu v-model="dialog" :close-on-content-click="false">
-            <template v-slot:activator="{ props }">
+            <template #activator="{ props }">
               <v-btn color="primary" variant="outlined" rounded="xl" v-bind="props">
                 <span class="d-flex align-center">
                   {{ $t("text.priceHistory.filters.btnLabelPrice") }}
-                  <v-badge v-if="filters.minPrice || filters.maxPrice" color="primary" content="1" inline
-                    class="ml-1" />
+                  <v-badge v-if="filters.minPrice || filters.maxPrice" color="primary" content="1" inline class="ml-1" />
                 </span>
               </v-btn>
             </template>
@@ -44,23 +39,21 @@
               <v-card-text>
                 <v-row class="align-center">
                   <v-col cols="5">
-                    <v-text-field v-model="filters.minPrice" label="Mínimo" type="number" prefix="R$" step="0.01"
-                      min="0" density="compact"></v-text-field>
+                    <v-text-field v-model="filters.minPrice" label="Mínimo" type="number" prefix="R$" step="0.01" min="0" density="compact" />
                   </v-col>
 
                   <v-col cols="2" class="text-center">
-                    <span class="text-h6">{{$t("text.priceHistory.filters.labelSeparator")}}</span>
+                    <span class="text-h6">{{ $t("text.priceHistory.filters.labelSeparator") }}</span>
                   </v-col>
 
                   <v-col cols="5">
-                    <v-text-field v-model="filters.maxPrice" label="Máximo" type="number" prefix="R$" step="0.01"
-                      :min="filters.minPrice" density="compact"></v-text-field>
+                    <v-text-field v-model="filters.maxPrice" label="Máximo" type="number" prefix="R$" step="0.01" :min="filters.minPrice" density="compact" />
                   </v-col>
                 </v-row>
               </v-card-text>
 
               <v-card-actions>
-                <v-spacer></v-spacer>
+                <v-spacer />
                 <v-btn color="red" variant="text" size="small" @click="clearPriceFilter">
                   {{ $t("text.priceHistory.filters.btnLabelClear") }}
                 </v-btn>
@@ -71,13 +64,10 @@
             </v-card>
           </v-menu>
 
-          <v-autocomplete v-model="storeModel" clearable color="primary" :label="$t('text.priceHistory.filters.selectLabelStore')" item-title="text"
-            item-value="value" rounded :items="storeOptions" variant="outlined" class="text-primary"
-            density="compact" min-width="150" />
+          <v-autocomplete v-model="storeModel" clearable color="primary" :label="$t('text.priceHistory.filters.selectLabelStore')" item-title="text" item-value="value" rounded :items="storeOptions" variant="outlined" class="text-primary" density="compact" min-width="150" />
         </div>
         <div class="d-flex flex-row ga-2" :class="{ 'w-10': !mobile, 'w-100': mobile }">
-          <v-select v-model="sortByModel" item-title="text" item-value="value" :items="sortByOptions" variant="outlined"
-            class="text-primary" density="compact" :dense="mobile" />
+          <v-select v-model="sortByModel" item-title="text" item-value="value" :items="sortByOptions" variant="outlined" class="text-primary" density="compact" :dense="mobile" />
         </div>
       </div>
     </div>
@@ -85,9 +75,7 @@
       <div class="d-flex flex-wrap align-content-start">
         <template v-for="(item, index) in priceHistoryComputed" :key="index">
           <div class="ma-2 pa-2">
-            <LazyPartialListStoreItem :discount="item.discount" :value="item.value" :barcode="item.barcode"
-              :description="item.description" :cnpj="item.cnpj" :address="item.endStreet + ', ' + item.endDistrict"
-              :store-name="item.name" :telephone="item.phone" :unit="item.unit" />
+            <LazyPartialListStoreItem :discount="item.discount" :value="item.value" :barcode="item.barcode" :description="item.description" :cnpj="item.cnpj" :address="item.endStreet + ', ' + item.endDistrict" :store-name="item.name" :telephone="item.phone" :unit="item.unit" />
           </div>
         </template>
       </div>
@@ -102,6 +90,7 @@ import {
 import type { RouteLocationNormalized } from "vue-router";
 import type { GetPriceCollectionPriceHistory } from "~~/server/api/priceCollectionProduct/show";
 import { LazyPartialListStoreItem } from "#components";
+import { useNotifyStore } from "~/store/notifyStore";
 
 
 function validateIdParam(route: RouteLocationNormalized) {
@@ -121,10 +110,12 @@ const { mobile } = useDisplay();
 const keyForInfiniteScroll = ref(0);
 const dialog = ref(false);
 const titlePage = ref("");
+const notify = useNotifyStore();
+
 
 
 const timeout = ref<ReturnType<typeof setTimeout> | null>(null);
-  
+
 async function reloadSearch() {
   if (timeout.value) {
     clearTimeout(timeout.value);
@@ -162,7 +153,9 @@ watch(() => sortByModel.value, (newValue) => {
 
   load({
     done: (status) => {
-      console.log(status);
+      if (status === "error") {
+        notify.showNotification(t("text.priceHistory.notify.error"), "error");
+      }
     },
   });
 });
@@ -172,7 +165,9 @@ watch(() => storeModel.value, (newValue) => {
   filters.value.storeCnpj = newValue;
   load({
     done: (status) => {
-      console.log(status);
+      if (status === "error") {
+        notify.showNotification(t("text.priceHistory.notify.error"), "error");
+      }
     },
   });
 });
@@ -185,15 +180,22 @@ const maxValueHistory = computed(() => {
   }, 0);
 });
 
+const minValueHistory = computed(() => {
+  return priceHistory.value.reduce((acc, item) => {
+    return Math.min(acc, item.value);
+  }, maxValueHistory.value);
+});
+
 const countStores = computed(() => {
   return priceHistory.value.length;
 });
 
 const priceHistoryComputed = computed(() => {
+  console.log(minValueHistory.value);
   return priceHistory.value.map((item) => {
     return {
       ...item,
-      discount: (item.value / maxValueHistory.value * 100).toFixed(1),
+      discount: (maxValueHistory.value - item.value)/maxValueHistory.value,
       cnpj: item.cnpj?.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5"),
       phone: item.phone?.replace(/(\d{2})(\d{4,5})(\d{4})/, "($1) $2-$3"),
       endDistrict: item.endDistrict?.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5"),
@@ -230,7 +232,9 @@ function applyPriceFilter() {
 
   load({
     done: (status) => {
-      console.log(status);
+      if (status === "error") {
+        notify.showNotification(t("text.priceHistory.notify.error"), "error");
+      }
     },
   });
 
@@ -245,7 +249,9 @@ function clearPriceFilter() {
 
   load({
     done: (status) => {
-      console.log(status);
+      if (status === "error") {
+        notify.showNotification(t("text.priceHistory.notify.error"), "error");
+      }
     },
   });
   dialog.value = false;
@@ -273,7 +279,6 @@ async function load({
     },
   })
     .then((res) => {
-      console.log(res);
       if (res.length === 0) {
         done("empty");
       } else {

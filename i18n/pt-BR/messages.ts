@@ -106,6 +106,9 @@ export default {
       sortBy:{
         minPrice: "Menor preço",
         maxPrice: "Maior preço",
+      },
+      notify:{
+        error: "Erro ao buscar histórico de preços",       
       }
     },
     bottomNavigation: {
@@ -125,9 +128,8 @@ export default {
         confirmDelete: "Você tem certeza que deseja deletar essa busca?",
       },
       partialListStoreItem: {
-        discount: "{discount} %",
-        price: "R$ {value}",
         unit: "/{unit}",
+        discountTooltip: "{discount} mais barato que a oferta mais cara.",
       }
     },
     composables:{
