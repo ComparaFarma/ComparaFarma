@@ -1,6 +1,9 @@
 <template>
   <div class="d-flex flex-column my-5 ga-5">
-    <div class="d-flex flex-row ga-2">
+    <div class="d-flex flex-row ga-2 align-center">
+      <v-btn size="small" icon @click="$router.back()">
+        <v-icon color="primary">mdi-arrow-left</v-icon>
+      </v-btn>
       <h1 class="text-body-1 font-weight-bold">
         {{ priceCollection?.name }}
       </h1>
@@ -168,7 +171,7 @@
                     </v-row>
                   </v-col>
                   <v-col cols="6">
-                    <v-row class="ga-2" align="center">
+                    <v-row class="ga-2 ml-2" align="center">
                       <span
                         v-t="'text.priceCollectionId.maxPrice'"
                         class="text-body-1 font-weight-black text-secondary price-collection-item"

@@ -20,19 +20,6 @@
         </div>
       </v-app-bar-title>
       <div class="d-flex align-center">
-        <!-- Notification icon -->
-        <v-btn
-          icon
-          size="small"
-          color="primary"
-          class="d-flex align-center justify-center"
-          :ripple="false"
-          :alt="$t('text.appBar.notification')"
-          :title="$t('text.appBar.notification')"
-          @click="notifyStore.showNotification('Hello World!')"
-        >
-          <v-icon icon="mdi-bell" />
-        </v-btn>
         <!-- Logout icon   -->
         <v-btn
           icon
