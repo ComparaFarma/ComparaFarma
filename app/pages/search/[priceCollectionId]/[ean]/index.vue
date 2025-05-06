@@ -4,8 +4,6 @@
       <v-btn size="small" icon @click="$router.back()">
         <v-icon color="primary">mdi-arrow-left</v-icon>
       </v-btn>
-    </div>
-    <div class="d-flex flex-row ga-2">
       <h1 class="text-body-1 font-weight-bold">
         {{ titlePage }}
       </h1>
@@ -15,7 +13,7 @@
       <span class="text-caption font-weight-bold text-center ma-2">
         {{ t("text.priceHistory.filters.title") }}
       </span>
-      <div class="d-flex justify-space-between w-100 align-center" :class="{ 'flex-row': !mobile, 'flex-column': mobile }">
+      <div class="d-flex justify-space-between w-100 align-center ga-2" :class="{ 'flex-row': !mobile, 'flex-column': mobile }">
         <div class="d-flex flex-row ga-2" :class="{ 'flex-row': !mobile, 'flex-column w-100': mobile }">
           <!-- Botão que abre o diálogo -->
           <v-menu v-model="dialog" :close-on-content-click="false">
@@ -39,7 +37,7 @@
               <v-card-text>
                 <v-row class="align-center">
                   <v-col cols="5">
-                    <v-text-field v-model="filters.minPrice" label="Mínimo" type="number" prefix="R$" step="0.01" min="0" density="compact" />
+                    <v-text-field v-model="filters.minPrice" hide-details="auto" label="Mínimo" type="number" prefix="R$" step="0.01" min="0" density="compact" />
                   </v-col>
 
                   <v-col cols="2" class="text-center">
@@ -47,7 +45,7 @@
                   </v-col>
 
                   <v-col cols="5">
-                    <v-text-field v-model="filters.maxPrice" label="Máximo" type="number" prefix="R$" step="0.01" :min="filters.minPrice" density="compact" />
+                    <v-text-field v-model="filters.maxPrice" hide-details="auto" label="Máximo" type="number" prefix="R$" step="0.01" :min="filters.minPrice" density="compact" />
                   </v-col>
                 </v-row>
               </v-card-text>
@@ -64,19 +62,17 @@
             </v-card>
           </v-menu>
 
-          <v-autocomplete v-model="storeModel" clearable color="primary" :label="$t('text.priceHistory.filters.selectLabelStore')" item-title="text" item-value="value" rounded :items="storeOptions" variant="outlined" class="text-primary" density="compact" min-width="150" />
+          <v-autocomplete v-model="storeModel" hide-details="auto" clearable color="primary" :label="$t('text.priceHistory.filters.selectLabelStore')" item-title="text" item-value="value" rounded :items="storeOptions" variant="outlined" class="text-primary" density="compact" min-width="150" />
         </div>
         <div class="d-flex flex-row ga-2" :class="{ 'w-10': !mobile, 'w-100': mobile }">
-          <v-select v-model="sortByModel" item-title="text" item-value="value" :items="sortByOptions" variant="outlined" class="text-primary" density="compact" :dense="mobile" />
+          <v-select v-model="sortByModel" hide-details="auto" item-title="text" item-value="value" :items="sortByOptions" variant="outlined" class="text-primary" density="compact" :dense="mobile" />
         </div>
       </div>
     </div>
-    <v-infinite-scroll :key="keyForInfiniteScroll" height="80vh" :items="priceHistoryComputed" @load="load">
-      <div class="d-flex flex-wrap align-content-start">
+    <v-infinite-scroll :key="keyForInfiniteScroll" height="74vh" :items="priceHistoryComputed" @load="load">
+      <div class="d-flex flex-wrap align-content-start align-start ga-2">
         <template v-for="(item, index) in priceHistoryComputed" :key="index">
-          <div class="ma-2 pa-2">
-            <LazyPartialListStoreItem :discount="item.discount" :value="item.value" :barcode="item.barcode" :description="item.description" :cnpj="item.cnpj" :address="item.endStreet + ', ' + item.endDistrict" :store-name="item.name" :telephone="item.phone" :unit="item.unit" />
-          </div>
+            <LazyPartialListStoreItem class="pa-2" :discount="item.discount" :value="item.value" :barcode="item.barcode" :description="item.description" :cnpj="item.cnpj" :address="item.endStreet + ', ' + item.endDistrict" :store-name="item.name" :telephone="item.phone" :unit="item.unit" />
         </template>
       </div>
     </v-infinite-scroll>

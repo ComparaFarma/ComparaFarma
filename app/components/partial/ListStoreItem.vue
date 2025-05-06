@@ -24,14 +24,14 @@
             </div>
             <div class="text-subtitle-1 mt-2">{{ description }}</div>
         </v-card-text>
-        <v-card-text class="ga-2 pt-0">
+        <v-card-text class="ga-2 pt-0 ">
             <div class="d-flex flex-row ga-2">
                 <v-icon class="flex-col my-auto" icon="mdi-barcode" size="20" color="grey" />
                 <span class="flex-col text-subtitle-1 mt-1">{{ barcode }}</span>
             </div>
             <div class="d-flex flex-row ga-2">
                 <v-icon class="flex-col my-auto" icon="mdi-store" size="20" color="grey" />
-                <span class="flex-col text-subtitle-2 mt-1 multiline-truncate-2">{{ storeName }}</span>
+                <span class="flex-col text-subtitle-2 mt-1 multiline-truncate-2" :title="storeName">{{ storeName }}</span>
             </div>
             <div class="d-flex flex-row ga-2">
                 <v-icon class="flex-col my-auto" icon="mdi-account" size="20" color="grey" />
@@ -39,7 +39,7 @@
             </div>
             <div class="d-flex flex-row ga-2">
                 <v-icon class="flex-col my-auto" icon="mdi-map-marker" size="20" color="grey" />
-                <span class="flex-col text-subtitle-2 mt-1 multiline-truncate-2">{{ address }}</span>
+                <span class="flex-col text-subtitle-2 mt-1 text-truncate" :title="address">{{ address }}</span>
             </div>
             <div class="d-flex flex-row ga-2">
                 <v-icon class="flex-col my-auto" icon="mdi-phone" size="20" color="grey" />
@@ -100,6 +100,7 @@ function getImageUrl() {
 .multiline-truncate-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
