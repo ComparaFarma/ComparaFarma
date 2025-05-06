@@ -71,7 +71,7 @@
         </div>
       </div>
     </div>
-    <v-infinite-scroll height="80vh" :items="priceHistoryComputed" @load="load" :key="keyForInfiniteScroll">
+    <v-infinite-scroll :key="keyForInfiniteScroll" height="80vh" :items="priceHistoryComputed" @load="load">
       <div class="d-flex flex-wrap align-content-start">
         <template v-for="(item, index) in priceHistoryComputed" :key="index">
           <div class="ma-2 pa-2">
