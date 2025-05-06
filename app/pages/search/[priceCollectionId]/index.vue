@@ -201,7 +201,7 @@
               </v-col>
               <v-col cols="12" md="3">
                 <v-row justify="end">
-                  <v-btn color="primary" size="large" :block="mobile">
+                  <v-btn color="primary" size="large" :block="mobile" @click="navigateTo(`/search/${item.pricecollectionid}/${item.barcode}`)">
                     <span class="text-none text-h6">
                       {{
                         $t("text.priceCollectionId.compareStore", {

@@ -91,6 +91,26 @@ export default {
       maxPrice: "Maior preço",
       updatedAt: "Atualizado {time}",
     },
+    priceHistory: {
+      countStore: "{count} loja | {count} lojas",
+      filters:{
+        title: "Filtros: ",
+        btnLabelStore: "Loja",
+        btnLabelPrice: "Preço",
+        cardTitle: "Filtros de Preço",
+        labelSeparator: "até",
+        selectLabelStore: "Loja",
+        btnLabelApply: "Aplicar",
+        btnLabelClear: "Limpar",
+      },
+      sortBy:{
+        minPrice: "Menor preço",
+        maxPrice: "Maior preço",
+      },
+      notify:{
+        error: "Erro ao buscar histórico de preços",       
+      }
+    },
     bottomNavigation: {
       mySearches: "Minhas Buscas",
       createSearch: "Novas Consultas",
@@ -107,6 +127,10 @@ export default {
         deleteTitle: "Deletar busca",
         confirmDelete: "Você tem certeza que deseja deletar essa busca?",
       },
+      partialListStoreItem: {
+        unit: "/{unit}",
+        discountTooltip: "{discount} mais barato que a oferta mais cara.",
+      }
     },
     composables:{
       importXlsx:{
