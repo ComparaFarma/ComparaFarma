@@ -1,8 +1,8 @@
 <template>
   <div class="d-flex flex-column my-5 ga-2">
     <div class="d-flex flex-row ga-2 align-center">
-      <v-btn size="small" icon color="primary" @click="$router.back()">
-        <v-icon>mdi-arrow-left</v-icon>
+      <v-btn size="small" icon @click="$router.back()">
+        <v-icon color="primary">mdi-arrow-left</v-icon>
       </v-btn>
     </div>
     <div class="d-flex flex-row ga-2">
