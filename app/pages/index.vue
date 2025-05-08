@@ -82,10 +82,11 @@
             />
           </div>
           <v-infinite-scroll
+            :key="keyForInfiniteScroll"
             class="ml-4"
             height="74vh"
-            :items="mySearches"
-            @load="({ done }) => done('error')"
+            :items="lastUpdateSearches"
+            @load="loadLastUpdateSearches"
           >
             <template v-for="(item, index) in lastUpdateSearches" :key="index">
               <div v-if="item.id">
@@ -162,6 +163,7 @@ async function reload() {
   }
   timeout.value = setTimeout(() => {
     mySearches.value = [];
+    lastUpdateSearches.value = [];
     keyForInfiniteScroll.value++;
   }, 500);
 }
@@ -227,6 +229,27 @@ function onDelete(id: number) {
 
 const OFFSET = 0;
 const LIMIT = 4;
+
+function loadLastUpdateSearches({
+  done,
+}: {
+  done: (status: "error" | "loading" | "empty" | "ok") => void;
+}) {
+  $fetch("/api/priceCollection", {
+    method: "GET",
+    params: {
+      offset: OFFSET,
+      limit: LIMIT,
+      orderBy: "lastcheckdate",
+      hasLastcheckdate: true,
+    },
+  }).then((res) => {
+    lastUpdateSearches.value = res;
+  }).finally(() => {
+    done("error");
+    
+  });
+}
 onMounted(() => {
   $fetch("/api/city", {
     method: "GET",
@@ -238,16 +261,5 @@ onMounted(() => {
     return;
   }
 
-  $fetch("/api/priceCollection", {
-    method: "GET",
-    params: {
-      offset: OFFSET,
-      limit: LIMIT,
-      orderBy: "lastcheckdate",
-      hasLastcheckdate: true,
-    },
-  }).then((res) => {
-    lastUpdateSearches.value = res;
-  });
 });
 </script>
