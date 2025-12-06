@@ -59,7 +59,7 @@
 
             <!-- Search List -->
             <v-card 
-              variant="outlined" 
+              variant="flat" 
               :rounded="mobile ? 'lg' : 'xl'"
               class="search-list-container"
             >
@@ -121,7 +121,7 @@
 
           <v-card-text class="pa-3 pa-md-4">
             <v-card 
-              variant="outlined" 
+              variant="flat" 
               rounded="xl"
               class="search-list-container"
             >
