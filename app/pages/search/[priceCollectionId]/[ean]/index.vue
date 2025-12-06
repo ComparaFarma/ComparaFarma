@@ -1,83 +1,236 @@
 <template>
-  <div class="d-flex flex-column my-5 ga-2">
-    <div class="d-flex flex-row ga-2 align-center">
-      <v-btn size="small" icon @click="$router.back()">
-        <v-icon color="primary">mdi-arrow-left</v-icon>
-      </v-btn>
-      <h1 class="text-body-1 font-weight-bold">
-        {{ titlePage }}
-      </h1>
-      <v-badge inline color="primary" rounded="0" :content="$t('text.priceHistory.countStore', {count: countStores})" />
-    </div>
-    <div class="d-flex ga-2" :class="{ 'flex-row': !mobile, 'flex-column': mobile }">
-      <span class="text-caption font-weight-bold text-center ma-2">
-        {{ t("text.priceHistory.filters.title") }}
-      </span>
-      <div class="d-flex justify-space-between w-100 align-center ga-2" :class="{ 'flex-row': !mobile, 'flex-column': mobile }">
-        <div class="d-flex flex-row ga-2" :class="{ 'flex-row': !mobile, 'flex-column w-100': mobile }">
-          <!-- Botão que abre o diálogo -->
-          <v-menu v-model="dialog" :close-on-content-click="false">
-            <template #activator="{ props }">
-              <v-btn color="primary" variant="outlined" rounded="xl" v-bind="props">
-                <span class="d-flex align-center">
-                  {{ $t("text.priceHistory.filters.btnLabelPrice") }}
-                  <v-badge v-if="filters.minPrice || filters.maxPrice" color="primary" content="1" inline class="ml-1" />
-                </span>
-              </v-btn>
+  <div class="price-history-page">
+    <!-- Header Section -->
+    <v-card 
+      class="header-card mb-3 overflow-hidden"
+      :class="mobile ? 'rounded-lg' : 'rounded-xl'"
+      elevation="2"
+    >
+      <div class="gradient-border"></div>
+      
+      <v-card-text class="pa-4">
+        <div class="d-flex flex-row ga-3 align-center flex-wrap">
+          <v-btn 
+            size="small" 
+            icon
+            variant="outlined"
+            color="primary"
+            @click="$router.back()"
+          >
+            <v-icon>mdi-arrow-left</v-icon>
+          </v-btn>
+          
+          <h1 class="text-h6 text-md-h5 font-weight-bold">
+            {{ titlePage }}
+          </h1>
+          
+          <v-chip
+            color="primary"
+            variant="elevated"
+            size="large"
+            class="font-weight-bold"
+          >
+            {{ $t('text.priceHistory.countStore', {count: countStores}) }}
+          </v-chip>
+        </div>
+      </v-card-text>
+    </v-card>
+
+    <!-- Filters Section -->
+    <v-card 
+      class="filters-card mb-3 overflow-hidden"
+      :class="mobile ? 'rounded-lg' : 'rounded-xl'"
+      elevation="2"
+    >
+      <div class="gradient-border primary"></div>
+      
+      <v-card-title class="pa-4">
+        <div class="d-flex align-center">
+          <div class="icon-wrapper primary mr-3">
+            <v-icon icon="mdi-filter-variant" size="24" color="white" />
+          </div>
+          <span class="text-subtitle-1 font-weight-bold text-primary">
+            {{ t("text.priceHistory.filters.title") }}
+          </span>
+        </div>
+      </v-card-title>
+
+      <v-divider />
+
+      <v-card-text class="pa-3 pa-md-4">
+        <v-row class="ga-2">
+          <v-col cols="12" md="auto">
+            <!-- Price Filter Menu -->
+            <v-menu v-model="dialog" :close-on-content-click="false">
+              <template #activator="{ props }">
+                <v-btn 
+                  color="primary" 
+                  variant="outlined" 
+                  rounded="lg"
+                  size="large"
+                  v-bind="props"
+                >
+                  <v-icon icon="mdi-currency-usd" class="mr-2" />
+                  <span>{{ $t("text.priceHistory.filters.btnLabelPrice") }}</span>
+                  <v-badge 
+                    v-if="filters.minPrice || filters.maxPrice" 
+                    color="error" 
+                    content="1" 
+                    inline 
+                    class="ml-2" 
+                  />
+                </v-btn>
+              </template>
+
+              <v-card 
+                min-width="350"
+                :class="mobile ? 'rounded-lg' : 'rounded-xl'"
+              >
+                <v-card-title class="d-flex justify-space-between align-center pa-4">
+                  <span class="text-h6 font-weight-bold">
+                    {{ $t("text.priceHistory.filters.cardTitle") }}
+                  </span>
+                  <v-btn icon size="small" @click="dialog = false">
+                    <v-icon>mdi-close</v-icon>
+                  </v-btn>
+                </v-card-title>
+
+                <v-divider />
+
+                <v-card-text class="pa-4">
+                  <v-row class="align-center">
+                    <v-col cols="5">
+                      <v-text-field 
+                        v-model="filters.minPrice" 
+                        hide-details="auto" 
+                        label="Mínimo" 
+                        type="number" 
+                        prefix="R$" 
+                        step="0.01" 
+                        min="0" 
+                        density="comfortable"
+                        variant="outlined"
+                        rounded="lg"
+                      />
+                    </v-col>
+
+                    <v-col cols="2" class="text-center">
+                      <span class="text-subtitle-1 text-grey">
+                        {{ $t("text.priceHistory.filters.labelSeparator") }}
+                      </span>
+                    </v-col>
+
+                    <v-col cols="5">
+                      <v-text-field 
+                        v-model="filters.maxPrice" 
+                        hide-details="auto" 
+                        label="Máximo" 
+                        type="number" 
+                        prefix="R$" 
+                        step="0.01" 
+                        :min="filters.minPrice" 
+                        density="comfortable"
+                        variant="outlined"
+                        rounded="lg"
+                      />
+                    </v-col>
+                  </v-row>
+                </v-card-text>
+
+                <v-divider />
+
+                <v-card-actions class="pa-3">
+                  <v-spacer />
+                  <v-btn 
+                    color="error" 
+                    variant="text" 
+                    @click="clearPriceFilter"
+                  >
+                    {{ $t("text.priceHistory.filters.btnLabelClear") }}
+                  </v-btn>
+                  <v-btn 
+                    color="primary" 
+                    variant="elevated"
+                    @click="applyPriceFilter"
+                  >
+                    {{ $t("text.priceHistory.filters.btnLabelApply") }}
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-menu>
+          </v-col>
+
+          <v-col cols="12" md="">
+            <v-autocomplete 
+              v-model="storeModel" 
+              hide-details="auto" 
+              clearable 
+              color="primary" 
+              :label="$t('text.priceHistory.filters.selectLabelStore')" 
+              item-title="text" 
+              item-value="value" 
+              rounded="lg"
+              :items="storeOptions" 
+              variant="outlined" 
+              density="comfortable"
+              prepend-inner-icon="mdi-store"
+            />
+          </v-col>
+
+          <v-col cols="12" md="auto">
+            <v-select 
+              v-model="sortByModel" 
+              hide-details="auto" 
+              item-title="text" 
+              item-value="value" 
+              :items="sortByOptions" 
+              variant="outlined" 
+              density="comfortable"
+              rounded="lg"
+              prepend-inner-icon="mdi-sort"
+              min-width="200"
+            />
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-card>
+
+    <!-- Results Section -->
+    <v-card 
+      class="results-card overflow-hidden"
+      :class="mobile ? 'rounded-lg' : 'rounded-xl'"
+      elevation="2"
+    >
+      <v-card-text class="pa-2">
+        <v-infinite-scroll 
+          :key="keyForInfiniteScroll" 
+          height="65vh" 
+          :items="priceHistoryComputed" 
+          @load="load"
+        >
+          <div class="d-flex flex-wrap ga-2 pa-2">
+            <template v-for="(item, index) in priceHistoryComputed" :key="index">
+              <div class="store-card-wrapper">
+                <LazyPartialListStoreItem 
+                  :discount="item.discount" 
+                  :value="item.value" 
+                  :barcode="item.barcode" 
+                  :description="item.description" 
+                  :cnpj="item.cnpj" 
+                  :address="item.endStreet + ', ' + item.endDistrict" 
+                  :store-name="item.name" 
+                  :telephone="item.phone" 
+                  :unit="item.unit"
+                />
+              </div>
             </template>
-
-            <v-card>
-              <v-card-title class="text-h6 d-flex justify-space-between align-center">
-                <span>{{ $t("text.priceHistory.filters.cardTitle") }}</span>
-                <v-btn icon @click="dialog = false">
-                  <v-icon>mdi-close</v-icon>
-                </v-btn>
-              </v-card-title>
-
-              <v-card-text>
-                <v-row class="align-center">
-                  <v-col cols="5">
-                    <v-text-field v-model="filters.minPrice" hide-details="auto" label="Mínimo" type="number" prefix="R$" step="0.01" min="0" density="compact" />
-                  </v-col>
-
-                  <v-col cols="2" class="text-center">
-                    <span class="text-h6">{{ $t("text.priceHistory.filters.labelSeparator") }}</span>
-                  </v-col>
-
-                  <v-col cols="5">
-                    <v-text-field v-model="filters.maxPrice" hide-details="auto" label="Máximo" type="number" prefix="R$" step="0.01" :min="filters.minPrice" density="compact" />
-                  </v-col>
-                </v-row>
-              </v-card-text>
-
-              <v-card-actions>
-                <v-spacer />
-                <v-btn color="red" variant="text" size="small" @click="clearPriceFilter">
-                  {{ $t("text.priceHistory.filters.btnLabelClear") }}
-                </v-btn>
-                <v-btn color="primary" variant="text" size="small" @click="applyPriceFilter">
-                  {{ $t("text.priceHistory.filters.btnLabelApply") }}
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-menu>
-
-          <v-autocomplete v-model="storeModel" hide-details="auto" clearable color="primary" :label="$t('text.priceHistory.filters.selectLabelStore')" item-title="text" item-value="value" rounded :items="storeOptions" variant="outlined" class="text-primary" density="compact" min-width="150" />
-        </div>
-        <div class="d-flex flex-row ga-2" :class="{ 'w-10': !mobile, 'w-100': mobile }">
-          <v-select v-model="sortByModel" hide-details="auto" item-title="text" item-value="value" :items="sortByOptions" variant="outlined" class="text-primary" density="compact" :dense="mobile" />
-        </div>
-      </div>
-    </div>
-    <v-infinite-scroll :key="keyForInfiniteScroll" height="74vh" :items="priceHistoryComputed" @load="load">
-      <div class="d-flex flex-wrap align-content-start align-start ga-2">
-        <template v-for="(item, index) in priceHistoryComputed" :key="index">
-            <LazyPartialListStoreItem class="pa-2" :discount="item.discount" :value="item.value" :barcode="item.barcode" :description="item.description" :cnpj="item.cnpj" :address="item.endStreet + ', ' + item.endDistrict" :store-name="item.name" :telephone="item.phone" :unit="item.unit" />
-        </template>
-      </div>
-    </v-infinite-scroll>
+          </div>
+        </v-infinite-scroll>
+      </v-card-text>
+    </v-card>
   </div>
 </template>
+
 <script setup lang="ts">
 import {
   BottomNavigationType,
@@ -292,3 +445,56 @@ async function load({
 }
 
 </script>
+
+<style scoped lang="scss">
+.price-history-page {
+  width: 100%;
+}
+
+.header-card,
+.filters-card,
+.results-card {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.filters-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.gradient-border {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #0055A5 0%, #003d7a 100%);
+  
+  &.primary {
+    background: linear-gradient(90deg, #0055A5 0%, #003d7a 100%);
+  }
+}
+
+.icon-wrapper {
+  border-radius: 10px;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &.primary {
+    background: linear-gradient(135deg, #0055A5 0%, #003d7a 100%);
+  }
+}
+
+.store-card-wrapper {
+  flex: 1 1 300px;
+  min-width: 280px;
+  max-width: 400px;
+  
+  @media (max-width: 600px) {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+}
+</style>
