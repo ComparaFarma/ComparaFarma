@@ -75,12 +75,13 @@ export default {
       downloadModelImportButton: "Baixar modelo",
       searchTextField: "Pesquisar EAN",
       loadingImport: "Carregando...",
-      notify:{
+      notify: {
         success: "Busca criada com sucesso",
         error: "Erro ao criar busca",
         requireProduct: "Selecione pelo menos um EAN",
         errorReadFile: "Erro ao ler o arquivo",
         errorEmptyFile: "Arquivo vazio",
+        successImport: "{count} produto importado com sucesso | {count} produtos importados com sucesso",
       }
     },
     priceCollectionId: {
@@ -93,7 +94,7 @@ export default {
     },
     priceHistory: {
       countStore: "{count} loja | {count} lojas",
-      filters:{
+      filters: {
         title: "Filtros: ",
         btnLabelStore: "Loja",
         btnLabelPrice: "Preço",
@@ -103,12 +104,12 @@ export default {
         btnLabelApply: "Aplicar",
         btnLabelClear: "Limpar",
       },
-      sortBy:{
+      sortBy: {
         minPrice: "Menor preço",
         maxPrice: "Maior preço",
       },
-      notify:{
-        error: "Erro ao buscar histórico de preços",       
+      notify: {
+        error: "Erro ao buscar histórico de preços",
       }
     },
     bottomNavigation: {
@@ -132,8 +133,8 @@ export default {
         discountTooltip: "{discount} mais barato que a oferta mais cara.",
       }
     },
-    composables:{
-      importXlsx:{
+    composables: {
+      importXlsx: {
         invalidFileType: "Tipo de arquivo inválido. Por favor, faça o upload de um arquivo Excel.",
       }
     }

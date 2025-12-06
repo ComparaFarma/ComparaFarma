@@ -67,9 +67,9 @@
     </v-app-bar>
 
     <v-main class="bg-background">
-      <v-container fluid class="pa-4 pa-md-6">
+      <v-container fluid class="pa-2 pa-md-3">
         <v-pull-to-refresh
-          class="px-4"
+          class="px-0"
           :pull-down-threshold="pullDownThreshold"
           @load="load"
         >

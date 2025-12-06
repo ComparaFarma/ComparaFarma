@@ -117,7 +117,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import auth from "../ middleware/auth";
+import auth from "../middleware/auth";
 import { LazyPartialListSearchItem } from "#components";
 import type { PriceCollectionItem } from "~~/server/api/priceCollection";
 import { useDashboardStore } from "~/store/dashboardStore";
