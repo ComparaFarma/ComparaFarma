@@ -16,9 +16,6 @@
               v-t="'text.newSearch.createNewSearches'" 
               class="text-h5 text-md-h4 font-weight-bold text-white mb-1"
             />
-            <p class="text-body-2 text-white text-opacity-90 mb-0">
-              {{ $t('text.newSearch.createNewSearches') }}
-            </p>
           </div>
         </div>
 
@@ -102,7 +99,7 @@
                 {{ $t('text.newSearch.downloadModelImportButton') }}
               </h3>
               <p class="text-caption text-grey-darken-1 mb-0">
-                Download the spreadsheet template to import products
+                {{ $t('text.newSearch.downloadDescription') }}
               </p>
             </v-card>
           </v-col>
@@ -126,10 +123,10 @@
                 {{ $t('text.newSearch.importEanButton') }}
               </h3>
               <p class="text-caption text-grey-darken-1 mb-2">
-                Click or drag files here to upload
+                {{ $t('text.newSearch.uploadDescription') }}
               </p>
               <p class="text-caption text-grey mb-0">
-                Supported: .csv, .xlsx, .txt
+                {{ $t('text.newSearch.uploadFormats') }}
               </p>
               <input
                 ref="fileInput"
@@ -193,7 +190,7 @@
             <div class="d-flex flex-column align-center justify-center pa-8">
               <v-icon size="64" color="grey-lighten-1">mdi-package-variant-remove</v-icon>
               <p class="mt-4 text-body-1 text-grey">{{ $t('$vuetify.noDataText') }}</p>
-              <p class="text-caption text-grey-lighten-1">Upload a file to see products here</p>
+              <p class="text-caption text-grey-lighten-1">{{ $t('text.newSearch.emptyStateMessage') }}</p>
             </div>
           </template>
         </v-card>

@@ -82,7 +82,11 @@ export default {
         errorReadFile: "Erro ao ler o arquivo",
         errorEmptyFile: "Arquivo vazio",
         successImport: "{count} produto importado com sucesso | {count} produtos importados com sucesso",
-      }
+      },
+      downloadDescription: "Baixe o modelo de planilha para importar produtos",
+      uploadDescription: "Clique ou arraste arquivos aqui para fazer upload",
+      uploadFormats: "Suportados: .csv, .xlsx, .txt",
+      emptyStateMessage: "Envie um arquivo para ver os produtos aqui",
     },
     priceCollectionId: {
       countProduct: "{count} produto | {count} produtos",
