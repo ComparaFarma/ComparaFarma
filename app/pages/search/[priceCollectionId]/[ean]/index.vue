@@ -6,7 +6,7 @@
       :class="mobile ? 'rounded-lg' : 'rounded-xl'"
       elevation="2"
     >
-      <div class="gradient-border"></div>
+      <div class="gradient-border"/>
       
       <v-card-text class="pa-4">
         <div class="d-flex flex-row ga-3 align-center flex-wrap">
@@ -42,7 +42,7 @@
       :class="mobile ? 'rounded-lg' : 'rounded-xl'"
       elevation="2"
     >
-      <div class="gradient-border primary"></div>
+      <div class="gradient-border primary"/>
       
       <v-card-title class="pa-4">
         <div class="d-flex align-center">

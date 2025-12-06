@@ -8,7 +8,7 @@
           :class="mobile ? 'rounded-lg' : 'rounded-xl'"
           elevation="2"
         >
-          <div class="gradient-border primary"></div>
+          <div class="gradient-border primary" />
           
           <!-- Header -->
           <v-card-title class="pa-4">
@@ -102,7 +102,7 @@
           :class="mobile ? 'rounded-lg' : 'rounded-xl'"
           elevation="2"
         >
-          <div class="gradient-border secondary"></div>
+          <div class="gradient-border secondary" />
           
           <!-- Header -->
           <v-card-title class="pa-4">
@@ -182,7 +182,7 @@ useHead({
 });
 const {getDate } = useDateUtils();
 const { mobile } = useDisplay();
-const items = ref(Array.from({ length: 30 }, (k, v) => v + 1));
+
 
 const mySearches = ref<PriceCollectionItem[]>([]);
 const lastUpdateSearches = ref<PriceCollectionItem[]>([]);

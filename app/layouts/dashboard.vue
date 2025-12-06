@@ -24,23 +24,23 @@
       <v-divider class="mb-2" />
       <v-list nav class="pa-2">
         <v-list-item
-          prepend-icon="mdi-heart"
+          prepend-icon="mdi-alpha-h-box"
           :title="$t('text.bottomNavigation.mySearches')"
           value="my-searches"
-          @click="navigateTo('/')"
           rounded="lg"
           active-color="primary"
+          @click="navigateTo('/')"
         />
         <v-list-item
           prepend-icon="mdi-plus"
           :title="$t('text.bottomNavigation.createSearch')"
           value="create-search"
-          @click="navigateTo('/search/create')"
           rounded="lg"
           active-color="primary"
+          @click="navigateTo('/search/create')"
         />
       </v-list>
-      <template v-slot:append>
+      <template #append>
         <div class="pa-4">
           <v-btn
             block
@@ -58,7 +58,7 @@
 
     <!-- App Bar -->
     <v-app-bar elevation="0" color="surface" class="border-b px-2">
-      <v-app-bar-nav-icon v-if="mobile" @click="drawer = !drawer" color="primary" />
+      <v-app-bar-nav-icon v-if="mobile" color="primary" @click="drawer = !drawer" />
       <v-app-bar-title v-if="!mobile" class="text-subtitle-1 text-grey-darken-1">
         Dashboard
       </v-app-bar-title>
@@ -79,7 +79,8 @@
     </v-main>
 
     <v-snackbar-queue v-model="messages" multi-line closable />
-    <v-bottom-navigation v-if="mobile"
+    <v-bottom-navigation
+      v-if="mobile"
       :model-value="currentBottomNavigation"
       active
       grow

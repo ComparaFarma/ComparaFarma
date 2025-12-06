@@ -63,7 +63,7 @@
       :class="mobile ? 'rounded-lg' : 'rounded-xl'"
       elevation="2"
     >
-      <div class="gradient-border"></div>
+      <div class="gradient-border"/>
       <v-card-title class="d-flex align-center pa-4">
         <v-icon icon="mdi-file-document-multiple" size="28" color="primary" class="mr-3" />
         <span class="text-h6 font-weight-bold">{{ $t('text.newSearch.titleSearchProduct') }}</span>
@@ -90,9 +90,9 @@
               variant="tonal"
               color="success"
               :rounded="mobile ? 'lg' : 'xl'"
-              @click="triggerFileDownload"
               style="cursor: pointer; transition: all 0.3s ease;"
               hover
+              @click="triggerFileDownload"
             >
               <v-icon icon="mdi-download-box-outline" size="48" color="success" class="mb-2" />
               <h3 class="text-subtitle-1 font-weight-bold text-success mb-2">
@@ -110,13 +110,13 @@
               variant="tonal"
               color="primary"
               :rounded="mobile ? 'lg' : 'xl'"
+              :class="{ 'dragging': isDragging }"
+              style="cursor: pointer; transition: all 0.3s ease;"
+              hover
               @click="triggerFileInput"
               @dragover.prevent="isDragging = true"
               @dragleave.prevent="isDragging = false"
               @drop.prevent="handleFileDrop"
-              :class="{ 'dragging': isDragging }"
-              style="cursor: pointer; transition: all 0.3s ease;"
-              hover
             >
               <v-icon icon="mdi-cloud-upload" size="48" color="primary" class="mb-2" />
               <h3 class="text-subtitle-1 font-weight-bold text-primary mb-2">
@@ -134,7 +134,7 @@
                 style="display: none"
                 accept=".csv,.xlsx,.txt"
                 @change="handleFileImport"
-              />
+              >
             </v-card>
           </v-col>
         </v-row>
@@ -147,11 +147,11 @@
           hide-details
           single-line
           :model="searchValue"
-          @update:model-value="onUpdateSearch"
           rounded="lg"
           class="mb-3"
           density="comfortable"
           bg-color="grey-lighten-5"
+          @update:model-value="onUpdateSearch"
         />
 
         <!-- Product List -->
@@ -178,8 +178,8 @@
                 <LazyPartialListEanItem 
                   :ean="item" 
                   :eans="selectedEans" 
-                  @change="onChangeEan"
                   class="product-item"
+                  @change="onChangeEan"
                 />
                 <v-divider :key="'divider' + item" class="my-1" />
               </template>
@@ -209,10 +209,10 @@
           prepend-icon="mdi-cancel"
           color="secondary"
           :disabled="loading"
-          @click="clearImport"
           variant="outlined"
           :size="mobile ? 'large' : 'default'"
           :block="mobile"
+          @click="clearImport"
         >
           <span v-t="'text.newSearch.clearSearchImportButton'" />
         </v-btn>
@@ -221,11 +221,11 @@
           prepend-icon="mdi-plus"
           color="primary"
           :loading="loading"
-          @click="createNewSearch"
           variant="elevated"
           :size="mobile ? 'large' : 'default'"
           :block="mobile"
           class="font-weight-bold"
+          @click="createNewSearch"
         >
           <span v-t="'text.newSearch.crateSearchButton'" class="text-white" />
         </v-btn>
