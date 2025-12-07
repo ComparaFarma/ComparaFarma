@@ -43,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import auth from "~/ middleware/auth";
+import auth from "~/middleware/auth";
 import { useForm } from "vee-validate";
 import { useNotifyStore } from "~/store/notifyStore";
 import { useApiSupabase } from "~/composables/useApiSupabase";
