@@ -28,7 +28,7 @@
           :title="$t('text.bottomNavigation.mySearches')"
           value="my-searches"
           rounded="lg"
-          active-color="primary"
+          color="primary"
           @click="navigateTo('/')"
         />
         <v-list-item
@@ -36,7 +36,7 @@
           :title="$t('text.bottomNavigation.createSearch')"
           value="create-search"
           rounded="lg"
-          active-color="primary"
+          color="primary"
           @click="navigateTo('/search/create')"
         />
       </v-list>
@@ -63,6 +63,21 @@
         Dashboard
       </v-app-bar-title>
       <v-spacer />
+      <div v-if="subscriptionUsage" class="usage-meter mr-2 d-flex flex-column">
+        <div class="d-flex align-center justify-space-between mb-1 text-caption">
+          <div class="d-flex align-center ga-1">
+            <v-icon :color="usageColor" size="10">mdi-circle</v-icon>
+            <span v-t="'text.appBar.usage'"></span>
+          </div>
+          <span>{{ subscriptionUsage.usedRequests }} / {{ subscriptionUsage.requestLimit }}</span>
+        </div>
+        <v-progress-linear
+          :model-value="usagePercent"
+          :color="usageColor"
+          rounded
+          height="8"
+        />
+      </div>
 
     </v-app-bar>
 
@@ -117,7 +132,7 @@ import { VPullToRefresh } from "vuetify/labs/VPullToRefresh";
 import { useApiSupabase } from "~/composables/useApiSupabase";
 import { useCityStore } from "~/store/cityStore";
 import { useDisplay } from "vuetify";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { storeToRefs } from "pinia";
 
 const { mobile } = useDisplay();
@@ -130,6 +145,26 @@ const { messages } = storeToRefs(notifyStore);
 const dashboardStore = useDashboardStore();
 const { currentBottomNavigation } = storeToRefs(dashboardStore);
 const logoutLoading = ref(false);
+const subscriptionUsage = ref<{
+  usedRequests: number;
+  requestLimit: number;
+} | null>(null);
+const usagePercent = computed(() => {
+  if (!subscriptionUsage.value || subscriptionUsage.value.requestLimit <= 0) {
+    return 0;
+  }
+
+  return Math.min(
+    (subscriptionUsage.value.usedRequests / subscriptionUsage.value.requestLimit) * 100,
+    100,
+  );
+});
+const usageColor = computed(() => {
+  if (usagePercent.value >= 90) return "error";
+  if (usagePercent.value >= 70) return "warning";
+  if (usagePercent.value >= 50) return "secondary";
+  return "success";
+});
 
 const cityStore = useCityStore();
 const apiSupabase = useApiSupabase();
@@ -141,17 +176,43 @@ async function logout() {
   navigateTo("/auth/login");
 }
 
+async function fetchSubscriptionUsage() {
+  try {
+    const usage = await $fetch<{
+      usedRequests: number;
+      requestLimit: number;
+    }>("/api/subscription/usage", {
+      method: "GET",
+    });
+
+    subscriptionUsage.value = usage;
+  } catch {
+    subscriptionUsage.value = null;
+  }
+}
+
 const load = async ({ done }: { done: CallableFunction }) => {
   await dashboardStore.reload();
+  await fetchSubscriptionUsage();
   done("ok");
 };
 
 onMounted(() => {
   if (!apiSupabase.isAuthenticated()) {
     navigateTo("/auth/login");
+    return;
   }
+
+  fetchSubscriptionUsage();
+
   if (cityStore.cities.length == 0) {
     cityStore.fetchCities();
   }
 });
 </script>
+
+<style scoped>
+.usage-meter {
+  width: 220px;
+}
+</style>

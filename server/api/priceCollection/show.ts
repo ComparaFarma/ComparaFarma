@@ -1,5 +1,6 @@
 import { serverSupabaseClient } from '#supabase/server'
 import type { Tables } from '~~/types/database.types'
+import { assertSubscriptionAccess } from '../../utils/subscription'
 export interface PriceCollectionItem extends Tables<'view_pricecollection'> {
     cities: { city: Tables<'City'> }[],
     name: string,
@@ -8,6 +9,8 @@ export interface PriceCollectionItem extends Tables<'view_pricecollection'> {
     updatedAt: string,
 }
 export default eventHandler(async (event) => {
+
+    await assertSubscriptionAccess(event)
 
     const client = await serverSupabaseClient<Tables<'view_pricecollection'>>(event)
     const { id } = getQuery(event)

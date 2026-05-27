@@ -123,6 +123,7 @@ export default {
     appBar: {
       notification: "Notificações",
       logout: "Sair",
+      usage: "Requisições Usadas:",
     },
     components: {
       partialListSearchItem: {

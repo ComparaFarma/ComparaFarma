@@ -1,4 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server'
+import { assertSubscriptionAccess, registerLogRequest } from '../../utils/subscription'
 
 export interface GetPriceCollectionProducts {
     id: number
@@ -15,6 +16,8 @@ export interface GetPriceCollectionProducts {
 }
 
 export default eventHandler(async (event) => {
+
+    await assertSubscriptionAccess(event)
 
     const { limit, offset, priceCollectionId, cityId, productEanOrDescription, storeCnpj } = getQuery<{
         limit: number,
@@ -48,6 +51,8 @@ export default eventHandler(async (event) => {
     if (!data) {
         throw createError({ statusCode: 404, statusMessage: 'No data found' })
     }
+
+    await registerLogRequest(event, Number(priceCollectionId))
 
 
     return (data as GetPriceCollectionProducts[])

@@ -1,9 +1,12 @@
 import { serverSupabaseClient } from '#supabase/server'
 import type { Tables } from '~~/types/database.types'
+import { assertSubscriptionAccess } from '../../utils/subscription'
 
 export type Store = Tables<'Store'>;
 
 export default eventHandler(async (event) => {
+
+    await assertSubscriptionAccess(event)
 
     const { priceCollectionId } = getQuery<{
         priceCollectionId: number
