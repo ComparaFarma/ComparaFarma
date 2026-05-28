@@ -229,6 +229,7 @@
           prepend-icon="mdi-plus"
           color="primary"
           :loading="loading"
+          :disabled="!canCreate || loading"
           variant="elevated"
           :size="mobile ? 'large' : 'default'"
           :block="mobile"
@@ -278,8 +279,20 @@ const isDragging = ref(false);
 const cityStore = useCityStore();
 const dashboard = useDashboardStore();
 
+const usageRemaining = ref<number | null>(null);
+
 onMounted(() => {
   dashboard.openBottomNavigation(BottomNavigationType.CREATE_SEARCH);
+  // Busca uso da assinatura para controlar disponibilidade de criação
+  (async () => {
+    try {
+      const usage = await $fetch('/api/subscription/usage');
+      usageRemaining.value = usage?.remainingRequests ?? 0;
+    } catch (err) {
+      console.error('Failed to fetch subscription usage', err);
+      usageRemaining.value = null;
+    }
+  })();
 });
 
 // Configuração do formulário com validação
@@ -315,6 +328,15 @@ const citiesCount = computed(() => Array.isArray(cities.value) ? cities.value.le
 const estimatedRequestsPerProduct = computed(() => daysInMonth.value * citiesCount.value);
 
 const totalEstimatedRequests = computed(() => selectedEans.value.length * estimatedRequestsPerProduct.value);
+
+const requiredRequests = computed(() => {
+  return selectedEans.value.length * estimatedRequestsPerProduct.value;
+});
+
+const canCreate = computed(() => {
+  if (usageRemaining.value === null) return true; // desconhecido ainda
+  return usageRemaining.value >= requiredRequests.value;
+});
 
 
 function triggerFileInput() {
@@ -431,6 +453,12 @@ async function createNewSearch() {
     return;
   }
 
+  if (!canCreate.value) {
+    notifyStore.showNotification(t('text.newSearch.notify.limitReached'), 'error');
+    loading.value = false;
+    return;
+  }
+
   if (!valid) {
     loading.value = false;
     return;
@@ -447,6 +475,10 @@ async function createNewSearch() {
     console.log(res);
     notifyStore.showNotification(t('text.newSearch.notify.success'), 'success');
     clearImport();
+    // Atualiza uso localmente subtraindo o que foi consumido
+    if (usageRemaining.value !== null) {
+      usageRemaining.value = Math.max(0, usageRemaining.value - requiredRequests.value);
+    }
   }).catch((error) => {
     console.error(t('text.newSearch.notify.error'), error);
     notifyStore.showNotification(

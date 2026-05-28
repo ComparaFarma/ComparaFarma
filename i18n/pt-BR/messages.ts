@@ -79,6 +79,7 @@ export default {
         success: "Busca criada com sucesso",
         error: "Erro ao criar busca",
         requireProduct: "Selecione pelo menos um EAN",
+          limitReached: "Limite de requisições atingido. Entre em contato com o administrador.",
         errorReadFile: "Erro ao ler o arquivo",
         errorEmptyFile: "Arquivo vazio",
         successImport: "{count} produto importado com sucesso | {count} produtos importados com sucesso",
