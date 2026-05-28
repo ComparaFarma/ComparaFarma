@@ -65,6 +65,8 @@ export default {
       title: "Nova Busca",
       ean: "EAN",
       list: "Lista",
+      calculatedBasedOn: "Calculado {cities} cidades × {products} produtos × {days} dias do mês",
+      estimatedRequests: "{count} requisição mensal estimada | {count} requisições mensais estimadas",
       createNewSearches: "Criar nova busca:",
       titleNewSearchTextField: "Titulo da nova busca",
       searchButton: "Buscar",

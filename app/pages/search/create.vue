@@ -64,12 +64,11 @@
       elevation="2"
     >
       <div class="gradient-border"/>
-      <v-card-title class="d-flex align-center pa-4">
+      <v-card-title class="d-flex align-center pa-4 flex-wrap">
         <v-icon icon="mdi-file-document-multiple" size="28" color="primary" class="mr-3" />
         <span class="text-h6 font-weight-bold">{{ $t('text.newSearch.titleSearchProduct') }}</span>
         <v-spacer />
         <v-chip 
-          v-if="!mobile" 
           color="primary" 
           variant="elevated"
           size="large"
@@ -77,12 +76,12 @@
         >
           {{ countEans }}
         </v-chip>
-        <div v-if="!mobile" class="ml-4 d-flex flex-column" style="min-width:220px">
+        <div class="ml-4 d-flex flex-column" style="min-width:220px">
           <div class="text-caption text-secondary">
-            {{ totalEstimatedRequests }} requisições mensais(estimado)
+            {{ $t('text.newSearch.estimatedRequests', { count: totalEstimatedRequests }) }}
           </div>
           <div class="text-caption text-grey--text">
-            1 produto = {{ daysInMonth }} dias do mês × {{ citiesCount }} cidades
+            {{ $t('text.newSearch.calculatedBasedOn', { days: daysInMonth, cities: citiesCount, products: countEans }) }}
           </div>
         </div>
       </v-card-title>
