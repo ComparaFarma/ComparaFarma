@@ -77,6 +77,14 @@
         >
           {{ countEans }}
         </v-chip>
+        <div v-if="!mobile" class="ml-4 d-flex flex-column" style="min-width:220px">
+          <div class="text-caption text-secondary">
+            {{ totalEstimatedRequests }} requisições mensais(estimado)
+          </div>
+          <div class="text-caption text-grey--text">
+            1 produto = {{ daysInMonth }} dias do mês × {{ citiesCount }} cidades
+          </div>
+        </div>
       </v-card-title>
       
       <v-divider />
@@ -296,6 +304,17 @@ const selectedEans = ref<Array<string>>([]);
 const countEans = computed(() => {
   return selectedEans.value.length;
 });
+
+const daysInMonth = computed(() => {
+  const now = new Date();
+  return new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+});
+
+const citiesCount = computed(() => Array.isArray(cities.value) ? cities.value.length : 0);
+
+const estimatedRequestsPerProduct = computed(() => daysInMonth.value * citiesCount.value);
+
+const totalEstimatedRequests = computed(() => selectedEans.value.length * estimatedRequestsPerProduct.value);
 
 
 function triggerFileInput() {
