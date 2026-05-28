@@ -1,5 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server'
-import { assertSubscriptionAccess, registerLogRequest } from '../../utils/subscription'
+import { assertSubscriptionAccess } from '../../utils/subscription'
 
 export interface GetPriceCollectionPriceHistory {
     barcode: string, 
@@ -63,8 +63,6 @@ export default eventHandler(async (event) => {
     if (!data) {
         throw createError({ statusCode: 404, statusMessage: 'No data found' })
     }
-
-    await registerLogRequest(event, Number(priceCollectionId))
 
 
     return (data as GetPriceCollectionPriceHistory[])

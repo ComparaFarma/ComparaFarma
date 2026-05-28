@@ -2,14 +2,27 @@ import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server'
 import type { H3Event } from 'h3'
 import type { Tables } from '~~/types/database.types'
 
-const DEFAULT_SUBSCRIPTION_REQUEST_LIMIT = 1000
+const DEFAULT_SUBSCRIPTION_REQUEST_LIMIT = 0
 
-function getSubscriptionRequestLimit() {
-  const runtimeConfig = useRuntimeConfig()
-  const configuredLimit = Number(runtimeConfig.subscriptionRequestLimit)
+async function getUserSubscriptionRequestLimit(event: H3Event, userId: string) {
+  const client = await serverSupabaseClient<Tables<'User'>>(event)
+  const { data, error } = await client
+    .from('User')
+    .select('subscriptionRequestLimit')
+    .eq('id', userId)
+    .single()
 
-  if (Number.isFinite(configuredLimit) && configuredLimit > 0) {
-    return configuredLimit
+  if (error) {
+    throw createError({
+      statusCode: 500,
+      statusMessage: error.message,
+    })
+  }
+
+  const requestLimit = Number(data?.subscriptionRequestLimit)
+
+  if (Number.isFinite(requestLimit) && requestLimit > 0) {
+    return requestLimit
   }
 
   return DEFAULT_SUBSCRIPTION_REQUEST_LIMIT
@@ -46,7 +59,7 @@ export async function getSubscriptionUsage(event: H3Event) {
   }
 
   const usedRequests = count ?? 0
-  const requestLimit = getSubscriptionRequestLimit()
+  const requestLimit = await getUserSubscriptionRequestLimit(event, user.id)
 
   return {
     userId: user.id,
@@ -70,33 +83,5 @@ export async function assertSubscriptionAccess(event: H3Event) {
   return {
     requestCount: usage.usedRequests,
     requestLimit: usage.requestLimit,
-  }
-}
-
-export async function registerLogRequest(
-  event: H3Event,
-  priceCollectionId: number,
-) {
-  const user = await serverSupabaseUser(event)
-
-  if (!user) {
-    throw createError({
-      statusCode: 401,
-      statusMessage: 'Não autorizado',
-    })
-  }
-
-  const client = await serverSupabaseClient<Tables<'LogRequest'>>(event)
-  const { error } = await client.from('LogRequest').insert({
-    userId: user.id,
-    priceCollectionId,
-    createdAt: new Date().toISOString(),
-  })
-
-  if (error) {
-    throw createError({
-      statusCode: 500,
-      statusMessage: error.message,
-    })
   }
 }
