@@ -347,8 +347,8 @@ function triggerFileInput() {
 
 function triggerFileDownload() {
   const link = document.createElement('a')
-  link.href = '/api/download/modelo-importacao' // Nova rota de API que serve o arquivo
-  link.download = '' // opcional: pode deixar em branco, o servidor já define o nome
+  link.href = '/import-model.xlsx'
+  link.download = 'import-model.xlsx'
   link.click()
 }
 
