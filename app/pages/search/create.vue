@@ -286,7 +286,7 @@ onMounted(() => {
   (async () => {
     try {
       const usage = await $fetch('/api/subscription/usage');
-      usageRemaining.value = usage?.remainingRequests ?? 0;
+      usageRemaining.value = usage?.remainingRequests !== undefined ? usage.remainingRequests : null;
     } catch (err) {
       console.error('Failed to fetch subscription usage', err);
       usageRemaining.value = null;

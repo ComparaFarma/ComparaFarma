@@ -19,7 +19,11 @@ async function getUserSubscriptionRequestLimit(event: H3Event, userId: string) {
     })
   }
 
-  const requestLimit = Number(data?.subscriptionRequestLimit)
+  if (data?.subscriptionRequestLimit === null || data?.subscriptionRequestLimit === undefined) {
+    return null
+  }
+
+  const requestLimit = Number(data.subscriptionRequestLimit)
 
   if (Number.isFinite(requestLimit) && requestLimit > 0) {
     return requestLimit
@@ -65,7 +69,7 @@ export async function getSubscriptionUsage(event: H3Event) {
     userId: user.id,
     usedRequests,
     requestLimit,
-    remainingRequests: Math.max(requestLimit - usedRequests, 0),
+    remainingRequests: requestLimit === null ? null : Math.max(requestLimit - usedRequests, 0),
     periodStart,
   }
 }
@@ -73,7 +77,7 @@ export async function getSubscriptionUsage(event: H3Event) {
 export async function assertSubscriptionAccess(event: H3Event) {
   const usage = await getSubscriptionUsage(event)
 
-  if (usage.usedRequests >= usage.requestLimit) {
+  if (usage.requestLimit !== null && usage.usedRequests >= usage.requestLimit) {
     throw createError({
       statusCode: 403,
       statusMessage: 'Limite da assinatura atingido',
