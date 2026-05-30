@@ -77,11 +77,11 @@
           {{ countEans }}
         </v-chip>
         <div class="ml-4 d-flex flex-column" style="min-width:220px">
-          <div class="text-caption text-secondary">
-            {{ $t('text.newSearch.estimatedRequests', { count: totalEstimatedRequests }) }}
+          <div class="text-caption font-weight-bold text-secondary">
+            {{ $t('text.newSearch.estimatedRequests', { count: totalEstimatedRequests.toLocaleString('pt-BR') }) }}
           </div>
-          <div class="text-caption text-grey--text">
-            {{ $t('text.newSearch.calculatedBasedOn', { days: daysInMonth, cities: citiesCount, products: countEans }) }}
+          <div class="text-caption text-grey--text mt-1">
+            {{ $t('text.newSearch.calculatedBasedOn', { days: daysInMonth, cities: citiesCount, products: countEans, total: totalEstimatedRequests.toLocaleString('pt-BR') }) }}
           </div>
         </div>
       </v-card-title>
